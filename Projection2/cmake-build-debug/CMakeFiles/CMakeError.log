@@ -1,0 +1,55 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/phyorch/MasterResearch/src/Projection2/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_9fc9d/fast"
+/usr/bin/make -f CMakeFiles/cmTC_9fc9d.dir/build.make CMakeFiles/cmTC_9fc9d.dir/build
+make[1]: Entering directory '/home/phyorch/MasterResearch/src/Projection2/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9fc9d.dir/CheckSymbolExists.c.o
+/usr/bin/gcc-5    -o CMakeFiles/cmTC_9fc9d.dir/CheckSymbolExists.c.o   -c /home/phyorch/MasterResearch/src/Projection2/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_9fc9d
+/home/phyorch/Install_Lib/clion-2018.1/bin/cmake/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9fc9d.dir/link.txt --verbose=1
+/usr/bin/gcc-5      CMakeFiles/cmTC_9fc9d.dir/CheckSymbolExists.c.o  -o cmTC_9fc9d 
+CMakeFiles/cmTC_9fc9d.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_9fc9d.dir/build.make:97: recipe for target 'cmTC_9fc9d' failed
+make[1]: *** [cmTC_9fc9d] Error 1
+make[1]: Leaving directory '/home/phyorch/MasterResearch/src/Projection2/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_9fc9d/fast' failed
+make: *** [cmTC_9fc9d/fast] Error 2
+
+File /home/phyorch/MasterResearch/src/Projection2/cmake-build-debug/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/phyorch/MasterResearch/src/Projection2/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_8334f/fast"
+/usr/bin/make -f CMakeFiles/cmTC_8334f.dir/build.make CMakeFiles/cmTC_8334f.dir/build
+make[1]: Entering directory '/home/phyorch/MasterResearch/src/Projection2/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_8334f.dir/CheckFunctionExists.c.o
+/usr/bin/gcc-5   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_8334f.dir/CheckFunctionExists.c.o   -c /home/phyorch/Install_Lib/clion-2018.1/bin/cmake/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_8334f
+/home/phyorch/Install_Lib/clion-2018.1/bin/cmake/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8334f.dir/link.txt --verbose=1
+/usr/bin/gcc-5  -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_8334f.dir/CheckFunctionExists.c.o  -o cmTC_8334f -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_8334f.dir/build.make:97: recipe for target 'cmTC_8334f' failed
+make[1]: *** [cmTC_8334f] Error 1
+make[1]: Leaving directory '/home/phyorch/MasterResearch/src/Projection2/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_8334f/fast' failed
+make: *** [cmTC_8334f/fast] Error 2
+
+
