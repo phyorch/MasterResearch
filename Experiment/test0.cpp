@@ -99,6 +99,7 @@ int main(){
     ImageUtils::creatMapRegion(depth_map_camera1, test, 374, 388, 710, 723);
     cout << test;
 
+    //test for the clion distribution operation
 
 
     return 0;
