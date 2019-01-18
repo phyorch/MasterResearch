@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/phyorch/MasterResearch/Experiment/test3.cpp" "/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test3.dir/test3.cpp.o"
+  "/home/ubuntu/MasterResearch/Experiment/test3.cpp" "/home/ubuntu/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test3.dir/test3.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -51,7 +51,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/usr/include/eigen3"
   "/usr/include/ni"
   "/usr/include/openni2"
-  "/usr/local/cuda-9.0/include"
+  "/usr/local/cuda/include"
   "/usr/local/zed/include"
   "../include"
   "../myproject"

@@ -4,11 +4,11 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/phyorch/MasterResearch/Experiment/Disparity.cpp" "/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test1.dir/Disparity.cpp.o"
-  "/home/phyorch/MasterResearch/Experiment/ImageUtils.cpp" "/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test1.dir/ImageUtils.cpp.o"
-  "/home/phyorch/MasterResearch/Experiment/SimilarityMeasure.cpp" "/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test1.dir/SimilarityMeasure.cpp.o"
-  "/home/phyorch/MasterResearch/Experiment/StereoGC.cpp" "/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test1.dir/StereoGC.cpp.o"
-  "/home/phyorch/MasterResearch/Experiment/test.cpp" "/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test1.dir/test.cpp.o"
+  "/home/ubuntu/MasterResearch/Experiment/Disparity.cpp" "/home/ubuntu/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test1.dir/Disparity.cpp.o"
+  "/home/ubuntu/MasterResearch/Experiment/ImageUtils.cpp" "/home/ubuntu/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test1.dir/ImageUtils.cpp.o"
+  "/home/ubuntu/MasterResearch/Experiment/SimilarityMeasure.cpp" "/home/ubuntu/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test1.dir/SimilarityMeasure.cpp.o"
+  "/home/ubuntu/MasterResearch/Experiment/StereoGC.cpp" "/home/ubuntu/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test1.dir/StereoGC.cpp.o"
+  "/home/ubuntu/MasterResearch/Experiment/test.cpp" "/home/ubuntu/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test1.dir/test.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -49,17 +49,17 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/usr/include/hdf5/openmpi"
   "/usr/include/libxml2"
   "/usr/include/tcl"
-  "/opt/ros/kinetic/include/opencv-3.3.1-dev"
-  "/opt/ros/kinetic/include/opencv-3.3.1-dev/opencv"
   "/usr/include/pcl-1.7"
   "/usr/include/eigen3"
   "/usr/include/ni"
   "/usr/include/openni2"
-  "/usr/local/cuda-9.0/include"
+  "/usr/local/cuda/include"
   "/usr/local/zed/include"
   "../include"
   "../myproject"
   "../PRIVATE"
+  "/opt/ros/kinetic/include/opencv-3.3.1-dev"
+  "/opt/ros/kinetic/include/opencv-3.3.1-dev/opencv"
   "/usr/include/x86_64-linux-gnu/qt5"
   "/usr/include/x86_64-linux-gnu/qt5/QtWidgets"
   "/usr/include/x86_64-linux-gnu/qt5/QtGui"

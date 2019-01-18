@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/test5.cpp" line="175" />
-  </component>
-  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true" buildAllGenerated="true">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated />
   </component>
   <component name="CMakeSettings">
@@ -12,10 +9,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2d85488f-4b66-4a6e-abee-1d4207648417" name="Default" comment="" />
+    <list default="true" id="2d85488f-4b66-4a6e-abee-1d4207648417" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
-    <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -58,6 +57,9 @@
       <find>pointCloud</find>
     </findStrings>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -88,33 +90,34 @@
   </component>
   <component name="OCFindUsagesOptions" text="false" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="2360" />
-    <option name="y" value="227" />
-    <option name="width" value="508" />
-    <option name="height" value="1060" />
+    <option name="x" value="65" />
+    <option name="y" value="-4" />
+    <option name="width" value="1301" />
+    <option name="height" value="772" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
-    <navigator currentView="Scope" currentSubView="Project Files" proportions="" version="1">
+    <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="stereo_disparity" type="b2602c69:ProjectViewProjectNode" />
-              <item name="stereo_disparity" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
       <pane id="Scope">
         <subPane subId="Project Files">
           <expand>
             <path>
               <item name="Root" type="cbb8eebc:String" user="Root" />
               <item name="stereo_disparity" type="cbb8eebc:String" user="stereo_disparity" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="stereo_disparity" type="b2602c69:ProjectViewProjectNode" />
+              <item name="stereo_disparity" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -141,10 +144,27 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="test0" EXPLICIT_BUILD_TARGET_NAME="all" />
+    <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Project" RUN_TARGET_NAME="test0" EXPLICIT_BUILD_TARGET_NAME="all">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SvnConfiguration">
     <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <created>1547505283641</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1547505283641</updated>
+      <workItem from="1547505288839" duration="11000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="11000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -156,29 +176,32 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1984" y="-11" width="1017" height="1932" extended-state="6" />
+    <frame x="65" y="-4" width="1301" height="772" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22983871" />
-      <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.49727073" weight="0.32903227" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5241935" side_tool="true" visible="true" weight="0.14180791" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.59170306" weight="0.20752688" />
-      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23346613" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.62445414" weight="0.31505376" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="bottom" id="Database Changes" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49945414" weight="0.32903227" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.59170306" weight="0.20752688" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.62445414" weight="0.31505376" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.49727073" weight="0.32903227" />
+      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.5245633" weight="0.33333334" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.5241935" side_tool="true" visible="true" weight="0.14108527" />
+      <window_info anchor="bottom" id="Version Control" order="9" />
+      <window_info active="true" anchor="bottom" id="CMake" order="10" sideWeight="0.47580644" visible="true" weight="0.14237288" />
+      <window_info anchor="right" id="Database" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info active="true" anchor="bottom" id="CMake" order="7" sideWeight="0.47580644" visible="true" weight="0.14237288" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" sideWeight="0.49945414" weight="0.32903227" />
-      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.5245633" weight="0.33333334" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
   </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -239,7 +262,6 @@
           <option name="timeStamp" value="226" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="231" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
@@ -346,13 +368,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/local/include/matplotlib-cpp/matplotlibcpp.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8398">
-          <caret line="442" column="16" selection-start-line="442" selection-start-column="16" selection-end-line="442" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file:///usr/local/include/matplotlib-cpp/matplotlibcpp.h" />
     <entry file="file:///usr/include/c++/5/bits/stl_algo.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="256">
@@ -374,36 +390,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/local/include/libcmaes/esostrategy.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="532">
-          <caret line="31" column="62" selection-start-line="31" selection-start-column="62" selection-end-line="31" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/include/libcmaes/cmasolutions.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9766">
-          <caret line="514" column="20" selection-start-line="514" selection-start-column="20" selection-end-line="514" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file:///usr/local/include/libcmaes/esostrategy.h" />
+    <entry file="file:///usr/local/include/libcmaes/cmasolutions.h" />
     <entry file="file://$PROJECT_DIR$/test4.cpp" />
     <entry file="file://$PROJECT_DIR$/test3.cpp" />
-    <entry file="file:///usr/local/include/libcmaes/cmaes.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1463">
-          <caret line="122" column="21" selection-start-line="122" selection-start-column="21" selection-end-line="122" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/include/libcmaes/esoptimizer.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1421">
-          <caret line="111" column="10" selection-start-line="111" selection-start-column="10" selection-end-line="111" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file:///usr/local/include/libcmaes/cmaes.h" />
+    <entry file="file:///usr/local/include/libcmaes/esoptimizer.h" />
     <entry file="file:///usr/include/pcl-1.7/pcl/common/transforms.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="477">
@@ -502,13 +494,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/opencv-3.4.0/modules/imgproc/src/histogram.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="47747">
-          <caret line="2513" column="12" selection-start-line="2513" selection-start-column="12" selection-end-line="2513" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/opencv-3.4.0/modules/imgproc/src/histogram.cpp" />
     <entry file="file://$PROJECT_DIR$/test5.cpp" />
     <entry file="file://$PROJECT_DIR$/test7.cpp" />
     <entry file="file:///opt/ros/kinetic/include/opencv-3.3.1-dev/opencv2/core/mat.inl.hpp">
