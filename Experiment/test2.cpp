@@ -24,6 +24,8 @@
 #include "hesaiLidarSDK.h"
 
 using namespace std;
+string user_name = "phyorch";
+string data_name = "2019_01_15/2019_01_15_1";
 
 
 void gpsCallback(int timestamp)
@@ -35,7 +37,7 @@ void lidarCallback(boost::shared_ptr<PPointCloud> cld, double timestamp)
 {
     printf("lidar: time %lf , points %d\n", timestamp , cld->points.size());
     pcl::PCDWriter writer;
-    string outFile = "/home/phyorch/Data/Pandar40Data/PCDDataKIT/" + to_string(timestamp) + ".pcd";
+    string outFile = "/home/" + user_name + "/Data/" + data_name + "/Pandar40Data/PCDDataKIT/" + to_string(timestamp) + ".pcd";
     writer.write<pandar_pointcloud::PointXYZIT>(outFile, *cld, false);
 }
 
@@ -78,17 +80,17 @@ int main(){
     sl::Mat depth_for_display;
     cv::Mat depth_map;
     cv::Mat depth_map_output;
-    string depth_path = "/home/phyorch/Data/ZEDData/DepthImage/depth_map";
-    string depth_test_path = "/home/phyorch/Data/depth_test.png";
-    string depth_view_path = "/home/phyorch/Data/ZEDData/DepthImage/depth_view";
-    string image_path = "/home/phyorch/Data/ZEDData/RGBImage/image";
+    string depth_path = "/home/"+ user_name + "/Data/" + data_name + "/ZEDData/DepthImage/depth_map";
+    string depth_test_path = "/home/"+ user_name + "/Data/" + data_name + "/depth_test.png";
+    string depth_view_path = "/home/"+ user_name + "/Data/" + data_name + "/ZEDData/DepthImage/depth_view";
+    string image_path = "/home/"+ user_name + "/Data/" + data_name + "/ZEDData/RGBImage/image";
     //string imager_path = "/home/ubuntu/Data/ZEDData/RGBImage/imager";
     sl::Resolution map_size = zed.getResolution();
     ZEDCamera zed_camera = ZEDCamera(zed);
     HesaiLidarSDK psdk(
             8080				/* lidar data port */,
             8308				/* gps data port */,
-            std::string("/home/phyorch/Data/Pandar40Data/Pandar40_Correction.csv")	/* calibration file of lidar */,
+            std::string("/home/"+ user_name + "/Data/" + data_name + "/Pandar40Data/Pandar40_Correction.csv")	/* calibration file of lidar */,
             lidarCallback 			/* point cloud data call back */,
             gpsCallback 			/* gps data callback */,
             HESAI_LIDAR_RAW_DATA_STRCUT_SINGLE_RETURN/* Return Mode: Single Return data structure */,

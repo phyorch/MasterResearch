@@ -195,6 +195,8 @@ test2: /usr/lib/x86_64-linux-gnu/libflann_cpp_s.a
 test2: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so
 test2: /usr/lib/x86_64-linux-gnu/libpcl_search.so
 test2: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so
+test2: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so
+test2: /usr/lib/x86_64-linux-gnu/libpcl_filters.so
 test2: /usr/lib/x86_64-linux-gnu/libboost_system.so
 test2: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
 test2: /usr/lib/x86_64-linux-gnu/libboost_thread.so
@@ -316,6 +318,8 @@ test2: /usr/lib/x86_64-linux-gnu/libpcl_io.so
 test2: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so
 test2: /usr/lib/x86_64-linux-gnu/libpcl_search.so
 test2: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so
+test2: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so
+test2: /usr/lib/x86_64-linux-gnu/libpcl_filters.so
 test2: /usr/lib/x86_64-linux-gnu/libcuda.so
 test2: /usr/local/cuda-9.0/lib64/libcudart.so
 test2: /usr/local/cuda-9.0/lib64/libnppial.so

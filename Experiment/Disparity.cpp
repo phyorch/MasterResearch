@@ -204,7 +204,7 @@ void LiDAR::projectPointKitti(cv::Mat &depthMap, pandar_pointcloud::PointXYZIT &
     }
 }
 
-void LiDAR::projectPointKittiSeperate(cv::Mat &depthMap, pandar_pointcloud::PointXYZIT &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudPart) {
+void LiDAR::projectPointKittiSeperate(cv::Mat &depthMapLiDAR, pandar_pointcloud::PointXYZIT &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudPart) {
     cv::Mat p;
     p = (cv::Mat_<float>(3,1) << point.x, point.y, point.z);
     cv::Mat  p_ = _liDARCalibParaKittiInverse.Rotation * p + _liDARCalibParaKittiInverse.Translation;
@@ -213,14 +213,55 @@ void LiDAR::projectPointKittiSeperate(cv::Mat &depthMap, pandar_pointcloud::Poin
     cv::Mat p_projected = _liDARCalibParaKittiInverse.P * _liDARCalibParaKittiInverse.R * p__;
     int u = int(p_projected.at<float>(0,0) / p_projected.at<float>(2,0));
     int v = int(p_projected.at<float>(1,0) / p_projected.at<float>(2,0));
-    if(50<=u && 0<=v && u<depthMap.cols && v<depthMap.rows){  // && point.x>2 to delete the point too close to the car, 50<=u to delete the points in region that has no disparity
+    if(50<=u && 0<=v && u<depthMapLiDAR.cols && v<depthMapLiDAR.rows && point.y>0){  // && point.x>2 to delete the point too close to the car, 50<=u to delete the points in region that has no disparity
         //cout << "Point " << test << "is a valid point." << v << " " << u << endl;
-        depthMap.at<float>(v,u) = -point.y;    //sqrt(point.x*point.x + point.y*point.y);  //sqrt(point.x*point.x + point.y*point.y)
+        depthMapLiDAR.at<float>(v,u) = point.y;    //sqrt(point.x*point.x + point.y*point.y);  //sqrt(point.x*point.x + point.y*point.y)
 //        pcl::PointXYZ pointxyz;
 //        pointxyz.x = point.x;
 //        pointxyz.y = point.y;
 //        pointxyz.z = point.z;
         pointCloudPart->push_back(pcl::PointXYZ(point.x, point.y, point.z));
+    }
+}
+
+void LiDAR::projectPointKittiSeperate(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, pandar_pointcloud::PointXYZIT &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudPart) {
+    cv::Mat p;
+    p = (cv::Mat_<float>(3,1) << point.x, point.y, point.z);
+    cv::Mat  p_ = _liDARCalibParaKittiInverse.Rotation * p + _liDARCalibParaKittiInverse.Translation;
+    cv::Mat p__;
+    p__ = (cv::Mat_<float>(4,1) << p_.at<float>(0,0), p_.at<float>(1,0), p_.at<float>(2,0), 1);
+    cv::Mat p_projected = _liDARCalibParaKittiInverse.P * _liDARCalibParaKittiInverse.R * p__;
+    int u = int(p_projected.at<float>(0,0) / p_projected.at<float>(2,0));
+    int v = int(p_projected.at<float>(1,0) / p_projected.at<float>(2,0));
+    if(50<=u && 0<=v && u<depthMapLiDAR.cols && v<depthMapLiDAR.rows && point.y>0 && !isnan(depthMapCamera.at<float>(v,u)) && depthMapCamera.at<float>(v,u) != INFINITY){  // && point.x>2 to delete the point too close to the car, 50<=u to delete the points in region that has no disparity
+        //cout << "Point " << test << "is a valid point." << v << " " << u << endl;
+        depthMapLiDAR.at<float>(v,u) = point.y;    //sqrt(point.x*point.x + point.y*point.y);  //sqrt(point.x*point.x + point.y*point.y)
+//        pcl::PointXYZ pointxyz;
+//        pointxyz.x = point.x;
+//        pointxyz.y = point.y;
+//        pointxyz.z = point.z;
+        pointCloudPart->push_back(pcl::PointXYZ(point.x, point.y, point.z));
+    }
+}
+
+void LiDAR::projectPointKittiSeperate(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, pandar_pointcloud::PointXYZIT &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudCamera, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudLiDAR) {
+    cv::Mat p;
+    p = (cv::Mat_<float>(3,1) << point.x, point.y, point.z);
+    cv::Mat  p_ = _liDARCalibParaKittiInverse.Rotation * p + _liDARCalibParaKittiInverse.Translation;
+    cv::Mat p__;
+    p__ = (cv::Mat_<float>(4,1) << p_.at<float>(0,0), p_.at<float>(1,0), p_.at<float>(2,0), 1);
+    cv::Mat p_projected = _liDARCalibParaKittiInverse.P * _liDARCalibParaKittiInverse.R * p__;
+    int u = int(p_projected.at<float>(0,0) / p_projected.at<float>(2,0));
+    int v = int(p_projected.at<float>(1,0) / p_projected.at<float>(2,0));
+    if(50<=u && 0<=v && u<depthMapLiDAR.cols && v<depthMapLiDAR.rows && point.y>0 && !isnan(depthMapCamera.at<float>(v,u)) && depthMapCamera.at<float>(v,u) != INFINITY){  // && point.x>2 to delete the point too close to the car, 50<=u to delete the points in region that has no disparity
+
+        depthMapLiDAR.at<float>(v,u) = point.y;
+        pointCloudLiDAR->push_back(pcl::PointXYZ(point.x, point.y, point.z));
+
+        cv::Point2f point(u, v);
+        pcl::PointXYZ point3d;
+        projectPointInverse(point, depthMapCamera.at<float>(v ,u), point3d);
+        pointCloudCamera->push_back(point3d);
     }
 }
 
@@ -251,18 +292,18 @@ void LiDAR::projectPointKittiEigen(cv::Mat &depthMap, pandar_pointcloud::PointXY
 //    }
 }
 
-void LiDAR::projectData(string inFile, cv::Mat &depthMap, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudPart, LiDARDataType dataType, LiDARDataSource dataSource, LiDARPointType pointType, ExtrinsicDirection liDARDirection, MatType matType) {
+void LiDAR::projectData(string inFile, cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudPart, LiDARDataType dataType, LiDARDataSource dataSource, LiDARPointType pointType, ExtrinsicDirection liDARDirection, MatType matType) {
 
     if(dataSource==KITTI){
         if(liDARDirection==L2C){
-            depthMap = cv::Mat::zeros(_liDARCalibParaKitti.imageSize, CV_32FC1);
+            depthMapLiDAR = cv::Mat::zeros(_liDARCalibParaKitti.imageSize, CV_32FC1);
         }
         if(liDARDirection==C2L){
             if(matType==CV){
-                depthMap = cv::Mat::zeros(_liDARCalibParaKittiInverse.imageSize, CV_32FC1);
+                depthMapLiDAR = cv::Mat::zeros(_liDARCalibParaKittiInverse.imageSize, CV_32FC1);
             }
             if(matType==EIGEN){
-                depthMap = cv::Mat::zeros(_liDARCalibParaKittiInverseEigen.imageSize, CV_32FC1);
+                depthMapLiDAR = cv::Mat::zeros(_liDARCalibParaKittiInverseEigen.imageSize, CV_32FC1);
             }
         }
     }
@@ -341,14 +382,14 @@ void LiDAR::projectData(string inFile, cv::Mat &depthMap, pcl::PointCloud<pcl::P
             for(i=0; i<cloud->points.size(); i++){
                 if (dataSource==KITTI){
                     if(liDARDirection==L2C){
-                        projectPointKitti(depthMap, cloud->points[i]);
+                        projectPointKitti(depthMapLiDAR, cloud->points[i]);
                     }
                     if(liDARDirection==C2L){
                         if(matType==CV){
-                            projectPointKittiSeperate(depthMap, cloud->points[i], pointCloudPart);
+                            projectPointKittiSeperate(depthMapCamera, depthMapLiDAR, cloud->points[i], pointCloudPart);
                         }
                         if(matType==EIGEN){
-                            projectPointKittiSeperateEigen(depthMap, cloud->points[i]);
+                            projectPointKittiSeperateEigen(depthMapLiDAR, cloud->points[i]);
                         }
 
                     }
@@ -361,7 +402,45 @@ void LiDAR::projectData(string inFile, cv::Mat &depthMap, pcl::PointCloud<pcl::P
     }
 }
 
+void LiDAR::projectData(string inFile, cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR,
+                        pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudCamera,
+                        pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudLiDAR, LiDARDataType dataType,
+                        LiDARDataSource dataSource, LiDARPointType poinyType, ExtrinsicDirection liDARDirection,
+                        MatType matType) {
+    if(dataSource==KITTI){
+        if(liDARDirection==L2C){
+            depthMapLiDAR = cv::Mat::zeros(_liDARCalibParaKitti.imageSize, CV_32FC1);
+        }
+        if(liDARDirection==C2L){
+            if(matType==CV){
+                depthMapLiDAR = cv::Mat::zeros(_liDARCalibParaKittiInverse.imageSize, CV_32FC1);
+            }
+            if(matType==EIGEN){
+                depthMapLiDAR = cv::Mat::zeros(_liDARCalibParaKittiInverseEigen.imageSize, CV_32FC1);
+            }
+        }
+    }
+
+    pcl::PointCloud<pandar_pointcloud::PointXYZIT>::Ptr cloud(new pcl::PointCloud<pandar_pointcloud::PointXYZIT>);
+    if (pcl::io::loadPCDFile<pandar_pointcloud::PointXYZIT> (inFile, *cloud) == -1) //* load the file
+    {
+        PCL_ERROR ("Couldn't read file in LiDAR::projectData\n");
+        exit(EXIT_FAILURE);
+    }
+    for(int i=0; i<cloud->points.size(); i++){
+        projectPointKittiSeperate(depthMapCamera, depthMapLiDAR, cloud->points[i], pointCloudCamera, pointCloudLiDAR);
+    }
+
+
+}
+
 void LiDAR::updateParameters(cv::Mat &rotation, cv::Mat &translation) {
         _liDARCalibParaKittiInverse.Rotation = rotation;
         _liDARCalibParaKittiInverse.Translation = translation;
+}
+
+void LiDAR::projectPointInverse(cv::Point2f &point, float depth, pcl::PointXYZ &point3d) {
+    point3d.x = (point.x * depth - _liDARCalibParaKittiInverse.P.at<float>(0, 2) * depth) / _liDARCalibParaKittiInverse.P.at<float>(0, 0);
+    point3d.y = (point.y * depth - _liDARCalibParaKittiInverse.P.at<float>(1, 2) * depth) / _liDARCalibParaKittiInverse.P.at<float>(1, 1);
+    point3d.z = depth;
 }

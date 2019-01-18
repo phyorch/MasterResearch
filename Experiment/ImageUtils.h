@@ -32,6 +32,10 @@ public:
 
     static void colorTransfer(cv::Mat &depthMap, cv::Mat &depthImage);
 
+    static void neighborDyeingElem(cv::Mat &depthMap, cv::Point &point, float pxValue, cv::Point &size, cv::Mat &depthMapDyed);
+
+    static void neighborDyeing(cv::Mat &depthMap, cv::Point &size, cv::Mat &depthMapDyed);
+
     static void disparityBoader(cv::Mat &image, cv::Mat &imageBoard, int &numDisparities, int &minDisparity);
 
     static void disparityBoader(cv::Mat &image, cv::Mat &imageBoard, int &boader);
@@ -107,6 +111,10 @@ public:
     static void distanceCorrespond(cv::Mat &mapCamera, cv::Mat &mapLiDAR, float rangeMin, float rangeMax);
 
     static void distanceCorrespondWrite(cv::Mat &mapCamera, cv::Mat &mapLiDAR, float rangeMin, float rangeMax, string outputPath);
+
+    static void regionDiagnosis(cv::Mat &cameraMap, cv::Mat &liDARMap, cv::Mat &region);
+
+    static int mapPositiveCount(cv::Mat &map);
 
 };
 

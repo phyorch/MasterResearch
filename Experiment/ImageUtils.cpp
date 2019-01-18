@@ -19,7 +19,7 @@ void ImageUtils::colorTransfer(cv::Mat &depthMap, cv::Mat &depthImage) {
         {
             if(depthMap.at<float>(y, x)>0){
                 uchar r, g, b;
-                float color = (depthMap.at<float>(y, x) - minVal) / (20 - minVal) * 255;
+                float color = (depthMap.at<float>(y, x) - minVal) / (6 - minVal) * 255;
                 if(color>255){
                     color = 255;
                 }
@@ -28,6 +28,27 @@ void ImageUtils::colorTransfer(cv::Mat &depthMap, cv::Mat &depthImage) {
                 b = uchar(color);
 
                 depthImage.at<cv::Vec3b>(y, x) = cv::Vec3b(b, g, r);
+            }
+        }
+    }
+}
+
+void ImageUtils::neighborDyeingElem(cv::Mat &depthMap, cv::Point &point, float pxValue, cv::Point &size, cv::Mat &depthMapDyed) {
+    for(int i= -size.y/2; i<size.y/2; i++){
+        for(int j= -size.x/2; j<size.x/2; j++){
+            depthMapDyed.at<float>(point.y + i, point.x + j) = pxValue;
+        }
+    }
+}
+
+void ImageUtils::neighborDyeing(cv::Mat &depthMap, cv::Point &size, cv::Mat &depthMapDyed) {
+    depthMapDyed = cv::Mat::zeros(depthMap.rows, depthMap.cols, CV_32FC1);
+    for(int i=0; i<depthMap.rows; i++){
+        for(int j=size.x; j<depthMap.cols - size.x; j++){
+            if(depthMap.at<float>(i, j) > 0){
+                float pxValue = depthMap.at<float>(i, j);
+                cv::Point point(j, i);
+                neighborDyeingElem(depthMap, point, pxValue, size, depthMapDyed);
             }
         }
     }
@@ -243,4 +264,37 @@ void DiagnosisUtils::distanceCorrespondWrite(cv::Mat &mapCamera, cv::Mat &mapLiD
         }
     }
     outFile.close();
+}
+
+void DiagnosisUtils::regionDiagnosis(cv::Mat &cameraMap, cv::Mat &liDARMap, cv::Mat &region) {
+    cv::Mat cameraRegion, liDARRegion;
+    ImageUtils::creatMapRegion(cameraMap, cameraRegion, region);
+    ImageUtils::creatMapRegion(liDARMap, liDARRegion, region);
+    for(int i=0; i<cameraRegion.rows; i++){
+        for(int j=0; j<cameraRegion.cols; j++){
+            if(liDARRegion.at<float>(i, j) != 0){
+                cout << liDARRegion.at<float>(i, j);
+            }
+        }
+    }
+    cout << endl << endl;
+    for(int i=0; i<cameraRegion.rows; i++){
+        for(int j=0; j<cameraRegion.cols; j++){
+            if(liDARRegion.at<float>(i, j) != 0){
+                cout << cameraRegion.at<float>(i, j);
+            }
+        }
+    }
+}
+
+int DiagnosisUtils::mapPositiveCount(cv::Mat &map) {
+    int cnt = 0;
+    for(int i=0; i<map.rows; i++){
+        for(int j=0; j<map.cols; j++){
+            if(map.at<float>(i, j) > 0){
+                cnt++;
+            }
+        }
+    }
+    return cnt;
 }

@@ -21,12 +21,14 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/calib3d.hpp"
 #include "opencv2/ximgproc/disparity_filter.hpp"
+#include "Disparity.h"
 #include <boost/format.hpp>
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/console/parse.h>
 #include <pcl/common/transforms.h>
+#include <pcl/filters/voxel_grid.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <sl/Camera.hpp>
 
@@ -76,6 +78,8 @@ public:
 
     static void histogramWrite(string csvPath, cv::Mat &map);
 
+    static void histogramWrite(string csvPathCamera, string csvPathLiDAR, cv::Mat &mapCamera, cv::Mat &mapLiDAR);
+
     static void map2Histogram(cv::Mat &map, vector<float> &histogram, int truncationBegin, int truncationEnd);
 
     static void histogramDownsampling(vector<float> &histogram, vector<float> &histogramDownsampled, int DownsamplingSize);
@@ -91,13 +95,13 @@ public:
 
     static bool detectMinusValue(vector<float> &histogram);
 
-    static void subRegionGeneration(int regionNum, cv::Size regionSize, cv::Size mapSize, vector<vector<int>> &regionPointSet);
-
     static double mapKLDivergence(cv::Mat &mapCamera, cv::Mat &mapLiDAR, vector<cv::Mat> &diagonalPointsSet);
 
     static float point2PointDistance(cv::Mat &mapCamera, cv::Mat &mapLiDAR);
 
     static float point2PointDistanceTotal(cv::Mat &mapCamera, cv::Mat &mapLiDAR, vector<cv::Mat> &diagonalPointsSet);
+
+    static float pointCloudDistance(cv::Mat &mapCamera, cv::Mat &mapLiDAR);
 
 };
 
@@ -122,7 +126,13 @@ public:
 class PointCloudAlignment{
 public:
 
-    static void getCameraSparsePointCloud(cv::Mat &depthMap, sl::Mat &pointCloudCamera, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudSparse);
+    static void getCameraSparsePointCloud(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, LiDAR &lidar, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudSparse);
+
+    static void pointCloudDownsample(pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloud, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudDownsampled, float gridSize);
+
+    static float findScaling(pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudCamera, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudLiDAR);
+
+    static void pointCloudScaling(pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloud, float scale, pcl::PointCloud<pcl::PointXYZ>::Ptr &transformedCloud);
 
     static float chamferDistanceElem(pcl::PointXYZ &point, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloud);
 

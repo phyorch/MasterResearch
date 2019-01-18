@@ -140,6 +140,8 @@ test3: /usr/lib/x86_64-linux-gnu/libflann_cpp_s.a
 test3: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so
 test3: /usr/lib/x86_64-linux-gnu/libpcl_search.so
 test3: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so
+test3: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so
+test3: /usr/lib/x86_64-linux-gnu/libpcl_filters.so
 test3: /usr/lib/x86_64-linux-gnu/libboost_system.so
 test3: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
 test3: /usr/lib/x86_64-linux-gnu/libboost_thread.so
@@ -247,6 +249,8 @@ test3: /usr/lib/x86_64-linux-gnu/libpcl_io.so
 test3: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so
 test3: /usr/lib/x86_64-linux-gnu/libpcl_search.so
 test3: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so
+test3: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so
+test3: /usr/lib/x86_64-linux-gnu/libpcl_filters.so
 test3: /usr/lib/x86_64-linux-gnu/libvtkxdmf2-6.2.so.6.2.0
 test3: /usr/lib/x86_64-linux-gnu/libxml2.so
 test3: /usr/lib/x86_64-linux-gnu/hdf5/openmpi/lib/libhdf5.so

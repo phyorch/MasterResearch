@@ -223,6 +223,25 @@ void HistogramGeneration::histogramWrite(string csvPath, cv::Mat &map) {
     }
 }
 
+void HistogramGeneration::histogramWrite(string csvPathCamera, string csvPathLiDAR, cv::Mat &mapCamera, cv::Mat &mapLiDAR) {
+    ofstream outFileCamera;
+    outFileCamera.open(csvPathCamera, ios::out);
+    outFileCamera << "Element" << endl;
+
+    ofstream outFileLiDAR;
+    outFileLiDAR.open(csvPathLiDAR, ios::out);
+    outFileLiDAR << "Element" << endl;
+
+    for(int i=0; i<mapCamera.rows; i++){
+        for(int j=0; j<mapCamera.cols; j++){
+            if(mapLiDAR.at<float>(i, j)>0 && mapCamera.at<float>(i, j)<8){
+                outFileCamera << mapCamera.at<float>(i, j) << endl;
+                outFileLiDAR << mapLiDAR.at<float>(i, j) << endl;
+            }
+        }
+    }
+}
+
 void HistogramGeneration::map2Histogram(cv::Mat &map, vector<float> &histogram, int truncationBegin, int truncationEnd) {
     if (map.rows==0 || map.cols==0)
     {
@@ -232,7 +251,7 @@ void HistogramGeneration::map2Histogram(cv::Mat &map, vector<float> &histogram, 
 
     for(int i=0; i<map.rows; i++){
         for(int j=0; j<map.cols; j++){
-            if(map.at<float>(i, j)){
+            if(map.at<float>(i, j) > 0){
                 histogram.push_back(map.at<float>(i, j));
             }
         }
@@ -252,8 +271,9 @@ void HistogramGeneration::histogramDownsampling(vector<float> &histogram, vector
 //        exit(EXIT_FAILURE);
 //    }
     random_shuffle(histogram.begin(), histogram.end());
-    vector<float> sample(histogram.begin(), histogram.begin()+DownsamplingSize);
-    histogramDownsampled = sample;
+    //vector<float> sample;
+    histogramDownsampled.assign(histogram.begin(), histogram.begin()+DownsamplingSize);
+    //histogramDownsampled = sample;
 }
 
 bool HistogramMeasure::detectMinusValue(vector<float> &histogram) {
@@ -265,25 +285,6 @@ bool HistogramMeasure::detectMinusValue(vector<float> &histogram) {
     return true;
 }
 
-void HistogramMeasure::subRegionGeneration(int regionNum, cv::Size regionSize, cv::Size mapSize, vector<vector<int>> &regionPointSet) {
-    int unitWidth = mapSize.width / regionNum;
-    int unitHeight = mapSize.height;
-    srand((int)time(0));
-    for(int i=0; i<regionNum; i++){
-        int unitColStart = i * unitWidth;
-        int unitColEnd = (i+1) * unitWidth;
-        int unitRowStart = 0;
-        int unitRowEnd = mapSize.height;
-        int x = rand() % (unitWidth  - 2 * regionSize.width);//((int)rand()/RAND_MAX)*(unitColEnd-unitColStart) + unitColStart;
-        int y = rand() % (unitHeight - 2 * regionSize.height);//((int)rand()/RAND_MAX)*(unitRowEnd-unitColStart) + unitColStart;
-        x += i * unitWidth;
-        vector<int> point;
-        point.push_back(x);
-        point.push_back(y);
-        regionPointSet.push_back(point);
-    }
-}
-
 double HistogramMeasure::mapKLDivergence(cv::Mat &mapCamera, cv::Mat &mapLiDAR, vector<cv::Mat> &diagonalPointsSet) {
     double distance = 0;
     for(int i=0; i<diagonalPointsSet.size(); i++){
@@ -291,6 +292,7 @@ double HistogramMeasure::mapKLDivergence(cv::Mat &mapCamera, cv::Mat &mapLiDAR, 
         ImageUtils::creatMapRegion(mapCamera, mapCameraRegion, diagonalPointsSet[i]);
         ImageUtils::creatMapRegion(mapLiDAR, mapLiDARRegion, diagonalPointsSet[i]);
         vector<float> cameraHist, liDARHist, cameraHistDownsampled;
+        cout << mapLiDARRegion << endl;
         HistogramGeneration::map2Histogram(mapCameraRegion, cameraHist, 1, 2);
         HistogramGeneration::map2Histogram(mapLiDARRegion, liDARHist, 1, 2);
 //        if(cameraHist.size()<regionSize.width*regionSize.height/3){
@@ -317,7 +319,7 @@ float HistogramMeasure::point2PointDistance(cv::Mat &mapCamera, cv::Mat &mapLiDA
     float distance = 0;
     int cnt = 0;
     for(int i=0; i<mapCamera.rows; i++){
-        for(int j=0; j<mapLiDAR.cols; j++){
+        for(int j=0; j<mapCamera.cols; j++){
             if(mapLiDAR.at<float>(i, j) > 0 && mapCamera.at<float>(i, j) != INFINITY){
                 cnt++;
                 distance += abs(mapCamera.at<float>(i, j) - mapLiDAR.at<float>(i, j));
@@ -328,9 +330,9 @@ float HistogramMeasure::point2PointDistance(cv::Mat &mapCamera, cv::Mat &mapLiDA
         distance = 10000;
     }
     distance /= cnt;
-    if(isnan(distance)){
-        distance = 10000;
-    }
+//    if(isnan(distance)){
+//        distance = 10000;
+//    }
     return distance;
 }
 
@@ -343,6 +345,12 @@ float HistogramMeasure::point2PointDistanceTotal(cv::Mat &mapCamera, cv::Mat &ma
         ImageUtils::creatMapRegion(mapLiDAR, mapLiDARRegion, diagonalPointsSet[i]);
         p2pDistance += point2PointDistance(mapCameraRegion, mapLiDARRegion);
     }
+}
+
+float HistogramMeasure::pointCloudDistance(cv::Mat &mapCamera, cv::Mat &mapLiDAR) {
+    float pcDistance = 0;
+
+    return pcDistance;
 }
 
 void HistogramMeasure::vectorToHist(vector<int> &vectorVariable, Eigen::RowVectorXi &histogramVariable) {
@@ -457,22 +465,44 @@ void Transfer::depthDistribution(cv::Mat &imageLiDAR, string csvPath) {
     HistogramGeneration::histogramWrite(csvPath, vecTor);
 }
 
-void PointCloudAlignment::getCameraSparsePointCloud(cv::Mat &depthMap, sl::Mat &pointCloudCamera, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudSparse) {
-//    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
-//    pointCloudSparse = cloud;
-    for(int i=0; i<depthMap.rows; i++){
-        for(int j=0; j<depthMap.cols; j++){
-            if(depthMap.at<float>(i,j)>0){
-                sl::float4 point3D;
-                pointCloudCamera.getValue(j, i, &point3D);
-                pcl::PointXYZ point;
-                point.x = point3D.x;
-                point.y = point3D.y;
-                point.z = point3D.z;
-                pointCloudSparse->push_back(point);
+void PointCloudAlignment::getCameraSparsePointCloud(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, LiDAR &lidar, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudSparse) {
+    for(int i=0; i<depthMapCamera.rows; i++){
+        for(int j=0; j<depthMapCamera.cols; j++){
+            if(depthMapLiDAR.at<float>(i ,j) > 0){
+                cv::Point2f point(j, i);
+                pcl::PointXYZ point3d;
+                lidar.projectPointInverse(point, depthMapCamera.at<float>(i ,j), point3d);
+                pointCloudSparse->push_back(point3d);
             }
         }
     }
+}
+
+void PointCloudAlignment::pointCloudDownsample(pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloud,
+                                               pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudDownsampled, float gridSize) {
+    pcl::VoxelGrid<pcl::PointXYZ> filter;
+    filter.setInputCloud(pointCloud);
+    filter.setLeafSize(gridSize, gridSize, gridSize);  //0.01f, 0.01f, 0.01f
+    filter.filter(*pointCloudDownsampled);
+}
+
+float PointCloudAlignment::findScaling(pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudCamera,
+                                       pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudLiDAR) {
+    Eigen::Vector4f centroidLiDAR;
+    pcl::compute3DCentroid(*pointCloudLiDAR, centroidLiDAR);
+    float centralLiDAR = (centroidLiDAR[0] + centroidLiDAR[1] + centroidLiDAR[2]) / 3;
+    Eigen::Vector4f centroidCamera;
+    pcl::compute3DCentroid(*pointCloudCamera, centroidCamera);
+    float centralCamera = (centroidCamera[0] + centroidCamera[1] + centroidCamera[2]) / 3;
+    float scale = centralLiDAR / centralCamera;
+    return scale;
+}
+
+void PointCloudAlignment::pointCloudScaling(pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloud, float scale, pcl::PointCloud<pcl::PointXYZ>::Ptr &transformedCloud) {
+    Eigen::Matrix4f transformation;
+    transformation << scale, 0, 0, 0, 0, scale, 0, 0, 0, 0, scale, 0, 0, 0, 0, 1;
+    //pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud (new pcl::PointCloud<pcl::PointXYZ> ());
+    pcl::transformPointCloud (*pointCloud, *transformedCloud, transformation);
 }
 
 float PointCloudAlignment::chamferDistanceElem(pcl::PointXYZ &point, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloud) {
@@ -494,5 +524,7 @@ float PointCloudAlignment::chamferDistance(pcl::PointCloud<pcl::PointXYZ>::Ptr &
     for(int i=0; i<pointCloudLiDAR->points.size(); i++){
         distance +=chamferDistanceElem(pointCloudLiDAR->points[i], pointCloudCamera);
     }
+    distance = distance / (pointCloudLiDAR->points.size() + pointCloudCamera->points.size());
+    cout << pointCloudCamera->points.size() << endl << pointCloudLiDAR->points.size() << endl;
     return distance;
 }

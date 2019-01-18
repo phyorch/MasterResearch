@@ -12,7 +12,7 @@ find_package(OpenCV REQUIRED COMPONENTS highgui imgproc calib3d ximgproc) #
 find_package(Eigen3 REQUIRED)
 find_package(VTK REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system filesystem chrono thread)
-find_package(PCL REQUIRED COMPONENTS common io visualization)
+find_package(PCL REQUIRED COMPONENTS common io visualization filters)
 find_package(PythonLibs 2.7)
 
 find_package(ZED 2 REQUIRED)

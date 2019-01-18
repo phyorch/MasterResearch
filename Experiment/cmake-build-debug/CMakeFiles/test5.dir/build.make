@@ -236,6 +236,8 @@ test5: /usr/lib/x86_64-linux-gnu/libflann_cpp_s.a
 test5: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so
 test5: /usr/lib/x86_64-linux-gnu/libpcl_search.so
 test5: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so
+test5: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so
+test5: /usr/lib/x86_64-linux-gnu/libpcl_filters.so
 test5: /usr/lib/x86_64-linux-gnu/libboost_system.so
 test5: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
 test5: /usr/lib/x86_64-linux-gnu/libboost_thread.so
@@ -368,6 +370,8 @@ test5: /usr/lib/x86_64-linux-gnu/libflann_cpp_s.a
 test5: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so
 test5: /usr/lib/x86_64-linux-gnu/libpcl_search.so
 test5: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so
+test5: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so
+test5: /usr/lib/x86_64-linux-gnu/libpcl_filters.so
 test5: /usr/local/zed/lib/libsl_input.so
 test5: /usr/local/zed/lib/libsl_core.so
 test5: /usr/local/zed/lib/libsl_zed.so

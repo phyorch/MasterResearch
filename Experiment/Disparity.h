@@ -174,15 +174,23 @@ public:
 
     void projectPointKitti(cv::Mat &depthMap, pandar_pointcloud::PointXYZIT &point);
 
-    void projectPointKittiSeperate(cv::Mat &depthMap, pandar_pointcloud::PointXYZIT &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudPart);
+    void projectPointKittiSeperate(cv::Mat &depthMapLiDAR, pandar_pointcloud::PointXYZIT &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudPart);
+    
+    void projectPointKittiSeperate(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, pandar_pointcloud::PointXYZIT &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudPart);
+
+    void projectPointKittiSeperate(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, pandar_pointcloud::PointXYZIT &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudCamera, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudLiDAR);
 
     void projectPointKittiSeperateEigen(cv::Mat &depthMap, pandar_pointcloud::PointXYZIT &point);
 
     void projectPointKittiEigen(cv::Mat &depthMap, pandar_pointcloud::PointXYZIT &point);
 
-    void projectData(string inFile, cv::Mat &depthMap, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudPart, LiDARDataType dataType = BIN, LiDARDataSource dataSource = KITTI, LiDARPointType poinyType = XYZI, ExtrinsicDirection liDARDirection = L2C, MatType matType = EIGEN);
+    void projectData(string inFile, cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudPart, LiDARDataType dataType = BIN, LiDARDataSource dataSource = KITTI, LiDARPointType poinyType = XYZI, ExtrinsicDirection liDARDirection = L2C, MatType matType = EIGEN);
+
+    void projectData(string inFile, cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudCamera, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudLiDAR, LiDARDataType dataType = BIN, LiDARDataSource dataSource = KITTI, LiDARPointType poinyType = XYZI, ExtrinsicDirection liDARDirection = L2C, MatType matType = EIGEN);
 
     void updateParameters(cv::Mat &rotation, cv::Mat &translation);
+
+    void projectPointInverse(cv::Point2f &point, float depth, pcl::PointXYZ &point3d);
 
 
 private:

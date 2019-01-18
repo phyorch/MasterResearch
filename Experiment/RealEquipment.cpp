@@ -60,7 +60,7 @@ void ZEDCamera::nanComplete(cv::Mat &depthMap) {
     }
 }
 
-cv::Mat slMat2cvMat(sl::Mat& input) {
+cv::Mat ZEDCamera::slMat2cvMat(sl::Mat& input) {
     // Mapping between MAT_TYPE and CV_TYPE
     int cv_type = -1;
     switch (input.getDataType()) {
@@ -99,7 +99,7 @@ void ZEDCamera::getOneDepthFrame(sl::Camera &camera, HesaiLidarSDK &liDAR,  cv::
             cv::imshow("VIEW", cv::Mat((int) leftImage.getHeight(), (int) leftImage.getWidth(), CV_8UC4, leftImage.getPtr<sl::uchar1>(sl::MEM_CPU)));
             //depth map
             timeDepthMap = time(nullptr);
-            if(timeDepthMap-timeStart>3){
+            if(timeDepthMap-timeStart>1){
 
 //                //camera.retrieveMeasure(depthView, sl::MEASURE_DEPTH);
 //                camera.retrieveMeasure(pointCloud,sl::MEASURE_XYZRGBA);
@@ -111,7 +111,7 @@ void ZEDCamera::getOneDepthFrame(sl::Camera &camera, HesaiLidarSDK &liDAR,  cv::
                 string timestamp = to_string(timeDepthMap);
                 cv::FileStorage fs(outFileCameraMap + timestamp + ".xml" , cv::FileStorage::WRITE);
                 fs << "CameraDepthMap" << depthMapCamera;
-                //liDAR.start();
+                liDAR.start();
                 if(outFileCameraImage != " "){
                     sl::Mat imageLeft, imageRight;
                     camera.retrieveImage(imageLeft, sl::VIEW_LEFT);
@@ -150,6 +150,23 @@ void PandarLiDAR::getXYZtxt(pcl::PointCloud<pandar_pointcloud::PointXYZIT>::Ptr 
     ofstream outFile(outPath, ios::out);
     int i;
     for(i=0; i<cloud->points.size(); i++){
+        outFile << cloud->points[i].x << " " << cloud->points[i].y << " " << cloud->points[i].z << endl;
+    }
+    outFile.close();
+}
+
+void PandarLiDAR::getXYZtxtST(pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud, string &inPath, string &outPath) {
+    if (pcl::io::loadPCDFile<pcl::PointXYZRGB> (inPath, *cloud) == -1) //* load the file
+    {
+        PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+        exit(EXIT_FAILURE);
+    }
+    ofstream outFile(outPath, ios::out);
+    int i;
+    for(i=0; i<cloud->points.size(); i++){
+        if(isnan(cloud->points[i].x) || isnan(cloud->points[i].y) || isnan(cloud->points[i].z)){
+            continue;
+        }
         outFile << cloud->points[i].x << " " << cloud->points[i].y << " " << cloud->points[i].z << endl;
     }
     outFile.close();

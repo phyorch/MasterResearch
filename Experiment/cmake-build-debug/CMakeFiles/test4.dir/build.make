@@ -170,6 +170,8 @@ test4: /usr/lib/x86_64-linux-gnu/libflann_cpp_s.a
 test4: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so
 test4: /usr/lib/x86_64-linux-gnu/libpcl_search.so
 test4: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so
+test4: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so
+test4: /usr/lib/x86_64-linux-gnu/libpcl_filters.so
 test4: /usr/lib/x86_64-linux-gnu/libboost_system.so
 test4: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
 test4: /usr/lib/x86_64-linux-gnu/libboost_thread.so
@@ -277,6 +279,8 @@ test4: /usr/lib/x86_64-linux-gnu/libpcl_io.so
 test4: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so
 test4: /usr/lib/x86_64-linux-gnu/libpcl_search.so
 test4: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so
+test4: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so
+test4: /usr/lib/x86_64-linux-gnu/libpcl_filters.so
 test4: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_calib3d3.so.3.3.1
 test4: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_features2d3.so.3.3.1
 test4: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_highgui3.so.3.3.1

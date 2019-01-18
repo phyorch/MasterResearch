@@ -58,6 +58,8 @@ public:
 
     void getXYZtxt(pcl::PointCloud<pandar_pointcloud::PointXYZIT>::Ptr &cloud, string &inPath, string &outPath);
 
+    void getXYZtxtST(pcl::PointCloud<pcl::PointXYZRGB>::Ptr &cloud, string &inPath, string &outPath);
+
     void XYZIT2XYZI(pcl::PointCloud<pandar_pointcloud::PointXYZIT>::Ptr &cloudXYZIT, pcl::PointCloud<pcl::PointXYZI>::Ptr &cloudXYZI, string &inPath);
 
 };
