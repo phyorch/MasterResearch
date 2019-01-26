@@ -30,11 +30,15 @@ class ImageUtils
 {
 public:
 
-    static void colorTransfer(cv::Mat &depthMap, cv::Mat &depthImage);
+    static void colorTransfer(cv::Mat &depthMap, cv::Mat &depthImage, int maxVal);
 
     static void neighborDyeingElem(cv::Mat &depthMap, cv::Point &point, float pxValue, cv::Point &size, cv::Mat &depthMapDyed);
 
+    static void neighborDyeingElemInt(cv::Point &point, int pxValue, cv::Point &size, cv::Mat &depthMapDyed);
+
     static void neighborDyeing(cv::Mat &depthMap, cv::Point &size, cv::Mat &depthMapDyed);
+
+    static void neighborDyeingInt(cv::Mat &depthMap, cv::Point &size, cv::Mat &depthMapDyed);
 
     static void disparityBoader(cv::Mat &image, cv::Mat &imageBoard, int &numDisparities, int &minDisparity);
 

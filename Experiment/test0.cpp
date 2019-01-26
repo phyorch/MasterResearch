@@ -10,7 +10,7 @@
 #include "StereoGC.h"
 #include "ImageUtils.h"
 #include "RealEquipment.h"
-#include <matplotlib-cpp/matplotlibcpp.h>
+//#include <matplotlib-cpp/matplotlibcpp.h>
 #include <sl/Camera.hpp>
 #include <libcmaes/cmaes.h>
 
@@ -35,7 +35,8 @@ string depth_map_camera_boader_path = "/home/" + user_name + "/Data/camera_depth
 
 string camera_csv_path = "/home/" + user_name + "/Data/HistCamera.csv";
 string lidar_csv_path = "/home/" + user_name + "/Data/HistLiDAR.csv";
-string test1_path = "/home/" + user_name + "/Data/0.png";
+string test1_path = "/home/" + user_name + "/Data/CalibrationFile/t4/image.jpg";
+string test1_lidar_path = "/home/" + user_name + "/Data/CalibrationFile/t4/lidar.pcd";
 string test2_path = "/home/" + user_name + "/Data/00.png";
 string test1_output_path = "/home/" + user_name + "/Data/test1.png";
 string test2_output_path = "/home/" + user_name + "/Data/test2.png";
@@ -46,6 +47,7 @@ string pandar_cloud_path = "/home/" + user_name + "/Data/Pandar40Data/PCDDataTes
 
 cv::Mat left_image1 = cv::imread(left_path1 + "image" + image_name + "left.png");
 cv::Mat left_image2 = cv::imread(left_path2 + "image" + image_name + "left.png");
+cv::Mat test_image = cv::imread(test1_path);
 
 cv::Mat cam_to_lid_rotation, cam_to_lid_translation, lid_to_cam_rotation, lid_to_cam_translation, R_self, P_self;
 
@@ -60,42 +62,48 @@ int main(){
 
 
 
-//    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << 1, 0, 0,
-//    0, 0, -1,
-//    0, 1, 0);
-//
-//    lid_to_cam_translation = (cv::Mat_<float>(3,1) << 0.383, 0, 0);
-    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << 1.2, 0.6, 0,
-            0.12, 0.12, -1,
-            0.16, 1, 0.3);
+//----------------------------------------------------------------------------------------------------------------------
+//Calibrationt3
+    cam_to_lid_rotation = (cv::Mat_<float>(3,3) << 6.4683776682602723e-02, -2.3894502264777129e-02, 9.9761969797894101e-01,
+                                                   -9.9790569431776621e-01, -2.0337338294363350e-03, 6.4653609140460588e-02,
+                                                   4.8402711865902504e-04, -9.9971241699212143e-01, -2.3976009457765179e-02);
 
-    lid_to_cam_translation = (cv::Mat_<float>(3,1) << 0.2, 0, 0);
+    cam_to_lid_translation = (cv::Mat_<float>(3,1) << 1.3611835241317749e-01, 1.4486925303936005e-01, -1.6729909181594849e-01);
+
+    cv::transpose(cam_to_lid_rotation, lid_to_cam_rotation);
+
+    lid_to_cam_translation = -(lid_to_cam_rotation * cam_to_lid_translation);
+
+    cout << lid_to_cam_rotation << endl << lid_to_cam_translation;
+//----------------------------------------------------------------------------------------------------------------------
+
 
     R_self = (cv::Mat_<float>(4,4) << 1, 0, 0, 0,
             0, 1, 0, 0,
             0, 0, 1, 0,
             0, 0, 0, 1);
 
-    P_self = (cv::Mat_<float>(3,4) << 674.213928, 0, 668.909607, 0,
-            0, 674.213928, 380.501831, 0,
-            0, 0, 1, 0);
 
+    P_self = (cv::Mat_<float>(3,4) << 6.7448272705078125e+02, 0.0, 6.7321008300781250e+02, 0.0,
+                                      0.0, 6.7448272705078125e+02, 3.8029727172851562e+02, 0.0,
+                                      0.000000, 0.000000, 1.000000, 0.0);
 
     LiDARCalibParaKittiInverse lidar_calib_para_kitti_inverse = {
             Rotation:lid_to_cam_rotation,
             Translation:lid_to_cam_translation,
             R:R_self,
             P:P_self,
-            imageSize:cv::Size(left_image1.cols, left_image1.rows)
+            imageSize:cv::Size(test_image.cols, test_image.rows)
     };
 
 
 
-//    LiDAR lidar = LiDAR(lidar_calib_para_kitti_inverse);
-//    lidar.projectData(lidar_path1 + cloud_name + ".pcd", depth_map_lidar1, point_cloud_part, PCD, KITTI, XYZIT, C2L, CV);
-//    cv::FileStorage fs1(depth_map_camera_path1 + "depth_map" + image_name + ".xml", cv::FileStorage::READ);
-//    fs1["CameraDepthMap"] >> depth_map_camera1;
-//    depth_map_camera1 /= 1000;
+
+    LiDAR lidar = LiDAR(lidar_calib_para_kitti_inverse);
+    lidar.projectData(test1_lidar_path, depth_map_lidar1, point_cloud_part, XYZ, CV);
+    ImageUtils::colorTransfer(depth_map_lidar1, test_image);
+    cv::imwrite(test1_output_path, test_image);
+
 //
 //    cv::Mat camera_fragment, lidar_fragment;
 //    cv::Mat region;
@@ -130,16 +138,45 @@ int main(){
 //    cout << test;
 
     //cv::Mat test = cv::imread(left_path1 + "image" + image_name + "left.png", CV_8UC1);
-    cv::Mat test = cv::imread(test1_path, CV_8UC1);
-    cv::Mat test2 = cv::imread(test2_path, CV_8UC1);
-    cv::Mat grad_x;
-    //cv::Laplacian(test, test, CV_8U, 3, 1, 0, cv::BORDER_DEFAULT);
-    cv::Laplacian(test, test, CV_8U, 3, 1, 0, cv::BORDER_DEFAULT);
-    //Canny(test, test, 3, 9, 3);
-    cv::Sobel(test2, grad_x, CV_16S, 1, 0, 3, 1, 1, cv::BORDER_DEFAULT);
-    convertScaleAbs(grad_x, test2);
-    cv::imwrite(test1_output_path, test);
-    cv::imwrite(test2_output_path, test2*16);
+    //cv::Mat test = cv::imread(test1_path, CV_8UC1);
+//    for(int i=0; i<test.rows; i++){
+//        for(int j=0; j<test.cols; j++){
+//            if(test.at<int>(i ,j)>0){
+//                int t = test.at<int>(i ,j);
+//                test.at<int>(i ,j) = t;
+//                cout << t << "  ";
+//            }
+//        }
+//    }
+
+//    cv::Mat test = cv::imread(test1_path, CV_8UC1);
+//    for (int i=0; i<test.rows; i++){
+//        for(int j=0; j<test.cols; j++){
+//            if(test.at<int>(i, j)==0){
+//                int t = test.at<int>(i, j);
+//                int a = 1;
+//            }
+//            if(test.at<int>(i, j)>0){
+//                int t = test.at<int>(i, j);
+//                int a = 1;
+//            }
+//        }
+//    }
+//    cout << test;
+//    cv::Mat test2 = cv::imread(test2_path, CV_8UC1);
+//    cv::Mat grad_x;
+//    //cv::Laplacian(test, test, CV_8U, 3, 1, 0, cv::BORDER_DEFAULT);
+//    //cv::Laplacian(test, test, CV_8U, 3, 1, 0, cv::BORDER_DEFAULT);
+//    //Canny(test, test, 3, 9, 3);
+//    //cv::Sobel(test2, grad_x, CV_16S, 1, 0, 3, 1, 1, cv::BORDER_DEFAULT);
+//    //convertScaleAbs(grad_x, test2);
+//
+//    cv::Point size(2, 2);
+//    cv::Mat depth_map_lidar_dyed;
+//    ImageUtils::neighborDyeing(test, size, depth_map_lidar_dyed);
+//    cout << depth_map_lidar_dyed;
+//    cv::imwrite(test1_output_path, depth_map_lidar_dyed);
+    //cv::imwrite(test2_output_path, test2*16);
 
 
     return 0;

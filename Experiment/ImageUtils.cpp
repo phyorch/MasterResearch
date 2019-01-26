@@ -5,13 +5,12 @@
 #include "ImageUtils.h"
 
 
-void ImageUtils::colorTransfer(cv::Mat &depthMap, cv::Mat &depthImage) {
+void ImageUtils::colorTransfer(cv::Mat &depthMap, cv::Mat &depthImage, int maxVal) {
     if (depthMap.empty() || depthMap.rows == 0 || depthMap.rows != depthImage.rows || depthMap.cols != depthImage.cols){
         cerr << "Invalid input image for color transfer" << endl;
         exit(EXIT_FAILURE);
     }
-    float maxVal, minVal;
-    ImageUtils::maxMat<float>(depthMap, maxVal);
+    float minVal;
     ImageUtils::minMat<float>(depthMap, minVal);
     for (int y = 0; y<depthMap.rows; y++)
     {
@@ -19,7 +18,7 @@ void ImageUtils::colorTransfer(cv::Mat &depthMap, cv::Mat &depthImage) {
         {
             if(depthMap.at<float>(y, x)>0){
                 uchar r, g, b;
-                float color = (depthMap.at<float>(y, x) - minVal) / (6 - minVal) * 255;
+                float color = (depthMap.at<float>(y, x) - minVal) / (maxVal - minVal) * 255;
                 if(color>255){
                     color = 255;
                 }
@@ -41,6 +40,14 @@ void ImageUtils::neighborDyeingElem(cv::Mat &depthMap, cv::Point &point, float p
     }
 }
 
+void ImageUtils::neighborDyeingElemInt( cv::Point &point, int pxValue, cv::Point &size, cv::Mat &depthMapDyed) {
+    for(int i= -size.y/2; i<size.y/2; i++){
+        for(int j= -size.x/2; j<size.x/2; j++){
+            depthMapDyed.at<int>(point.y + i, point.x + j) = pxValue;
+        }
+    }
+}
+
 void ImageUtils::neighborDyeing(cv::Mat &depthMap, cv::Point &size, cv::Mat &depthMapDyed) {
     depthMapDyed = cv::Mat::zeros(depthMap.rows, depthMap.cols, CV_32FC1);
     for(int i=0; i<depthMap.rows; i++){
@@ -49,6 +56,19 @@ void ImageUtils::neighborDyeing(cv::Mat &depthMap, cv::Point &size, cv::Mat &dep
                 float pxValue = depthMap.at<float>(i, j);
                 cv::Point point(j, i);
                 neighborDyeingElem(depthMap, point, pxValue, size, depthMapDyed);
+            }
+        }
+    }
+}
+
+void ImageUtils::neighborDyeingInt(cv::Mat &depthMap, cv::Point &size, cv::Mat &depthMapDyed) {
+    depthMapDyed = cv::Mat::zeros(depthMap.rows, depthMap.cols, CV_8UC1);
+    for(int i=0; i<depthMap.rows; i++){
+        for(int j=size.x; j<depthMap.cols - size.x; j++){
+            if(depthMap.at<int>(i, j) >0 && depthMap.at<int>(i, j)<255){
+                int pxValue = depthMap.at<int>(i, j);
+                cv::Point point(j, i);
+                neighborDyeingElemInt(point, pxValue, size, depthMapDyed);
             }
         }
     }

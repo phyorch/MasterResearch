@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/test4.dir/test4.cpp.o"
+  "CMakeFiles/test4.dir/test4_point_cloud_transfer.cpp.o"
+  "CMakeFiles/test4.dir/Disparity.cpp.o"
   "CMakeFiles/test4.dir/RealEquipment.cpp.o"
   "test4.pdb"
   "test4"

@@ -99,6 +99,8 @@ public:
 
     static float point2PointDistance(cv::Mat &mapCamera, cv::Mat &mapLiDAR);
 
+    static float point2PointDistanceKitti(cv::Mat &mapCamera, cv::Mat &mapLiDAR);
+
     static float point2PointDistanceTotal(cv::Mat &mapCamera, cv::Mat &mapLiDAR, vector<cv::Mat> &diagonalPointsSet);
 
     static float pointCloudDistance(cv::Mat &mapCamera, cv::Mat &mapLiDAR);
@@ -116,6 +118,10 @@ public:
 
     static void array2Eigen(const double *theta, Eigen::Matrix4f &transformation);
 
+    static void cv2EigenSeperate(cv::Mat &rotation, cv::Mat &translation, Eigen::Matrix4f &transformation);
+
+    static void Eigen2MatSeperate(Eigen::Matrix4f &transformation, cv::Mat &rotation, cv::Mat &translation);
+
     static void vector2Eigen(vector<double> &theta, Eigen::Matrix4f &transformation);
 
     static void depthAnalysis(cv::Mat &iamgeCamera, cv::Mat &imageLiDAR, int depth, string csvPath);
@@ -128,7 +134,11 @@ public:
 
     static void getCameraSparsePointCloud(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, LiDAR &lidar, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudSparse);
 
+    static void getCameraSparsePointCloudKitti(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, LiDAR &lidar, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudSparse);
+
     static void pointCloudDownsample(pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloud, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudDownsampled, float gridSize);
+
+    static void pointCloudDownsample(pcl::PointCloud<pcl::PointXYZI>::Ptr &pointCloud, pcl::PointCloud<pcl::PointXYZI>::Ptr &pointCloudDownsampled, float gridSize);
 
     static float findScaling(pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudCamera, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudLiDAR);
 

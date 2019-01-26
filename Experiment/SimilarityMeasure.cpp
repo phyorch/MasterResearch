@@ -326,9 +326,30 @@ float HistogramMeasure::point2PointDistance(cv::Mat &mapCamera, cv::Mat &mapLiDA
             }
         }
     }
-    if(cnt<50){
-        distance = 10000;
+//    if(cnt<50){
+//        distance = 10000;
+//    }
+    distance /= cnt;
+//    if(isnan(distance)){
+//        distance = 10000;
+//    }
+    return distance;
+}
+
+float HistogramMeasure::point2PointDistanceKitti(cv::Mat &mapCamera, cv::Mat &mapLiDAR) {
+    float distance = 0;
+    int cnt = 0;
+    for(int i=0; i<mapCamera.rows; i++){
+        for(int j=0; j<mapCamera.cols; j++){
+            if(mapLiDAR.at<float>(i, j) > 0){
+                cnt++;
+                distance += abs(float(mapCamera.at<uchar>(i, j)) - mapLiDAR.at<float>(i, j));
+            }
+        }
     }
+//    if(cnt<50){
+//        distance = 10000;
+//    }
     distance /= cnt;
 //    if(isnan(distance)){
 //        distance = 10000;
@@ -343,7 +364,7 @@ float HistogramMeasure::point2PointDistanceTotal(cv::Mat &mapCamera, cv::Mat &ma
         cv::Mat mapCameraRegion, mapLiDARRegion;
         ImageUtils::creatMapRegion(mapCamera, mapCameraRegion, diagonalPointsSet[i]);
         ImageUtils::creatMapRegion(mapLiDAR, mapLiDARRegion, diagonalPointsSet[i]);
-        p2pDistance += point2PointDistance(mapCameraRegion, mapLiDARRegion);
+        p2pDistance += point2PointDistanceKitti(mapCameraRegion, mapLiDARRegion);
     }
 }
 
@@ -423,6 +444,30 @@ void Transfer::array2Eigen(const double *theta, Eigen::Matrix4f &transformation)
     cv::cv2eigen(transformationMat, transformation);
 }
 
+void Transfer::cv2EigenSeperate(cv::Mat &rotation, cv::Mat &translation, Eigen::Matrix4f &transformation) {
+    cv::Mat transformationMat = cv::Mat::zeros(4, 4, CV_32FC1);
+    rotation.copyTo(transformationMat(cv::Rect(0, 0, 3, 3)));
+    translation.copyTo(transformationMat(cv::Rect(3, 0, 1, 3)));
+    transformationMat.at<float>(3, 0) = 0;
+    transformationMat.at<float>(3, 1) = 0;
+    transformationMat.at<float>(3, 2) = 0;
+    transformationMat.at<float>(3, 3) = 1;
+    cv::cv2eigen(transformationMat, transformation);
+}
+
+void Transfer::Eigen2MatSeperate(Eigen::Matrix4f &transformation, cv::Mat &rotation, cv::Mat &translation) {
+    for(int i=0; i<3; i++){
+        for(int j=0; j<4; j++){
+            if(j<3){
+                rotation.at<float>(i ,j) = transformation(i, j);
+            }
+            if(j==3){
+                translation.at<float>(i, 0) = transformation(i, j);
+            }
+        }
+    }
+}
+
 void Transfer::vector2Eigen(vector<double> &theta, Eigen::Matrix4f &transformation) {
     cv::Mat rotation, translation;
     vector2MatSeperate(theta, rotation, translation);
@@ -478,9 +523,31 @@ void PointCloudAlignment::getCameraSparsePointCloud(cv::Mat &depthMapCamera, cv:
     }
 }
 
+void PointCloudAlignment::getCameraSparsePointCloudKitti(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, LiDAR &lidar, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudSparse) {
+    for(int i=0; i<depthMapCamera.rows; i++){
+        for(int j=0; j<depthMapCamera.cols; j++){
+            if(depthMapLiDAR.at<float>(i ,j) > 0){
+                int val = int(depthMapCamera.at<uchar>(i ,j));
+                cv::Point2f point(j, i);
+                pcl::PointXYZ point3d;
+                lidar.projectPointInverse(point, val, point3d);
+                pointCloudSparse->push_back(point3d);
+            }
+        }
+    }
+}
+
 void PointCloudAlignment::pointCloudDownsample(pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloud,
                                                pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudDownsampled, float gridSize) {
     pcl::VoxelGrid<pcl::PointXYZ> filter;
+    filter.setInputCloud(pointCloud);
+    filter.setLeafSize(gridSize, gridSize, gridSize);  //0.01f, 0.01f, 0.01f
+    filter.filter(*pointCloudDownsampled);
+}
+
+void PointCloudAlignment::pointCloudDownsample(pcl::PointCloud<pcl::PointXYZI>::Ptr &pointCloud,
+                                               pcl::PointCloud<pcl::PointXYZI>::Ptr &pointCloudDownsampled, float gridSize) {
+    pcl::VoxelGrid<pcl::PointXYZI> filter;
     filter.setInputCloud(pointCloud);
     filter.setLeafSize(gridSize, gridSize, gridSize);  //0.01f, 0.01f, 0.01f
     filter.filter(*pointCloudDownsampled);

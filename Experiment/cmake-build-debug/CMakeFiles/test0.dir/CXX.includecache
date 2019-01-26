@@ -9,6 +9,8 @@
 /home/phyorch/MasterResearch/Experiment/Disparity.cpp
 Disparity.h
 /home/phyorch/MasterResearch/Experiment/Disparity.h
+SimilarityMeasure.h
+/home/phyorch/MasterResearch/Experiment/SimilarityMeasure.h
 
 /home/phyorch/MasterResearch/Experiment/Disparity.h
 iostream
@@ -211,8 +213,6 @@ ImageUtils.h
 /home/phyorch/MasterResearch/Experiment/ImageUtils.h
 RealEquipment.h
 /home/phyorch/MasterResearch/Experiment/RealEquipment.h
-matplotlib-cpp/matplotlibcpp.h
--
 sl/Camera.hpp
 -
 libcmaes/cmaes.h

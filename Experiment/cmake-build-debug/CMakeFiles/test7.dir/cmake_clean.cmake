@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/test7.dir/test7.cpp.o"
+  "CMakeFiles/test7.dir/test7_pcl_transformation.cpp.o"
   "CMakeFiles/test7.dir/Disparity.cpp.o"
   "CMakeFiles/test7.dir/RealEquipment.cpp.o"
   "CMakeFiles/test7.dir/ImageUtils.cpp.o"

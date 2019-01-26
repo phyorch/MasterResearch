@@ -10,6 +10,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+
+class PointCloudAlignment;
+
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -22,7 +25,6 @@
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
 #include <pcl/io/pcd_io.h>
-
 #include "hesaiLidarSDK.h"
 
 using namespace std;
@@ -70,7 +72,7 @@ struct DispFilterPara{
 
 enum LiDARDataType {BIN, PCD};
 enum LiDARDataSource {KITTI, SELF};
-enum LiDARPointType {XYZIT, XYZI};
+enum LiDARPointType {XYZIT, XYZI, XYZ};
 enum ExtrinsicDirection{C2L, L2C};
 enum MatType{EIGEN, CV};
 
@@ -170,9 +172,13 @@ public:
 
     virtual ~LiDAR(void);
 
-    void convertKittiBinData(string &inFile, string &outFile); //, vector *pointCloud
+    static void convertKittiBinData(string &inFile, string &outFile); //, vector *pointCloud
 
     void projectPointKitti(cv::Mat &depthMap, pandar_pointcloud::PointXYZIT &point);
+
+    void projectPointKittiSeperate(cv::Mat &depthMapLiDAR, pcl::PointXYZ &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudPart);
+
+    void projectPointKittiSeperate(cv::Mat &depthMapLiDAR, pcl::PointXYZI &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudPart);
 
     void projectPointKittiSeperate(cv::Mat &depthMapLiDAR, pandar_pointcloud::PointXYZIT &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudPart);
     
@@ -184,6 +190,8 @@ public:
 
     void projectPointKittiEigen(cv::Mat &depthMap, pandar_pointcloud::PointXYZIT &point);
 
+    void projectData(string inFile, cv::Mat &depthMapLiDAR, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudPart, LiDARPointType poinyType = XYZI, MatType matType = EIGEN, float downsampleVox = 0);
+
     void projectData(string inFile, cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudPart, LiDARDataType dataType = BIN, LiDARDataSource dataSource = KITTI, LiDARPointType poinyType = XYZI, ExtrinsicDirection liDARDirection = L2C, MatType matType = EIGEN);
 
     void projectData(string inFile, cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudCamera, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudLiDAR, LiDARDataType dataType = BIN, LiDARDataSource dataSource = KITTI, LiDARPointType poinyType = XYZI, ExtrinsicDirection liDARDirection = L2C, MatType matType = EIGEN);
@@ -191,6 +199,8 @@ public:
     void updateParameters(cv::Mat &rotation, cv::Mat &translation);
 
     void projectPointInverse(cv::Point2f &point, float depth, pcl::PointXYZ &point3d);
+
+    void projectPointInverseKitti(cv::Point2f &point, int depth, pcl::PointXYZ &point3d);
 
 
 private:
