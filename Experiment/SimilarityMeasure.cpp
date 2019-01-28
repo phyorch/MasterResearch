@@ -347,10 +347,13 @@ float HistogramMeasure::point2PointDistanceKitti(cv::Mat &mapCamera, cv::Mat &ma
             }
         }
     }
-//    if(cnt<50){
-//        distance = 10000;
-//    }
-    distance /= cnt;
+
+    if(cnt<50){
+        distance = 1000;
+    }
+    else{
+        distance /= cnt;
+    }
 //    if(isnan(distance)){
 //        distance = 10000;
 //    }

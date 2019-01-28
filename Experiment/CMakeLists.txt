@@ -91,3 +91,10 @@ target_link_libraries(test8 cmaes
         ${PCL_LIBRARIES}
         ${ZED_LIBRARIES}
         ${Boost_LIBRARIES})
+
+add_executable(test9 test9_edge_based_refinement.cpp Disparity.cpp RealEquipment.cpp ImageUtils.cpp SimilarityMeasure.cpp Disparity.h RealEquipment.h ImageUtils.h SimilarityMeasure.h)
+target_link_libraries(test9 cmaes
+        ${OpenCV_LIBS}
+        ${PCL_LIBRARIES}
+        ${ZED_LIBRARIES}
+        ${Boost_LIBRARIES})

@@ -16,7 +16,7 @@
 #include <pcl/filters/statistical_outlier_removal.h>
 
 string user_name = "phyorch";
-float vox_volum = 2.5;
+float vox_volum = 4.0;
 
 string data_name = "2019_01_03/2019_01_03_3";
 string image_name = "/ZEDData/RGBImage/image1546524910right.png";
@@ -77,15 +77,29 @@ int main(){
             0, 0, 1, 0);
 
 //2019_01_15 extrinsic calibration
-    cam_to_lid_rotation = (cv::Mat_<float>(3,3) << -9.995395743477e-01, -2.591763623920e-02, -1.577705437008e-02,
-            1.563204680325e-02, 5.788061929611e-03, -9.998610590736e-01,
-            2.600535378657e-02, -9.996473250456e-01, -5.380251254700e-03);
+    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << -0.99953955, 0.015632046, 0.026005354,
+    -0.025917636, 0.0057880618, -0.99964732,
+    -0.015777055, -0.99986106, -0.0053802514);
 
-    cam_to_lid_translation = (cv::Mat_<float>(3,1) << -0.431729644136e-01, 9.325187939857e-02, -5.436065917896e-02);
+    lid_to_cam_translation = (cv::Mat_<float>(3,1) << -0.11316491, -0.057814412, 0.091160908);
 
-    cv::transpose(cam_to_lid_rotation, lid_to_cam_rotation);
+    cv::Mat axisx, axisy, axisz;
 
-    lid_to_cam_translation = -(lid_to_cam_rotation * cam_to_lid_translation);
+    int degreex = 2.5;
+    int degreey = -4;
+    int degreez = 0;
+    axisx = (cv::Mat_<float>(3,3) << 1, 0.0, 0.0,
+            0.0, cos(M_PI/180 * degreex), -sin(M_PI/180 * degreex),
+            0.0, sin(M_PI/180 * degreex), cos(M_PI/180 * degreex));
+
+    axisy = (cv::Mat_<float>(3,3) << cos(M_PI/180 * degreey), 0.0, -sin(M_PI/180 * degreey),
+            0.0, 1, 0.0,
+            sin(M_PI/180 * degreey), 0.0, cos(M_PI/180 * degreey));
+
+    axisz = (cv::Mat_<float>(3,3) << cos(M_PI/180 * degreez), -sin(M_PI/180 * degreez), 0.0,
+            sin(M_PI/180 * degreez), cos(M_PI/180 * degreez), 0.0,
+            0.0, 0.0, 1.0);
+    lid_to_cam_rotation = axisx * axisy * lid_to_cam_rotation;
 
     Transfer::cv2EigenSeperate(lid_to_cam_rotation, lid_to_cam_translation, transformation);
 //----------------------------------------------------------------------------------------------------------------------
@@ -245,7 +259,7 @@ int main(){
     pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_lidar_filtered(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
     sor.setInputCloud (point_cloud_camera_downsample);
-    sor.setMeanK (10);
+    sor.setMeanK (20);
     sor.setStddevMulThresh (1.0);
     sor.filter (*point_cloud_camera_filtered);
     sor.setInputCloud(point_cloud_lidar_downsample);
@@ -254,8 +268,8 @@ int main(){
 
 
     pcl::visualization::PCLVisualizer viewer ("test");
-    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> source_cloud_color_handler (point_cloud_camera, 230, 20, 20);
-    viewer.addPointCloud(point_cloud_camera, source_cloud_color_handler, "transformed_cloud");
+//    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> source_cloud_color_handler (point_cloud_camera, 230, 20, 20);
+//    viewer.addPointCloud(point_cloud_camera, source_cloud_color_handler, "transformed_cloud");
 
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> transformed_cloud_color_handler (transformed_lidar_cloud, 255, 255, 255);
     viewer.addPointCloud(transformed_lidar_cloud, transformed_cloud_color_handler, "camera_cloud");
@@ -264,11 +278,9 @@ int main(){
         viewer.spinOnce ();
     }
 
-    float d1 = PointCloudAlignment::chamferDistance(point_cloud_camera_downsample, point_cloud_lidar_downsample);
-    cout << d1;
-
-
-
+    float d1 = PointCloudAlignment::chamferDistance(point_cloud_camera_filtered, point_cloud_lidar_filtered);
+    cout << "test";
+    cout << d1 << endl;
 
     return 0;
 }
