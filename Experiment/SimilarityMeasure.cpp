@@ -371,6 +371,27 @@ float HistogramMeasure::point2PointDistanceTotal(cv::Mat &mapCamera, cv::Mat &ma
     }
 }
 
+float HistogramMeasure::point2PointDistanceFrame(cv::Mat &mapCamera, cv::Mat &mapLiDAR) {
+    float distance = 0;
+    int cnt = 0;
+    for(int i=0; i<mapCamera.rows; i++){
+        for(int j=0; j<mapCamera.cols; j++){
+            if(mapLiDAR.at<float>(i, j) > 0){
+                cnt++;
+                distance += abs(float(mapCamera.at<uchar>(i, j)) - mapLiDAR.at<float>(i, j));
+            }
+        }
+    }
+
+    if(cnt<5000){
+        distance = 1000;
+    }
+    else{
+        distance /= cnt;
+    }
+    return distance;
+}
+
 float HistogramMeasure::pointCloudDistance(cv::Mat &mapCamera, cv::Mat &mapLiDAR) {
     float pcDistance = 0;
 
@@ -597,4 +618,197 @@ float PointCloudAlignment::chamferDistance(pcl::PointCloud<pcl::PointXYZ>::Ptr &
     distance = distance / (pointCloudLiDAR->points.size() + pointCloudCamera->points.size());
     cout << pointCloudCamera->points.size() << endl << pointCloudLiDAR->points.size() << endl;
     return distance;
+}
+
+//For point, x : rows, y : cols
+//For region, x : height, y : length
+bool Refinement::validRegion(cv::Mat &depthMapLiDAR, cv::Point &point, cv::Point &region, int threshold) {
+    cv::Mat refRegion;
+    ImageUtils::creatMapRegion(depthMapLiDAR, refRegion, point.x - region.x, point.x + region.x, point.y - region.y, point.y + region.y);
+    int cnt = 0;
+    for(int i=0; i<refRegion.rows; i++){
+        for(int j=0; j<refRegion.cols; j++){
+            if(refRegion.at<float>(i, j)>0){
+                cnt++;
+            }
+        }
+    }
+    if(cnt>threshold){
+        return false;
+    }
+    return true;
+}
+
+//For slideWindowSize, x : rows, y : cols
+//For slideWindowRegion, x : rows, y : cols
+void Refinement::slideElimination(cv::Mat &depthMapLiDAR, cv::Point &slideWindowSize, cv::Point &slideWindowRange, cv::Point &slideWindowRegion, int elimiThreshold) {
+    for(int i=0; i<depthMapLiDAR.rows; i++){
+        for(int j=0; j<depthMapLiDAR.cols; j++){
+            if(depthMapLiDAR.at<float>(i, j) > slideWindowRange.x && depthMapLiDAR.at<float>(i, j) < slideWindowRange.y && i>slideWindowRegion.x &&
+               i<depthMapLiDAR.rows-slideWindowRegion.x && j>slideWindowRegion.y && j<depthMapLiDAR.cols-slideWindowRegion.y){
+                cv::Mat window;
+                ImageUtils::creatMapRegion(depthMapLiDAR, window, i-slideWindowSize.x/2, i+slideWindowSize.x/2, j-slideWindowSize.y/2, j+slideWindowSize.y/2);
+                float maxVal, minVal;
+                ImageUtils::maxMat<float>(window, maxVal);
+                ImageUtils::minMat<float>(window, minVal);
+                if(depthMapLiDAR.at<float>(i, j)>30 && depthMapLiDAR.at<float>(i, j)==minVal){
+                    cv::Point point(i, j);
+                    if(validRegion(depthMapLiDAR, point, slideWindowRegion, 200)){
+                        continue;
+                    }
+                }
+                if(maxVal-minVal<elimiThreshold){
+                    depthMapLiDAR.at<float>(i, j) = 0;
+                }
+            }
+            else{
+                depthMapLiDAR.at<float>(i, j) = 0;
+            }
+        }
+    }
+}
+
+void Refinement::slideElimination2(cv::Mat &depthMapLiDAR, cv::Mat &edgeMapLiDAR, cv::Point &slideWindowSize, cv::Point &slideWindowRange,
+                                   float elimiThreshold, int setOne) {
+    edgeMapLiDAR = depthMapLiDAR.clone();
+    for(int i=0; i<depthMapLiDAR.rows; i++){
+        for(int j=0; j<depthMapLiDAR.cols; j++){
+            if(depthMapLiDAR.at<float>(i, j) > slideWindowRange.x && depthMapLiDAR.at<float>(i, j) < slideWindowRange.y && i>slideWindowSize.x &&
+               i<depthMapLiDAR.rows-slideWindowSize.x && j>slideWindowSize.y && j<depthMapLiDAR.cols-slideWindowSize.y){
+                cv::Mat window;
+                ImageUtils::creatMapRegion(depthMapLiDAR, window, i-slideWindowSize.x/2, i+slideWindowSize.x/2, j-slideWindowSize.y/2, j+slideWindowSize.y/2);
+                float maxVal, minVal;
+                ImageUtils::maxMat<float>(window, maxVal);
+                ImageUtils::minMat<float>(window, minVal);
+//                if(depthMapLiDAR.at<float>(i, j)>30 && depthMapLiDAR.at<float>(i, j)==minVal){
+//                    cv::Point point(i, j);
+//                    if(validRegion(depthMapLiDAR, point, slideWindowRegion, 200)){
+//                        continue;
+//                    }
+//                }
+                if(maxVal-minVal<elimiThreshold || depthMapLiDAR.at<float>(i, j)>(minVal + (maxVal-minVal)/50)){
+                    edgeMapLiDAR.at<float>(i, j) = 0;
+                }
+                else if(setOne == 1){
+                    edgeMapLiDAR.at<float>(i, j) = 1;
+                }
+            }
+            else{
+                edgeMapLiDAR.at<float>(i, j) = 0;
+            }
+        }
+    }
+}
+
+void Refinement::gaussianBlurModified(cv::Mat &edgeMap, cv::Mat &edgeMapBlured, int filterSize) {
+    edgeMapBlured = edgeMap.clone();
+    cv::Mat filter;
+    if(filterSize==3){
+        filter = (cv::Mat_<float>(3,3) << 0.055, 0.110, 0.055,
+        0.110, 0.221, 0.110,
+        0.055, 0.110, 0.055);
+    }
+    else if(filterSize==5){
+        filter = (cv::Mat_<float>(5,5) << 0.003765, 0.015019, 0.023792, 0.015019, 0.003765,
+        0.015019, 0.059912, 0.094907, 0.059912, 0.015019,
+        0.023792, 0.094907, 0.150342, 0.094907, 0.023792,
+        0.015019, 0.059912, 0.094907, 0.059912, 0.015019,
+        0.003765, 0.015019, 0.023792, 0.015019, 0.003765);
+    }
+    else if(filterSize==7){ //sigma=2
+        filter = (cv::Mat_<float>(7,7) << 0.000036,	0.000363, 0.001446, 0.002291, 0.001446, 0.000363, 0.000036,
+        0.000363, 0.003676, 0.014662, 0.023226, 0.014662, 0.003676, 0.000363,
+        0.001446, 0.014662, 0.058488, 0.092651, 0.058488, 0.014662, 0.001446,
+        0.002291, 0.023226, 0.092651, 0.146768, 0.092651, 0.023226, 0.002291,
+        0.001446, 0.014662, 0.058488, 0.092651, 0.058488, 0.014662, 0.001446,
+        0.000363, 0.003676, 0.014662, 0.023226, 0.014662, 0.003676, 0.000363,
+        0.000036, 0.000363, 0.001446, 0.002291, 0.001446, 0.000363, 0.000036);
+    }
+    else if(filterSize==9){
+        filter = (cv::Mat_<float>(9,9) << 0.000814, 0.001918, 0.003538, 0.005108, 0.005774, 0.005108, 0.003538, 0.001918, 0.000814,
+        0.001918, 0.00452, 0.008338, 0.012038, 0.013605, 0.012038, 0.008338, 0.00452, 0.001918,
+        0.003538, 0.008338, 0.015378, 0.022203, 0.025094, 0.022203, 0.015378, 0.008338, 0.003538,
+        0.005108, 0.012038, 0.022203, 0.032057, 0.036231, 0.032057, 0.022203, 0.012038, 0.005108,
+        0.005774, 0.013605, 0.025094, 0.036231, 0.04095, 0.036231, 0.025094, 0.013605, 0.005774,
+        0.005108, 0.012038, 0.022203, 0.032057, 0.036231, 0.032057, 0.022203, 0.012038, 0.005108,
+        0.003538, 0.008338, 0.015378, 0.022203, 0.025094, 0.022203, 0.015378, 0.008338, 0.003538,
+        0.001918, 0.00452, 0.008338, 0.012038, 0.013605, 0.012038, 0.008338, 0.00452, 0.001918,
+        0.000814, 0.001918, 0.003538, 0.005108, 0.005774, 0.005108, 0.003538, 0.001918, 0.000814);
+
+    }
+    else if(filterSize==13){ //sigma=2
+        filter = (cv::Mat_<float>(13,13) << 0.000006, 0.000022, 0.000067, 0.000158, 0.000291, 0.000421, 0.000476, 0.000421, 0.000291, 0.000158, 0.000067, 0.000022, 0.000006,
+        0.000022, 0.000086, 0.000258, 0.000608, 0.001121, 0.001618, 0.001829, 0.001618, 0.001121, 0.000608, 0.000258, 0.000086, 0.000022,
+        0.000067, 0.000258, 0.000777, 0.00183, 0.003375, 0.004873, 0.005508, 0.004873, 0.003375, 0.00183, 0.000777, 0.000258, 0.000067,
+        0.000158, 0.000608, 0.00183, 0.004312, 0.007953, 0.011483, 0.012978, 0.011483, 0.007953, 0.004312, 0.00183, 0.000608, 0.000158,
+        0.000291, 0.001121, 0.003375, 0.007953, 0.014669, 0.021179, 0.023938, 0.021179, 0.014669, 0.007953, 0.003375, 0.001121, 0.000291,
+        0.000421, 0.001618, 0.004873, 0.011483, 0.021179, 0.030579, 0.034561, 0.030579, 0.021179, 0.011483, 0.004873, 0.001618, 0.000421,
+        0.000476, 0.001829, 0.005508, 0.012978, 0.023938, 0.034561, 0.039062, 0.034561, 0.023938, 0.012978, 0.005508, 0.001829, 0.000476,
+        0.000421, 0.001618, 0.004873, 0.011483, 0.021179, 0.030579, 0.034561, 0.030579, 0.021179, 0.011483, 0.004873, 0.001618, 0.000421,
+        0.000291, 0.001121, 0.003375, 0.007953, 0.014669, 0.021179, 0.023938, 0.021179, 0.014669, 0.007953, 0.003375, 0.001121, 0.000291,
+        0.000158, 0.000608, 0.00183, 0.004312, 0.007953, 0.011483, 0.012978, 0.011483, 0.007953, 0.004312, 0.00183, 0.000608, 0.000158,
+        0.000067, 0.000258, 0.000777, 0.00183, 0.003375, 0.004873, 0.005508, 0.004873, 0.003375, 0.00183, 0.000777, 0.000258, 0.000067,
+        0.000022, 0.000086, 0.000258, 0.000608, 0.001121, 0.001618, 0.001829, 0.001618, 0.001121, 0.000608, 0.000258, 0.000086, 0.000022,
+        0.000006, 0.000022, 0.000067, 0.000158, 0.000291, 0.000421, 0.000476, 0.000421, 0.000291, 0.000158, 0.000067, 0.000022, 0.000006);
+
+    }
+    for(int i=filterSize; i<edgeMap.rows-filterSize; i++){
+        for(int j=filterSize; j<edgeMap.cols-filterSize; j++){
+            if(edgeMap.at<float>(i, j)==0){
+                cv::Mat window;
+                ImageUtils::creatMapRegion(edgeMap, window, i-filterSize/2, i+filterSize/2+1, j-filterSize/2, j+filterSize/2+1);
+//                cv::Scalar test = cv::sum(window.mul(filter));
+//                if(test[0]>0){
+//                    int a = 1;
+//                }
+                edgeMapBlured.at<float>(i, j) = cv::sum(window.mul(filter))[0];
+            }
+        }
+    }
+}
+
+void Refinement::gaussianBlurModified(cv::Mat &edgeMap, cv::Mat &filter, cv::Mat &edgeMapBlured) {
+    edgeMapBlured = edgeMap.clone();
+    for(int i=filter.rows; i<edgeMap.rows-filter.rows; i++){
+        for(int j=filter.cols; j<edgeMap.cols-filter.cols; j++){
+            if(edgeMap.at<float>(i, j)==0){
+                cv::Mat window;
+                ImageUtils::creatMapRegion(edgeMap, window, i-filter.rows/2, i+filter.rows/2+1, j-filter.cols/2, j+filter.cols/2+1);
+//                cv::Scalar test = cv::sum(window.mul(filter));
+//                if(test[0]>0){
+//                    int a = 1;
+//                }
+                edgeMapBlured.at<float>(i, j) = cv::sum(window.mul(filter))[0];
+            }
+        }
+    }
+}
+
+void Refinement::cameraEdgeGeneration(cv::Mat &imageCamera, cv::Mat &edgeMapCamera, cv::Mat &edgeMapCameraBlured, int blur, int blurSize) {
+    cv::cvtColor(imageCamera, edgeMapCamera, cv::COLOR_BGR2GRAY);
+    cv::Laplacian(edgeMapCamera, edgeMapCamera, CV_8U, 3, 1, 0, cv::BORDER_DEFAULT);
+    cv::threshold(edgeMapCamera, edgeMapCamera, 80, 255, cv::THRESH_BINARY);
+    edgeMapCamera.convertTo(edgeMapCamera, CV_32FC1);
+    if(blur==1){
+        Refinement::gaussianBlurModified(edgeMapCamera, edgeMapCameraBlured, blurSize);
+    }
+}
+
+float Refinement::edgeDistance(cv::Mat &edgeMapCamera, cv::Mat &edgeMapLiDAR, float &cnt) {
+    float distance = cv::sum(edgeMapCamera.mul(edgeMapLiDAR))[0];
+    cnt = cv::sum(edgeMapLiDAR)[0];
+    return distance/cnt;
+}
+
+void Refinement::saveMatchResult(cv::Mat &edgeMapCamera, cv::Mat &edgeMapLiDAR, string savePath, int number) {
+    cv::Mat three = cv::Mat::zeros(edgeMapCamera.rows, edgeMapCamera.cols, CV_8UC3);
+    vector<cv::Mat> channels;
+    edgeMapCamera.convertTo(edgeMapCamera, CV_8UC1);
+    for (int i=0;i<3;i++)
+    {
+        channels.push_back(edgeMapCamera);
+    }
+    cv::merge(channels,three);
+    ImageUtils::colorTransfer(edgeMapLiDAR, three, 70);
+    cv::imwrite(savePath + to_string(number) + "___" + ".png", three);
 }

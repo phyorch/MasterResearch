@@ -164,6 +164,8 @@ private:
 class LiDAR{
 public:
 
+    PointCloudAlignment *pointCloudAlignment;
+
     LiDAR(LiDARCalibParaKitti lidarCalibParaKitti);
 
     LiDAR(LiDARCalibParaKittiInverse lidarCalibParaKittiInverse);

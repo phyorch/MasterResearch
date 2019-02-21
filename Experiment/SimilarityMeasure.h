@@ -103,6 +103,8 @@ public:
 
     static float point2PointDistanceTotal(cv::Mat &mapCamera, cv::Mat &mapLiDAR, vector<cv::Mat> &diagonalPointsSet);
 
+    static float point2PointDistanceFrame(cv::Mat &mapCamera, cv::Mat &mapLiDAR);
+
     static float pointCloudDistance(cv::Mat &mapCamera, cv::Mat &mapLiDAR);
 
 };
@@ -127,6 +129,7 @@ public:
     static void depthAnalysis(cv::Mat &iamgeCamera, cv::Mat &imageLiDAR, int depth, string csvPath);
 
     static void depthDistribution(cv::Mat &imageLiDAR, string csvPath);
+
 };
 
 class PointCloudAlignment{
@@ -147,6 +150,26 @@ public:
     static float chamferDistanceElem(pcl::PointXYZ &point, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloud);
 
     static float chamferDistance(pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudCamera, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudLiDAR);
+};
+
+class Refinement{
+public:
+
+    static bool validRegion(cv::Mat &depthMapLiDAR, cv::Point &point, cv::Point &region, int threshold);
+
+    static void slideElimination(cv::Mat &depthMapLiDAR, cv::Point &slideWindowSize, cv::Point &slideWindowRange, cv::Point &slideWindowRegion, int elimiThreshold);
+
+    static void slideElimination2(cv::Mat &depthMapLiDAR, cv::Mat &edgeMapLiDAR, cv::Point &slideWindowSize, cv::Point &slideWindowRange, float elimiThreshold, int setOne = 0);
+
+    static void gaussianBlurModified(cv::Mat &edgeMap, cv::Mat &edgeMapBlured, int filterSize);
+
+    static void gaussianBlurModified(cv::Mat &edgeMap, cv::Mat &filter, cv::Mat &edgeMapBlured);
+
+    static void cameraEdgeGeneration(cv::Mat &imageCamera, cv::Mat &edgeMapCamera, cv::Mat &edgeMapCameraBlured, int blur = 0, int blurSize = 0);
+
+    static float edgeDistance(cv::Mat &edgeMapCamera, cv::Mat &edgeMapLiDAR, float &cnt);
+
+    static void saveMatchResult(cv::Mat &edgeMapCamera, cv::Mat &edgeMapLiDAR, string savePath, int number);
 };
 
 

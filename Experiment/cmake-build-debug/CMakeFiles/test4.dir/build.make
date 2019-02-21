@@ -129,11 +129,61 @@ CMakeFiles/test4.dir/RealEquipment.cpp.o.provides: CMakeFiles/test4.dir/RealEqui
 CMakeFiles/test4.dir/RealEquipment.cpp.o.provides.build: CMakeFiles/test4.dir/RealEquipment.cpp.o
 
 
+CMakeFiles/test4.dir/SimilarityMeasure.cpp.o: CMakeFiles/test4.dir/flags.make
+CMakeFiles/test4.dir/SimilarityMeasure.cpp.o: ../SimilarityMeasure.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/test4.dir/SimilarityMeasure.cpp.o"
+	/usr/bin/g++-5  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test4.dir/SimilarityMeasure.cpp.o -c /home/phyorch/MasterResearch/Experiment/SimilarityMeasure.cpp
+
+CMakeFiles/test4.dir/SimilarityMeasure.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test4.dir/SimilarityMeasure.cpp.i"
+	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/phyorch/MasterResearch/Experiment/SimilarityMeasure.cpp > CMakeFiles/test4.dir/SimilarityMeasure.cpp.i
+
+CMakeFiles/test4.dir/SimilarityMeasure.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test4.dir/SimilarityMeasure.cpp.s"
+	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/phyorch/MasterResearch/Experiment/SimilarityMeasure.cpp -o CMakeFiles/test4.dir/SimilarityMeasure.cpp.s
+
+CMakeFiles/test4.dir/SimilarityMeasure.cpp.o.requires:
+
+.PHONY : CMakeFiles/test4.dir/SimilarityMeasure.cpp.o.requires
+
+CMakeFiles/test4.dir/SimilarityMeasure.cpp.o.provides: CMakeFiles/test4.dir/SimilarityMeasure.cpp.o.requires
+	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/SimilarityMeasure.cpp.o.provides.build
+.PHONY : CMakeFiles/test4.dir/SimilarityMeasure.cpp.o.provides
+
+CMakeFiles/test4.dir/SimilarityMeasure.cpp.o.provides.build: CMakeFiles/test4.dir/SimilarityMeasure.cpp.o
+
+
+CMakeFiles/test4.dir/ImageUtils.cpp.o: CMakeFiles/test4.dir/flags.make
+CMakeFiles/test4.dir/ImageUtils.cpp.o: ../ImageUtils.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/test4.dir/ImageUtils.cpp.o"
+	/usr/bin/g++-5  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test4.dir/ImageUtils.cpp.o -c /home/phyorch/MasterResearch/Experiment/ImageUtils.cpp
+
+CMakeFiles/test4.dir/ImageUtils.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test4.dir/ImageUtils.cpp.i"
+	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/phyorch/MasterResearch/Experiment/ImageUtils.cpp > CMakeFiles/test4.dir/ImageUtils.cpp.i
+
+CMakeFiles/test4.dir/ImageUtils.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test4.dir/ImageUtils.cpp.s"
+	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/phyorch/MasterResearch/Experiment/ImageUtils.cpp -o CMakeFiles/test4.dir/ImageUtils.cpp.s
+
+CMakeFiles/test4.dir/ImageUtils.cpp.o.requires:
+
+.PHONY : CMakeFiles/test4.dir/ImageUtils.cpp.o.requires
+
+CMakeFiles/test4.dir/ImageUtils.cpp.o.provides: CMakeFiles/test4.dir/ImageUtils.cpp.o.requires
+	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/ImageUtils.cpp.o.provides.build
+.PHONY : CMakeFiles/test4.dir/ImageUtils.cpp.o.provides
+
+CMakeFiles/test4.dir/ImageUtils.cpp.o.provides.build: CMakeFiles/test4.dir/ImageUtils.cpp.o
+
+
 # Object files for target test4
 test4_OBJECTS = \
 "CMakeFiles/test4.dir/test4_point_cloud_transfer.cpp.o" \
 "CMakeFiles/test4.dir/Disparity.cpp.o" \
-"CMakeFiles/test4.dir/RealEquipment.cpp.o"
+"CMakeFiles/test4.dir/RealEquipment.cpp.o" \
+"CMakeFiles/test4.dir/SimilarityMeasure.cpp.o" \
+"CMakeFiles/test4.dir/ImageUtils.cpp.o"
 
 # External object files for target test4
 test4_EXTERNAL_OBJECTS =
@@ -141,6 +191,8 @@ test4_EXTERNAL_OBJECTS =
 test4: CMakeFiles/test4.dir/test4_point_cloud_transfer.cpp.o
 test4: CMakeFiles/test4.dir/Disparity.cpp.o
 test4: CMakeFiles/test4.dir/RealEquipment.cpp.o
+test4: CMakeFiles/test4.dir/SimilarityMeasure.cpp.o
+test4: CMakeFiles/test4.dir/ImageUtils.cpp.o
 test4: CMakeFiles/test4.dir/build.make
 test4: /usr/local/lib/libhesaiLidarSDK.so
 test4: /usr/local/zed/lib/libsl_input.so
@@ -415,7 +467,7 @@ test4: /usr/lib/x86_64-linux-gnu/libvtkDICOMParser-6.2.so.6.2.0
 test4: /usr/lib/x86_64-linux-gnu/libvtkmetaio-6.2.so.6.2.0
 test4: /usr/lib/x86_64-linux-gnu/libz.so
 test4: CMakeFiles/test4.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable test4"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable test4"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/test4.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -426,6 +478,8 @@ CMakeFiles/test4.dir/build: test4
 CMakeFiles/test4.dir/requires: CMakeFiles/test4.dir/test4_point_cloud_transfer.cpp.o.requires
 CMakeFiles/test4.dir/requires: CMakeFiles/test4.dir/Disparity.cpp.o.requires
 CMakeFiles/test4.dir/requires: CMakeFiles/test4.dir/RealEquipment.cpp.o.requires
+CMakeFiles/test4.dir/requires: CMakeFiles/test4.dir/SimilarityMeasure.cpp.o.requires
+CMakeFiles/test4.dir/requires: CMakeFiles/test4.dir/ImageUtils.cpp.o.requires
 
 .PHONY : CMakeFiles/test4.dir/requires
 

@@ -301,6 +301,7 @@ ImageUtils.cpp.o:
 	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/ImageUtils.cpp.o
 	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/ImageUtils.cpp.o
 	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/ImageUtils.cpp.o
+	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/ImageUtils.cpp.o
 	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/ImageUtils.cpp.o
 	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/ImageUtils.cpp.o
 	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/ImageUtils.cpp.o
@@ -316,6 +317,7 @@ ImageUtils.cpp.i:
 	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/ImageUtils.cpp.i
 	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/ImageUtils.cpp.i
 	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/ImageUtils.cpp.i
+	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/ImageUtils.cpp.i
 	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/ImageUtils.cpp.i
 	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/ImageUtils.cpp.i
 	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/ImageUtils.cpp.i
@@ -331,6 +333,7 @@ ImageUtils.cpp.s:
 	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/ImageUtils.cpp.s
 	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/ImageUtils.cpp.s
 	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/ImageUtils.cpp.s
+	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/ImageUtils.cpp.s
 	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/ImageUtils.cpp.s
 	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/ImageUtils.cpp.s
 	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/ImageUtils.cpp.s
@@ -394,6 +397,7 @@ SimilarityMeasure.cpp.o:
 	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/SimilarityMeasure.cpp.o
 	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/SimilarityMeasure.cpp.o
 	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/SimilarityMeasure.cpp.o
+	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/SimilarityMeasure.cpp.o
 	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/SimilarityMeasure.cpp.o
 	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/SimilarityMeasure.cpp.o
 	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/SimilarityMeasure.cpp.o
@@ -409,6 +413,7 @@ SimilarityMeasure.cpp.i:
 	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/SimilarityMeasure.cpp.i
 	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/SimilarityMeasure.cpp.i
 	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/SimilarityMeasure.cpp.i
+	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/SimilarityMeasure.cpp.i
 	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/SimilarityMeasure.cpp.i
 	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/SimilarityMeasure.cpp.i
 	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/SimilarityMeasure.cpp.i
@@ -424,6 +429,7 @@ SimilarityMeasure.cpp.s:
 	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/SimilarityMeasure.cpp.s
 	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/SimilarityMeasure.cpp.s
 	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/SimilarityMeasure.cpp.s
+	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/SimilarityMeasure.cpp.s
 	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/SimilarityMeasure.cpp.s
 	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/SimilarityMeasure.cpp.s
 	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/SimilarityMeasure.cpp.s

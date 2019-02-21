@@ -56,7 +56,7 @@ target_link_libraries(test3 hesaiLidarSDK
                             ${Boost_LIBRARIES}
                             ${PCL_LIBRARIES})
 
-add_executable(test4 test4_point_cloud_transfer.cpp Disparity.cpp RealEquipment.cpp RealEquipment.h Disparity.h)
+add_executable(test4 test4_point_cloud_transfer.cpp Disparity.cpp RealEquipment.cpp SimilarityMeasure.cpp ImageUtils.cpp RealEquipment.h Disparity.h SimilarityMeasure.h ImageUtils.h)
 target_link_libraries(test4 hesaiLidarSDK
                             ${ZED_LIBRARIES}
                             ${OpenCV_LIBRARIES}
