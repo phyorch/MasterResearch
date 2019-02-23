@@ -608,14 +608,16 @@ float PointCloudAlignment::chamferDistanceElem(pcl::PointXYZ &point, pcl::PointC
 }
 
 float PointCloudAlignment::chamferDistance(pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudCamera, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudLiDAR) {
-    float distance;
+    float distance = 0;
     for(int i=0; i<pointCloudCamera->points.size(); i++){
         distance += chamferDistanceElem(pointCloudCamera->points[i], pointCloudLiDAR);
     }
     for(int i=0; i<pointCloudLiDAR->points.size(); i++){
         distance +=chamferDistanceElem(pointCloudLiDAR->points[i], pointCloudCamera);
     }
-    distance = distance / (pointCloudLiDAR->points.size() + pointCloudCamera->points.size());
+    if(distance>0){
+        distance = distance / (pointCloudLiDAR->points.size() + pointCloudCamera->points.size());
+    }
     cout << pointCloudCamera->points.size() << endl << pointCloudLiDAR->points.size() << endl;
     return distance;
 }

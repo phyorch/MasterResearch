@@ -214,9 +214,13 @@ int main(){
     cv::Point window_region(25, 50);
     cv::Mat edge_map_lidar;
     Refinement::slideElimination2(depth_map_lidar1, edge_map_lidar, window_size, window_range, 1.0);
-    ImageUtils::colorTransfer(edge_map_lidar, left_image, 70);
-    ImageUtils::colorTransfer(depth_map_lidar1, left_image, 70);
-    cv::imwrite(test1_path + "test.png", left_image);
+    cv::Point size(2, 2);
+    cv::Mat dyed;
+    ImageUtils::neighborDyeing(depth_map_lidar1, size, dyed);
+    cv::Mat back = cv::Mat::zeros(depth_map_lidar1.rows, depth_map_lidar1.cols, depth_map_lidar1.type());
+    ImageUtils::colorTransfer(dyed, back, 40);
+    //ImageUtils::colorTransfer(depth_map_lidar1, left_image, 70);
+    cv::imwrite(test1_path + "test.png", back);
 
 
 

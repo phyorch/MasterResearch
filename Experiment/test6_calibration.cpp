@@ -20,6 +20,7 @@
 #include <iostream>
 #include <chrono>
 #include <time.h>
+#include <random>
 
 #include "Disparity.h"
 #include "SimilarityMeasure.h"
@@ -42,20 +43,23 @@ string depth_name = "/depth/depth1.png";
 
 
 int step = 1;
-float point_cnt = 0;
-float vox_volum = 1.0;
-float last_distance;
-int feedback = 3;
+int out = 1;
+float degreex = 85;
+float degreey = 0;
+float degreez = 0;
 
-float degreex = 70;
-float degreey = 70;
-float degreez = 70;
-float tx = 0;
-float ty = 0;
-float tz = 0;
+int time1 = int(time(0));
+default_random_engine eng(time1);
+uniform_int_distribution<unsigned> u(0, 20);
+float tx = (float(u(eng)) - 10) / 10;
+float ty = (float(u(eng)) - 10) / 10;
+float tz = (float(u(eng)) - 10) / 10;
 
-float threshold1 = 60; //150
-float threshold2 = 3.0;
+float threshold1 = 40; //150 65
+float threshold2 = 3.5;
+double bound_rotation = 0.8;
+double bound_translation = 1.0;
+
 float cnt_end = 1;
 int threshold_cnt = 0;
 auto time_start = chrono::system_clock::now();
@@ -63,10 +67,14 @@ auto time_end = chrono::system_clock::now();
 
 double sigma0 = 0.0002;
 double sigma3 = 0.03;
-double sigma2 = 0.1;
-double sigma1 = 0.5;
-int lambda = 15;
+double sigma2 = 0.12;
+double sigma1 = 0.45;
+int lambda = 25;
 
+float point_cnt = 0;
+float vox_volum = 1.0;
+float original_distance, last_distance;
+int feedback = 3;
 float p2p_distance;
 float edge_distance;
 
@@ -172,7 +180,9 @@ libcmaes::FitFunc KL_divergence = [](const double *x, const double N){
 
     //lidar.projectData(lidar_path1 + cloud_name + ".pcd", depth_map_camera1, depth_map_lidar1, point_cloud_lidar_part, PCD, KITTI, XYZIT, C2L, CV);
     //lidar.projectData(lidar_path2 + "1677.206636.pcd", depth_map_lidar2, point_cloud_part, PCD, KITTI, XYZIT, C2L, CV);
-    lidar.projectData(data_root + data_name + cloud_name, depth_map_lidar1, point_cloud_lidar_part, XYZI, CV);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr temp_cloud1(new pcl::PointCloud<pcl::PointXYZ>);
+    lidar.projectData(data_root + data_name + cloud_name, depth_map_lidar1, temp_cloud1, XYZI, CV);
+    point_cloud_lidar_part = temp_cloud1;
 //    pcl::PCDWriter writer;
 //    writer.write<pcl::PointXYZ>("/home/phyorch/Data/test.pcd", *point_cloud_camera_part, false);
 //    writer.write<pcl::PointXYZ>("/home/phyorch/Data/test2.pcd", *point_cloud_lidar_part, false);
@@ -226,17 +236,29 @@ libcmaes::FitFunc KL_divergence = [](const double *x, const double N){
 //        viewer.spinOnce ();
 //    }
 
-        if(point_cloud_lidar_part->points.size()<100){
+        original_distance = PointCloudAlignment::chamferDistance(point_cloud_camera_filtered, point_cloud_lidar_filtered);
+
+        if(point_cloud_lidar_part->points.size()==0){
             last_distance = 10000;
         }
-        else{
-            last_distance = PointCloudAlignment::chamferDistance(point_cloud_camera_filtered, point_cloud_lidar_filtered);
+        else if(point_cloud_lidar_part->points.size()>=10000){
+            last_distance = original_distance + float(25000) / float(point_cloud_lidar_part->points.size() - 9800);
         }
+        else{
+            last_distance = original_distance + float(13750000) / float(point_cloud_lidar_part->points.size() + 1000);
+        }
+
     }
 
     if(step==2){
         //last_distance = HistogramMeasure::point2PointDistanceTotal(depth_map_camera1, depth_map_lidar1, diagonal_points_set1);
-        last_distance = HistogramMeasure::point2PointDistanceFrame(depth_map_camera1, depth_map_lidar1);
+        original_distance = HistogramMeasure::point2PointDistanceFrame(depth_map_camera1, depth_map_lidar1);
+        if(point_cloud_lidar_part->points.size()>=10080){
+            last_distance = original_distance + 10000 / (float(point_cloud_lidar_part->points.size() + 1000) - 10000);
+        }
+        else{
+            last_distance = original_distance + float(13750000) / float(point_cloud_lidar_part->points.size() + 1000);
+        }
     }
 
     if(step==3){
@@ -279,38 +301,46 @@ libcmaes::FitFunc KL_divergence = [](const double *x, const double N){
 
     }
 
-    if(step==1){
-        if(last_distance<threshold1){
-            threshold_cnt++;
-        }
-        if(threshold_cnt==cnt_end){
-            time_end = chrono::system_clock::now();
-            auto duration = chrono::duration_cast<chrono::microseconds>(time_end - time_start);
-            cout << "Generation is:   " << cnt << endl << "time is:   " << double(duration.count()) * chrono::microseconds::period::num / chrono::microseconds::period::den << endl;
-            //lidar.projectData(data_root + data_name + cloud_name, depth_map_lidar1, point_cloud_lidar_part, XYZI, CV);
-            cout << "calibration result is " << endl << rotationUpdate << endl << translationUpdate << endl;
-            cout <<"iteration " << cnt << endl << "distance is " << endl << last_distance << endl;
-            ImageUtils::colorTransfer(depth_map_lidar1, left_image, 70);
-            cv::imwrite(lidar_image_output_path1 + "end" + "___" + to_string(last_distance) + ".png", left_image);
-            exit(0);
+    for(int i=0; i<translationUpdate.rows; i++){
+        if(abs(translationUpdate.at<float>(i,0))>1){
+            last_distance = last_distance + pow(translationUpdate.at<float>(i,0), 8);
         }
     }
-    else if(step==2){
-        if(step==2){
-            if(last_distance<threshold2){
-                threshold_cnt++;
-            }
-            if(threshold_cnt==2){
-                time_end = chrono::system_clock::now();
-                auto duration = chrono::duration_cast<chrono::microseconds>(time_end - time_start);
-                cout << "Generation is:   " << cnt << endl << "time is:   " << double(duration.count()) * chrono::microseconds::period::num / chrono::microseconds::period::den << endl;
-                cout << "calibration result is " << endl << rotationUpdate << endl << translationUpdate << endl;
-                cout <<"iteration " << cnt << endl << "distance is " << endl << last_distance << endl;
-                ImageUtils::colorTransfer(depth_map_lidar1, left_image, 70);
-                cv::imwrite(lidar_image_output_path1 + "end" + "___" + to_string(last_distance) + ".png", left_image);
-                exit(0);
+
+    if(step==1) {
+        if (last_distance < threshold1) {
+            threshold_cnt++;
+        }
+    }
+    else if(step==2) {
+        if (last_distance < threshold2) {
+            threshold_cnt++;
+        }
+    }
+
+    if(threshold_cnt==cnt_end){
+        time_end = chrono::system_clock::now();
+        auto duration = chrono::duration_cast<chrono::microseconds>(time_end - time_start);
+        cout << "Generation is:   " << cnt << endl << "time is:   " << double(duration.count()) * chrono::microseconds::period::num / chrono::microseconds::period::den << endl;
+        //lidar.projectData(data_root + data_name + cloud_name, depth_map_lidar1, point_cloud_lidar_part, XYZI, CV);
+        cout << "calibration result is " << endl << rotationUpdate << endl << translationUpdate << endl;
+        cout <<"iteration " << cnt << endl << "originial distance is " << endl << original_distance << endl << "last distance is " << endl << last_distance << endl;
+        ImageUtils::colorTransfer(depth_map_lidar1, left_image, 70);
+        cv::imwrite(lidar_image_output_path1 + "end" + "___" + to_string(last_distance) + ".png", left_image);
+        if(out==1) {
+            ofstream outFile1(data_root + "output.txt", ios::app);
+            ofstream outFile2(data_root + "output2.txt", ios::app);
+            if (step == 1) {
+                outFile1 << "Rotation:   " << endl << rotationUpdate << endl << "translation:   " << endl
+                         << translationUpdate << endl << "last distance:   " << last_distance << endl << endl;
+                outFile1.close();
+            } else if (step == 2) {
+                outFile2 << "Rotation:   " << endl << rotationUpdate << endl << "translation:   " << endl
+                         << translationUpdate << endl << "last distance:   " << last_distance << endl << endl;
+                outFile2.close();
             }
         }
+        exit(0);
     }
 
     return last_distance;
@@ -395,23 +425,10 @@ int main(){
 //    -0.04472775, 0.048996363, -0.99779695,
 //    0.9980216, -0.041983765, -0.046799418);
 //    lid_to_cam_translation = (cv::Mat_<float>(3,1) << 1.1301979, 0.97658879, 0.42073125);
-//    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << -0.0089815566, -0.99956065, 0.028245188,
-//    -0.032063365, -0.027943928, -0.99909514,
-//    0.9994455, -0.0098790647, -0.031798299);
-//    lid_to_cam_translation = (cv::Mat_<float>(3,1) << -0.11398247, 0.079707384, -0.44202891);
-
-//    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << -0.64282858, -0.76496416, -0.040015399,
-//    -0.56327069, 0.50744879, -0.65209037,
-//    0.51913154, -0.39664283, -0.75708449);
-//    lid_to_cam_translation = (cv::Mat_<float>(3,1) << 0.088067971, 0.41501367, -0.75848615);
-//    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << -0.012246537, -0.99932748, 0.034562796,
-//    -0.05547506, -0.033833131, -0.99788666,
-//    0.99838495, -0.014138029, -0.055023413);
-//    lid_to_cam_translation = (cv::Mat_<float>(3,1) << -0.63503736, 0.67444527, -0.39645803);
-//    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << -0.0088664927, -0.99991834, -0.0092023546,
-//    0.00049520453, 0.0091983248, -0.99995756,
-//    0.99996054, -0.0088706734, 0.00041360725);
-//    lid_to_cam_translation = (cv::Mat_<float>(3,1) << -0.11398247, 0.079707384, -0.44202891);
+//    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << 0.015214218, -0.89969772, -0.43624821,
+//    -0.30952004, 0.41063052, -0.85765958,
+//    0.95077121, 0.14807618, -0.27222705);
+//    lid_to_cam_translation = (cv::Mat_<float>(3,1) << 0.61746883, -0.44933209, -0.93169153);
 
     cv::Mat cam0_to_cam2_rotation, cam0_to_cam2_translation;
     cam0_to_cam2_rotation = (cv::Mat_<float>(3,3) << 9.999758e-01, -5.267463e-03, -4.552439e-03,
@@ -489,6 +506,17 @@ int main(){
     cnt = 0;
     int dim = 6;
     vector<double> test_vec(dim, 0);
+    double lower_bound [dim], upper_bound [dim];
+    for(int i=0; i<dim; i++){
+        if(i<3){
+            lower_bound[i] = -bound_rotation;
+            upper_bound[i] = bound_rotation;
+        }
+        else{
+            lower_bound[i] = -bound_translation;
+            upper_bound[i] = bound_translation;
+        }
+    }
     Transfer::mat2VectorSeperate(lid_to_cam_rotation, lid_to_cam_translation, test_vec);
     libcmaes::CMAParameters<> cma_para;
     if(step==1){
@@ -503,6 +531,8 @@ int main(){
         libcmaes::CMAParameters<> cma_para3(test_vec, sigma3, lambda);
         cma_para = cma_para3;
     }
+//    cma_para.set_x0(lower_bound, upper_bound);
+//    libcmaes::GenoPheno<libcmaes::pwqBoundStrategy> gp(lower_bound, upper_bound, dim);
     cma_para.set_fplot(data_root + "output.dat");
 
 
@@ -510,8 +540,13 @@ int main(){
 //    fs1["CameraDepthMap"] >> depth_map_camera1;
     left_image = cv::imread(data_root + data_name + image_name);
     depth_map_camera1 = cv::imread(data_root + data_name + "/depth/depth1.png", CV_8UC1);
-    lidar.projectData(data_root + data_name + cloud_name, depth_map_lidar1, point_cloud_lidar_part, XYZI, CV);
-    ImageUtils::colorTransfer(depth_map_lidar1, left_image, 70);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr temp_cloud2(new pcl::PointCloud<pcl::PointXYZ>);
+    lidar.projectData(data_root + data_name + cloud_name, depth_map_lidar1, temp_cloud2, XYZI, CV);
+    point_cloud_lidar_part = temp_cloud2;
+    cv::Point size(3, 3);
+    cv::Mat dyed;
+    ImageUtils::neighborDyeing(depth_map_lidar1, size, dyed);
+    ImageUtils::colorTransfer(dyed, left_image, 70);
     //ImageUtils::drawRectSet(left_image, diagonal_points_set1);
     cv::imwrite(lidar_image_output_path1 + "_start.png", left_image);
 
@@ -541,14 +576,14 @@ int main(){
         sor.setInputCloud(point_cloud_lidar_downsample);
         sor.filter(*point_cloud_lidar_filtered);
 
-        pcl::visualization::PCLVisualizer viewer ("test");
-        pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> source_cloud_color_handler (point_cloud_camera_filtered, 230, 20, 20);
-        viewer.addPointCloud(point_cloud_camera_filtered, source_cloud_color_handler, "transformed_cloud");
-        pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> transformed_cloud_color_handler (point_cloud_lidar_filtered, 255, 255, 255);
-        viewer.addPointCloud(point_cloud_lidar_filtered, transformed_cloud_color_handler, "camera_cloud");
-        while (!viewer.wasStopped ()) { // Display the visualiser until 'q' key is pressed
-            viewer.spinOnce ();
-        }
+//        pcl::visualization::PCLVisualizer viewer ("test");
+//        pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> source_cloud_color_handler (point_cloud_camera, 230, 20, 20);
+//        viewer.addPointCloud(point_cloud_camera, source_cloud_color_handler, "transformed_cloud");
+//        pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> transformed_cloud_color_handler (transformed_lidar_cloud, 255, 255, 255);
+//        viewer.addPointCloud(transformed_lidar_cloud, transformed_cloud_color_handler, "camera_cloud");
+//        while (!viewer.wasStopped ()) { // Display the visualiser until 'q' key is pressed
+//            viewer.spinOnce ();
+//        }
 
         if(point_cloud_lidar_part->points.size()<100){
             last_distance = 10000;
@@ -579,9 +614,6 @@ int main(){
         last_distance = p2p_distance + edge_distance;
     }
     cout << "initial distance is:   " << last_distance << endl;
-
-
-
 
     cma_para.set_algo(BIPOP_CMAES);
     libcmaes::CMASolutions cmasols = libcmaes::cmaes<>(KL_divergence, cma_para);

@@ -143,6 +143,7 @@ int main(){
     cv::Mat output2;
     cv::Mat filter = cv::getGaussianKernel(13, 2.0, CV_32F);
     Refinement::gaussianBlurModified(output, output2, 13);
+    cv::imwrite(test1_output_path, output2);
     cv::Mat three = cv::Mat::zeros(output2.rows, output2.cols, CV_8UC3);
     vector<cv::Mat> channels;
     output2.convertTo(output2, CV_8UC1);
