@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/phyorch/MasterResearch/Experiment/Disparity.cpp" "/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test2.dir/Disparity.cpp.o"
   "/home/phyorch/MasterResearch/Experiment/RealEquipment.cpp" "/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test2.dir/RealEquipment.cpp.o"
+  "/home/phyorch/MasterResearch/Experiment/Sensor.cpp" "/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test2.dir/Sensor.cpp.o"
   "/home/phyorch/MasterResearch/Experiment/test2_data_capturing.cpp" "/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles/test2.dir/test2_data_capturing.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

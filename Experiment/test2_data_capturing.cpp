@@ -19,7 +19,7 @@
 #include <pcl/point_cloud.h>
 #include <pcl/io/pcd_io.h>
 
-#include "Disparity.h"
+#include "Sensor.h"
 #include "RealEquipment.h"
 #include "hesaiLidarSDK.h"
 

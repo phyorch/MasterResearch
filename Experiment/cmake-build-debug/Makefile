@@ -111,6 +111,32 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named test12
+
+# Build rule for target.
+test12: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test12
+.PHONY : test12
+
+# fast build rule for target.
+test12/fast:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/build
+.PHONY : test12/fast
+
+#=============================================================================
+# Target rules for targets named test11
+
+# Build rule for target.
+test11: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test11
+.PHONY : test11
+
+# fast build rule for target.
+test11/fast:
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/build
+.PHONY : test11/fast
+
+#=============================================================================
 # Target rules for targets named test0
 
 # Build rule for target.
@@ -122,6 +148,19 @@ test0: cmake_check_build_system
 test0/fast:
 	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/build
 .PHONY : test0/fast
+
+#=============================================================================
+# Target rules for targets named test10
+
+# Build rule for target.
+test10: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test10
+.PHONY : test10
+
+# fast build rule for target.
+test10/fast:
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/build
+.PHONY : test10/fast
 
 #=============================================================================
 # Target rules for targets named test5
@@ -240,56 +279,62 @@ test8/fast:
 	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/build
 .PHONY : test8/fast
 
-Disparity.o: Disparity.cpp.o
+Calibration.o: Calibration.cpp.o
 
-.PHONY : Disparity.o
+.PHONY : Calibration.o
 
 # target to build an object file
-Disparity.cpp.o:
-	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/Disparity.cpp.o
-	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/Disparity.cpp.o
-	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/Disparity.cpp.o
-	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/Disparity.cpp.o
-	$(MAKE) -f CMakeFiles/test2.dir/build.make CMakeFiles/test2.dir/Disparity.cpp.o
-	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/Disparity.cpp.o
-	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/Disparity.cpp.o
-	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/Disparity.cpp.o
-	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/Disparity.cpp.o
-.PHONY : Disparity.cpp.o
+Calibration.cpp.o:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/Calibration.cpp.o
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/Calibration.cpp.o
+	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/Calibration.cpp.o
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/Calibration.cpp.o
+	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/Calibration.cpp.o
+	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/Calibration.cpp.o
+	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/Calibration.cpp.o
+	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/Calibration.cpp.o
+	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/Calibration.cpp.o
+	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/Calibration.cpp.o
+	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/Calibration.cpp.o
+.PHONY : Calibration.cpp.o
 
-Disparity.i: Disparity.cpp.i
+Calibration.i: Calibration.cpp.i
 
-.PHONY : Disparity.i
+.PHONY : Calibration.i
 
 # target to preprocess a source file
-Disparity.cpp.i:
-	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/Disparity.cpp.i
-	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/Disparity.cpp.i
-	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/Disparity.cpp.i
-	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/Disparity.cpp.i
-	$(MAKE) -f CMakeFiles/test2.dir/build.make CMakeFiles/test2.dir/Disparity.cpp.i
-	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/Disparity.cpp.i
-	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/Disparity.cpp.i
-	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/Disparity.cpp.i
-	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/Disparity.cpp.i
-.PHONY : Disparity.cpp.i
+Calibration.cpp.i:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/Calibration.cpp.i
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/Calibration.cpp.i
+	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/Calibration.cpp.i
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/Calibration.cpp.i
+	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/Calibration.cpp.i
+	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/Calibration.cpp.i
+	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/Calibration.cpp.i
+	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/Calibration.cpp.i
+	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/Calibration.cpp.i
+	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/Calibration.cpp.i
+	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/Calibration.cpp.i
+.PHONY : Calibration.cpp.i
 
-Disparity.s: Disparity.cpp.s
+Calibration.s: Calibration.cpp.s
 
-.PHONY : Disparity.s
+.PHONY : Calibration.s
 
 # target to generate assembly for a file
-Disparity.cpp.s:
-	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/Disparity.cpp.s
-	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/Disparity.cpp.s
-	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/Disparity.cpp.s
-	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/Disparity.cpp.s
-	$(MAKE) -f CMakeFiles/test2.dir/build.make CMakeFiles/test2.dir/Disparity.cpp.s
-	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/Disparity.cpp.s
-	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/Disparity.cpp.s
-	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/Disparity.cpp.s
-	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/Disparity.cpp.s
-.PHONY : Disparity.cpp.s
+Calibration.cpp.s:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/Calibration.cpp.s
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/Calibration.cpp.s
+	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/Calibration.cpp.s
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/Calibration.cpp.s
+	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/Calibration.cpp.s
+	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/Calibration.cpp.s
+	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/Calibration.cpp.s
+	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/Calibration.cpp.s
+	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/Calibration.cpp.s
+	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/Calibration.cpp.s
+	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/Calibration.cpp.s
+.PHONY : Calibration.cpp.s
 
 ImageUtils.o: ImageUtils.cpp.o
 
@@ -297,7 +342,10 @@ ImageUtils.o: ImageUtils.cpp.o
 
 # target to build an object file
 ImageUtils.cpp.o:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/ImageUtils.cpp.o
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/ImageUtils.cpp.o
 	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/ImageUtils.cpp.o
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/ImageUtils.cpp.o
 	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/ImageUtils.cpp.o
 	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/ImageUtils.cpp.o
 	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/ImageUtils.cpp.o
@@ -313,7 +361,10 @@ ImageUtils.i: ImageUtils.cpp.i
 
 # target to preprocess a source file
 ImageUtils.cpp.i:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/ImageUtils.cpp.i
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/ImageUtils.cpp.i
 	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/ImageUtils.cpp.i
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/ImageUtils.cpp.i
 	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/ImageUtils.cpp.i
 	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/ImageUtils.cpp.i
 	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/ImageUtils.cpp.i
@@ -329,7 +380,10 @@ ImageUtils.s: ImageUtils.cpp.s
 
 # target to generate assembly for a file
 ImageUtils.cpp.s:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/ImageUtils.cpp.s
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/ImageUtils.cpp.s
 	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/ImageUtils.cpp.s
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/ImageUtils.cpp.s
 	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/ImageUtils.cpp.s
 	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/ImageUtils.cpp.s
 	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/ImageUtils.cpp.s
@@ -345,8 +399,12 @@ RealEquipment.o: RealEquipment.cpp.o
 
 # target to build an object file
 RealEquipment.cpp.o:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/RealEquipment.cpp.o
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/RealEquipment.cpp.o
 	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/RealEquipment.cpp.o
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/RealEquipment.cpp.o
 	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/RealEquipment.cpp.o
+	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/RealEquipment.cpp.o
 	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/RealEquipment.cpp.o
 	$(MAKE) -f CMakeFiles/test2.dir/build.make CMakeFiles/test2.dir/RealEquipment.cpp.o
 	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/RealEquipment.cpp.o
@@ -361,8 +419,12 @@ RealEquipment.i: RealEquipment.cpp.i
 
 # target to preprocess a source file
 RealEquipment.cpp.i:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/RealEquipment.cpp.i
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/RealEquipment.cpp.i
 	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/RealEquipment.cpp.i
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/RealEquipment.cpp.i
 	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/RealEquipment.cpp.i
+	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/RealEquipment.cpp.i
 	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/RealEquipment.cpp.i
 	$(MAKE) -f CMakeFiles/test2.dir/build.make CMakeFiles/test2.dir/RealEquipment.cpp.i
 	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/RealEquipment.cpp.i
@@ -377,8 +439,12 @@ RealEquipment.s: RealEquipment.cpp.s
 
 # target to generate assembly for a file
 RealEquipment.cpp.s:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/RealEquipment.cpp.s
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/RealEquipment.cpp.s
 	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/RealEquipment.cpp.s
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/RealEquipment.cpp.s
 	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/RealEquipment.cpp.s
+	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/RealEquipment.cpp.s
 	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/RealEquipment.cpp.s
 	$(MAKE) -f CMakeFiles/test2.dir/build.make CMakeFiles/test2.dir/RealEquipment.cpp.s
 	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/RealEquipment.cpp.s
@@ -387,80 +453,65 @@ RealEquipment.cpp.s:
 	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/RealEquipment.cpp.s
 .PHONY : RealEquipment.cpp.s
 
-SimilarityMeasure.o: SimilarityMeasure.cpp.o
+Sensor.o: Sensor.cpp.o
 
-.PHONY : SimilarityMeasure.o
-
-# target to build an object file
-SimilarityMeasure.cpp.o:
-	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/SimilarityMeasure.cpp.o
-	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/SimilarityMeasure.cpp.o
-	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/SimilarityMeasure.cpp.o
-	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/SimilarityMeasure.cpp.o
-	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/SimilarityMeasure.cpp.o
-	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/SimilarityMeasure.cpp.o
-	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/SimilarityMeasure.cpp.o
-	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/SimilarityMeasure.cpp.o
-.PHONY : SimilarityMeasure.cpp.o
-
-SimilarityMeasure.i: SimilarityMeasure.cpp.i
-
-.PHONY : SimilarityMeasure.i
-
-# target to preprocess a source file
-SimilarityMeasure.cpp.i:
-	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/SimilarityMeasure.cpp.i
-	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/SimilarityMeasure.cpp.i
-	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/SimilarityMeasure.cpp.i
-	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/SimilarityMeasure.cpp.i
-	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/SimilarityMeasure.cpp.i
-	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/SimilarityMeasure.cpp.i
-	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/SimilarityMeasure.cpp.i
-	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/SimilarityMeasure.cpp.i
-.PHONY : SimilarityMeasure.cpp.i
-
-SimilarityMeasure.s: SimilarityMeasure.cpp.s
-
-.PHONY : SimilarityMeasure.s
-
-# target to generate assembly for a file
-SimilarityMeasure.cpp.s:
-	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/SimilarityMeasure.cpp.s
-	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/SimilarityMeasure.cpp.s
-	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/SimilarityMeasure.cpp.s
-	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/SimilarityMeasure.cpp.s
-	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/SimilarityMeasure.cpp.s
-	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/SimilarityMeasure.cpp.s
-	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/SimilarityMeasure.cpp.s
-	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/SimilarityMeasure.cpp.s
-.PHONY : SimilarityMeasure.cpp.s
-
-StereoGC.o: StereoGC.cpp.o
-
-.PHONY : StereoGC.o
+.PHONY : Sensor.o
 
 # target to build an object file
-StereoGC.cpp.o:
-	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/StereoGC.cpp.o
-.PHONY : StereoGC.cpp.o
+Sensor.cpp.o:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/Sensor.cpp.o
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/Sensor.cpp.o
+	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/Sensor.cpp.o
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/Sensor.cpp.o
+	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/Sensor.cpp.o
+	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/Sensor.cpp.o
+	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/Sensor.cpp.o
+	$(MAKE) -f CMakeFiles/test2.dir/build.make CMakeFiles/test2.dir/Sensor.cpp.o
+	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/Sensor.cpp.o
+	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/Sensor.cpp.o
+	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/Sensor.cpp.o
+	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/Sensor.cpp.o
+.PHONY : Sensor.cpp.o
 
-StereoGC.i: StereoGC.cpp.i
+Sensor.i: Sensor.cpp.i
 
-.PHONY : StereoGC.i
+.PHONY : Sensor.i
 
 # target to preprocess a source file
-StereoGC.cpp.i:
-	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/StereoGC.cpp.i
-.PHONY : StereoGC.cpp.i
+Sensor.cpp.i:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/Sensor.cpp.i
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/Sensor.cpp.i
+	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/Sensor.cpp.i
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/Sensor.cpp.i
+	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/Sensor.cpp.i
+	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/Sensor.cpp.i
+	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/Sensor.cpp.i
+	$(MAKE) -f CMakeFiles/test2.dir/build.make CMakeFiles/test2.dir/Sensor.cpp.i
+	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/Sensor.cpp.i
+	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/Sensor.cpp.i
+	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/Sensor.cpp.i
+	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/Sensor.cpp.i
+.PHONY : Sensor.cpp.i
 
-StereoGC.s: StereoGC.cpp.s
+Sensor.s: Sensor.cpp.s
 
-.PHONY : StereoGC.s
+.PHONY : Sensor.s
 
 # target to generate assembly for a file
-StereoGC.cpp.s:
-	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/StereoGC.cpp.s
-.PHONY : StereoGC.cpp.s
+Sensor.cpp.s:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/Sensor.cpp.s
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/Sensor.cpp.s
+	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/Sensor.cpp.s
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/Sensor.cpp.s
+	$(MAKE) -f CMakeFiles/test5.dir/build.make CMakeFiles/test5.dir/Sensor.cpp.s
+	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/Sensor.cpp.s
+	$(MAKE) -f CMakeFiles/test9.dir/build.make CMakeFiles/test9.dir/Sensor.cpp.s
+	$(MAKE) -f CMakeFiles/test2.dir/build.make CMakeFiles/test2.dir/Sensor.cpp.s
+	$(MAKE) -f CMakeFiles/test4.dir/build.make CMakeFiles/test4.dir/Sensor.cpp.s
+	$(MAKE) -f CMakeFiles/test6.dir/build.make CMakeFiles/test6.dir/Sensor.cpp.s
+	$(MAKE) -f CMakeFiles/test7.dir/build.make CMakeFiles/test7.dir/Sensor.cpp.s
+	$(MAKE) -f CMakeFiles/test8.dir/build.make CMakeFiles/test8.dir/Sensor.cpp.s
+.PHONY : Sensor.cpp.s
 
 test0.o: test0.cpp.o
 
@@ -488,6 +539,87 @@ test0.s: test0.cpp.s
 test0.cpp.s:
 	$(MAKE) -f CMakeFiles/test0.dir/build.make CMakeFiles/test0.dir/test0.cpp.s
 .PHONY : test0.cpp.s
+
+test10_PnP.o: test10_PnP.cpp.o
+
+.PHONY : test10_PnP.o
+
+# target to build an object file
+test10_PnP.cpp.o:
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/test10_PnP.cpp.o
+.PHONY : test10_PnP.cpp.o
+
+test10_PnP.i: test10_PnP.cpp.i
+
+.PHONY : test10_PnP.i
+
+# target to preprocess a source file
+test10_PnP.cpp.i:
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/test10_PnP.cpp.i
+.PHONY : test10_PnP.cpp.i
+
+test10_PnP.s: test10_PnP.cpp.s
+
+.PHONY : test10_PnP.s
+
+# target to generate assembly for a file
+test10_PnP.cpp.s:
+	$(MAKE) -f CMakeFiles/test10.dir/build.make CMakeFiles/test10.dir/test10_PnP.cpp.s
+.PHONY : test10_PnP.cpp.s
+
+test11_step3.o: test11_step3.cpp.o
+
+.PHONY : test11_step3.o
+
+# target to build an object file
+test11_step3.cpp.o:
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/test11_step3.cpp.o
+.PHONY : test11_step3.cpp.o
+
+test11_step3.i: test11_step3.cpp.i
+
+.PHONY : test11_step3.i
+
+# target to preprocess a source file
+test11_step3.cpp.i:
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/test11_step3.cpp.i
+.PHONY : test11_step3.cpp.i
+
+test11_step3.s: test11_step3.cpp.s
+
+.PHONY : test11_step3.s
+
+# target to generate assembly for a file
+test11_step3.cpp.s:
+	$(MAKE) -f CMakeFiles/test11.dir/build.make CMakeFiles/test11.dir/test11_step3.cpp.s
+.PHONY : test11_step3.cpp.s
+
+test12_error_calculation.o: test12_error_calculation.cpp.o
+
+.PHONY : test12_error_calculation.o
+
+# target to build an object file
+test12_error_calculation.cpp.o:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/test12_error_calculation.cpp.o
+.PHONY : test12_error_calculation.cpp.o
+
+test12_error_calculation.i: test12_error_calculation.cpp.i
+
+.PHONY : test12_error_calculation.i
+
+# target to preprocess a source file
+test12_error_calculation.cpp.i:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/test12_error_calculation.cpp.i
+.PHONY : test12_error_calculation.cpp.i
+
+test12_error_calculation.s: test12_error_calculation.cpp.s
+
+.PHONY : test12_error_calculation.s
+
+# target to generate assembly for a file
+test12_error_calculation.cpp.s:
+	$(MAKE) -f CMakeFiles/test12.dir/build.make CMakeFiles/test12.dir/test12_error_calculation.cpp.s
+.PHONY : test12_error_calculation.cpp.s
 
 test1_experiment_old.o: test1_experiment_old.cpp.o
 
@@ -740,7 +872,10 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
+	@echo "... test12"
+	@echo "... test11"
 	@echo "... test0"
+	@echo "... test10"
 	@echo "... test5"
 	@echo "... test1"
 	@echo "... test9"
@@ -750,24 +885,30 @@ help:
 	@echo "... test6"
 	@echo "... test7"
 	@echo "... test8"
-	@echo "... Disparity.o"
-	@echo "... Disparity.i"
-	@echo "... Disparity.s"
+	@echo "... Calibration.o"
+	@echo "... Calibration.i"
+	@echo "... Calibration.s"
 	@echo "... ImageUtils.o"
 	@echo "... ImageUtils.i"
 	@echo "... ImageUtils.s"
 	@echo "... RealEquipment.o"
 	@echo "... RealEquipment.i"
 	@echo "... RealEquipment.s"
-	@echo "... SimilarityMeasure.o"
-	@echo "... SimilarityMeasure.i"
-	@echo "... SimilarityMeasure.s"
-	@echo "... StereoGC.o"
-	@echo "... StereoGC.i"
-	@echo "... StereoGC.s"
+	@echo "... Sensor.o"
+	@echo "... Sensor.i"
+	@echo "... Sensor.s"
 	@echo "... test0.o"
 	@echo "... test0.i"
 	@echo "... test0.s"
+	@echo "... test10_PnP.o"
+	@echo "... test10_PnP.i"
+	@echo "... test10_PnP.s"
+	@echo "... test11_step3.o"
+	@echo "... test11_step3.i"
+	@echo "... test11_step3.s"
+	@echo "... test12_error_calculation.o"
+	@echo "... test12_error_calculation.i"
+	@echo "... test12_error_calculation.s"
 	@echo "... test1_experiment_old.o"
 	@echo "... test1_experiment_old.i"
 	@echo "... test1_experiment_old.s"

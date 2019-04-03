@@ -81,33 +81,57 @@ CMakeFiles/test1.dir/test1_experiment_old.cpp.o.provides: CMakeFiles/test1.dir/t
 CMakeFiles/test1.dir/test1_experiment_old.cpp.o.provides.build: CMakeFiles/test1.dir/test1_experiment_old.cpp.o
 
 
-CMakeFiles/test1.dir/Disparity.cpp.o: CMakeFiles/test1.dir/flags.make
-CMakeFiles/test1.dir/Disparity.cpp.o: ../Disparity.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/test1.dir/Disparity.cpp.o"
-	/usr/bin/g++-5  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test1.dir/Disparity.cpp.o -c /home/phyorch/MasterResearch/Experiment/Disparity.cpp
+CMakeFiles/test1.dir/Sensor.cpp.o: CMakeFiles/test1.dir/flags.make
+CMakeFiles/test1.dir/Sensor.cpp.o: ../Sensor.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/test1.dir/Sensor.cpp.o"
+	/usr/bin/g++-5  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test1.dir/Sensor.cpp.o -c /home/phyorch/MasterResearch/Experiment/Sensor.cpp
 
-CMakeFiles/test1.dir/Disparity.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test1.dir/Disparity.cpp.i"
-	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/phyorch/MasterResearch/Experiment/Disparity.cpp > CMakeFiles/test1.dir/Disparity.cpp.i
+CMakeFiles/test1.dir/Sensor.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test1.dir/Sensor.cpp.i"
+	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/phyorch/MasterResearch/Experiment/Sensor.cpp > CMakeFiles/test1.dir/Sensor.cpp.i
 
-CMakeFiles/test1.dir/Disparity.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test1.dir/Disparity.cpp.s"
-	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/phyorch/MasterResearch/Experiment/Disparity.cpp -o CMakeFiles/test1.dir/Disparity.cpp.s
+CMakeFiles/test1.dir/Sensor.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test1.dir/Sensor.cpp.s"
+	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/phyorch/MasterResearch/Experiment/Sensor.cpp -o CMakeFiles/test1.dir/Sensor.cpp.s
 
-CMakeFiles/test1.dir/Disparity.cpp.o.requires:
+CMakeFiles/test1.dir/Sensor.cpp.o.requires:
 
-.PHONY : CMakeFiles/test1.dir/Disparity.cpp.o.requires
+.PHONY : CMakeFiles/test1.dir/Sensor.cpp.o.requires
 
-CMakeFiles/test1.dir/Disparity.cpp.o.provides: CMakeFiles/test1.dir/Disparity.cpp.o.requires
-	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/Disparity.cpp.o.provides.build
-.PHONY : CMakeFiles/test1.dir/Disparity.cpp.o.provides
+CMakeFiles/test1.dir/Sensor.cpp.o.provides: CMakeFiles/test1.dir/Sensor.cpp.o.requires
+	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/Sensor.cpp.o.provides.build
+.PHONY : CMakeFiles/test1.dir/Sensor.cpp.o.provides
 
-CMakeFiles/test1.dir/Disparity.cpp.o.provides.build: CMakeFiles/test1.dir/Disparity.cpp.o
+CMakeFiles/test1.dir/Sensor.cpp.o.provides.build: CMakeFiles/test1.dir/Sensor.cpp.o
+
+
+CMakeFiles/test1.dir/RealEquipment.cpp.o: CMakeFiles/test1.dir/flags.make
+CMakeFiles/test1.dir/RealEquipment.cpp.o: ../RealEquipment.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/test1.dir/RealEquipment.cpp.o"
+	/usr/bin/g++-5  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test1.dir/RealEquipment.cpp.o -c /home/phyorch/MasterResearch/Experiment/RealEquipment.cpp
+
+CMakeFiles/test1.dir/RealEquipment.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test1.dir/RealEquipment.cpp.i"
+	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/phyorch/MasterResearch/Experiment/RealEquipment.cpp > CMakeFiles/test1.dir/RealEquipment.cpp.i
+
+CMakeFiles/test1.dir/RealEquipment.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test1.dir/RealEquipment.cpp.s"
+	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/phyorch/MasterResearch/Experiment/RealEquipment.cpp -o CMakeFiles/test1.dir/RealEquipment.cpp.s
+
+CMakeFiles/test1.dir/RealEquipment.cpp.o.requires:
+
+.PHONY : CMakeFiles/test1.dir/RealEquipment.cpp.o.requires
+
+CMakeFiles/test1.dir/RealEquipment.cpp.o.provides: CMakeFiles/test1.dir/RealEquipment.cpp.o.requires
+	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/RealEquipment.cpp.o.provides.build
+.PHONY : CMakeFiles/test1.dir/RealEquipment.cpp.o.provides
+
+CMakeFiles/test1.dir/RealEquipment.cpp.o.provides.build: CMakeFiles/test1.dir/RealEquipment.cpp.o
 
 
 CMakeFiles/test1.dir/ImageUtils.cpp.o: CMakeFiles/test1.dir/flags.make
 CMakeFiles/test1.dir/ImageUtils.cpp.o: ../ImageUtils.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/test1.dir/ImageUtils.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/test1.dir/ImageUtils.cpp.o"
 	/usr/bin/g++-5  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test1.dir/ImageUtils.cpp.o -c /home/phyorch/MasterResearch/Experiment/ImageUtils.cpp
 
 CMakeFiles/test1.dir/ImageUtils.cpp.i: cmake_force
@@ -129,70 +153,46 @@ CMakeFiles/test1.dir/ImageUtils.cpp.o.provides: CMakeFiles/test1.dir/ImageUtils.
 CMakeFiles/test1.dir/ImageUtils.cpp.o.provides.build: CMakeFiles/test1.dir/ImageUtils.cpp.o
 
 
-CMakeFiles/test1.dir/SimilarityMeasure.cpp.o: CMakeFiles/test1.dir/flags.make
-CMakeFiles/test1.dir/SimilarityMeasure.cpp.o: ../SimilarityMeasure.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/test1.dir/SimilarityMeasure.cpp.o"
-	/usr/bin/g++-5  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test1.dir/SimilarityMeasure.cpp.o -c /home/phyorch/MasterResearch/Experiment/SimilarityMeasure.cpp
+CMakeFiles/test1.dir/Calibration.cpp.o: CMakeFiles/test1.dir/flags.make
+CMakeFiles/test1.dir/Calibration.cpp.o: ../Calibration.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/test1.dir/Calibration.cpp.o"
+	/usr/bin/g++-5  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test1.dir/Calibration.cpp.o -c /home/phyorch/MasterResearch/Experiment/Calibration.cpp
 
-CMakeFiles/test1.dir/SimilarityMeasure.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test1.dir/SimilarityMeasure.cpp.i"
-	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/phyorch/MasterResearch/Experiment/SimilarityMeasure.cpp > CMakeFiles/test1.dir/SimilarityMeasure.cpp.i
+CMakeFiles/test1.dir/Calibration.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test1.dir/Calibration.cpp.i"
+	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/phyorch/MasterResearch/Experiment/Calibration.cpp > CMakeFiles/test1.dir/Calibration.cpp.i
 
-CMakeFiles/test1.dir/SimilarityMeasure.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test1.dir/SimilarityMeasure.cpp.s"
-	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/phyorch/MasterResearch/Experiment/SimilarityMeasure.cpp -o CMakeFiles/test1.dir/SimilarityMeasure.cpp.s
+CMakeFiles/test1.dir/Calibration.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test1.dir/Calibration.cpp.s"
+	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/phyorch/MasterResearch/Experiment/Calibration.cpp -o CMakeFiles/test1.dir/Calibration.cpp.s
 
-CMakeFiles/test1.dir/SimilarityMeasure.cpp.o.requires:
+CMakeFiles/test1.dir/Calibration.cpp.o.requires:
 
-.PHONY : CMakeFiles/test1.dir/SimilarityMeasure.cpp.o.requires
+.PHONY : CMakeFiles/test1.dir/Calibration.cpp.o.requires
 
-CMakeFiles/test1.dir/SimilarityMeasure.cpp.o.provides: CMakeFiles/test1.dir/SimilarityMeasure.cpp.o.requires
-	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/SimilarityMeasure.cpp.o.provides.build
-.PHONY : CMakeFiles/test1.dir/SimilarityMeasure.cpp.o.provides
+CMakeFiles/test1.dir/Calibration.cpp.o.provides: CMakeFiles/test1.dir/Calibration.cpp.o.requires
+	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/Calibration.cpp.o.provides.build
+.PHONY : CMakeFiles/test1.dir/Calibration.cpp.o.provides
 
-CMakeFiles/test1.dir/SimilarityMeasure.cpp.o.provides.build: CMakeFiles/test1.dir/SimilarityMeasure.cpp.o
-
-
-CMakeFiles/test1.dir/StereoGC.cpp.o: CMakeFiles/test1.dir/flags.make
-CMakeFiles/test1.dir/StereoGC.cpp.o: ../StereoGC.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/test1.dir/StereoGC.cpp.o"
-	/usr/bin/g++-5  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test1.dir/StereoGC.cpp.o -c /home/phyorch/MasterResearch/Experiment/StereoGC.cpp
-
-CMakeFiles/test1.dir/StereoGC.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test1.dir/StereoGC.cpp.i"
-	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/phyorch/MasterResearch/Experiment/StereoGC.cpp > CMakeFiles/test1.dir/StereoGC.cpp.i
-
-CMakeFiles/test1.dir/StereoGC.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test1.dir/StereoGC.cpp.s"
-	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/phyorch/MasterResearch/Experiment/StereoGC.cpp -o CMakeFiles/test1.dir/StereoGC.cpp.s
-
-CMakeFiles/test1.dir/StereoGC.cpp.o.requires:
-
-.PHONY : CMakeFiles/test1.dir/StereoGC.cpp.o.requires
-
-CMakeFiles/test1.dir/StereoGC.cpp.o.provides: CMakeFiles/test1.dir/StereoGC.cpp.o.requires
-	$(MAKE) -f CMakeFiles/test1.dir/build.make CMakeFiles/test1.dir/StereoGC.cpp.o.provides.build
-.PHONY : CMakeFiles/test1.dir/StereoGC.cpp.o.provides
-
-CMakeFiles/test1.dir/StereoGC.cpp.o.provides.build: CMakeFiles/test1.dir/StereoGC.cpp.o
+CMakeFiles/test1.dir/Calibration.cpp.o.provides.build: CMakeFiles/test1.dir/Calibration.cpp.o
 
 
 # Object files for target test1
 test1_OBJECTS = \
 "CMakeFiles/test1.dir/test1_experiment_old.cpp.o" \
-"CMakeFiles/test1.dir/Disparity.cpp.o" \
+"CMakeFiles/test1.dir/Sensor.cpp.o" \
+"CMakeFiles/test1.dir/RealEquipment.cpp.o" \
 "CMakeFiles/test1.dir/ImageUtils.cpp.o" \
-"CMakeFiles/test1.dir/SimilarityMeasure.cpp.o" \
-"CMakeFiles/test1.dir/StereoGC.cpp.o"
+"CMakeFiles/test1.dir/Calibration.cpp.o"
 
 # External object files for target test1
 test1_EXTERNAL_OBJECTS =
 
 test1: CMakeFiles/test1.dir/test1_experiment_old.cpp.o
-test1: CMakeFiles/test1.dir/Disparity.cpp.o
+test1: CMakeFiles/test1.dir/Sensor.cpp.o
+test1: CMakeFiles/test1.dir/RealEquipment.cpp.o
 test1: CMakeFiles/test1.dir/ImageUtils.cpp.o
-test1: CMakeFiles/test1.dir/SimilarityMeasure.cpp.o
-test1: CMakeFiles/test1.dir/StereoGC.cpp.o
+test1: CMakeFiles/test1.dir/Calibration.cpp.o
 test1: CMakeFiles/test1.dir/build.make
 test1: /usr/local/lib/libhesaiLidarSDK.so
 test1: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_ximgproc3.so.3.3.1
@@ -339,6 +339,9 @@ test1: /usr/lib/x86_64-linux-gnu/libvtkRenderingFreeTypeFontConfig-6.2.so.6.2.0
 test1: /usr/lib/x86_64-linux-gnu/libvtkIOFFMPEG-6.2.so.6.2.0
 test1: /usr/lib/x86_64-linux-gnu/libvtkIOMPIImage-6.2.so.6.2.0
 test1: /usr/lib/x86_64-linux-gnu/libvtkIOGDAL-6.2.so.6.2.0
+test1: /usr/local/zed/lib/libsl_input.so
+test1: /usr/local/zed/lib/libsl_core.so
+test1: /usr/local/zed/lib/libsl_zed.so
 test1: /usr/lib/x86_64-linux-gnu/libboost_system.so
 test1: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
 test1: /usr/lib/x86_64-linux-gnu/libboost_thread.so
@@ -350,12 +353,27 @@ test1: /usr/lib/x86_64-linux-gnu/libboost_atomic.so
 test1: /usr/lib/x86_64-linux-gnu/libboost_regex.so
 test1: /usr/lib/x86_64-linux-gnu/libpcl_common.so
 test1: /usr/lib/x86_64-linux-gnu/libpcl_octree.so
+test1: /usr/lib/libOpenNI.so
+test1: /usr/lib/libOpenNI2.so
+test1: /usr/lib/x86_64-linux-gnu/libjpeg.so
+test1: /usr/lib/x86_64-linux-gnu/libpng.so
+test1: /usr/lib/x86_64-linux-gnu/libtiff.so
+test1: /usr/lib/x86_64-linux-gnu/hdf5/serial/lib/libhdf5.so
+test1: /usr/lib/x86_64-linux-gnu/libpthread.so
+test1: /usr/lib/x86_64-linux-gnu/hdf5/serial/lib/libhdf5_hl.so
+test1: /usr/lib/x86_64-linux-gnu/libjsoncpp.so
+test1: /usr/lib/x86_64-linux-gnu/libexpat.so
+test1: /usr/lib/libgl2ps.so
 test1: /usr/lib/x86_64-linux-gnu/libpcl_io.so
+test1: /usr/lib/x86_64-linux-gnu/libflann_cpp_s.a
 test1: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so
 test1: /usr/lib/x86_64-linux-gnu/libpcl_search.so
 test1: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so
 test1: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so
 test1: /usr/lib/x86_64-linux-gnu/libpcl_filters.so
+test1: /usr/local/zed/lib/libsl_input.so
+test1: /usr/local/zed/lib/libsl_core.so
+test1: /usr/local/zed/lib/libsl_zed.so
 test1: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_calib3d3.so.3.3.1
 test1: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_features2d3.so.3.3.1
 test1: /opt/ros/kinetic/lib/x86_64-linux-gnu/libopencv_highgui3.so.3.3.1
@@ -473,10 +491,10 @@ CMakeFiles/test1.dir/build: test1
 .PHONY : CMakeFiles/test1.dir/build
 
 CMakeFiles/test1.dir/requires: CMakeFiles/test1.dir/test1_experiment_old.cpp.o.requires
-CMakeFiles/test1.dir/requires: CMakeFiles/test1.dir/Disparity.cpp.o.requires
+CMakeFiles/test1.dir/requires: CMakeFiles/test1.dir/Sensor.cpp.o.requires
+CMakeFiles/test1.dir/requires: CMakeFiles/test1.dir/RealEquipment.cpp.o.requires
 CMakeFiles/test1.dir/requires: CMakeFiles/test1.dir/ImageUtils.cpp.o.requires
-CMakeFiles/test1.dir/requires: CMakeFiles/test1.dir/SimilarityMeasure.cpp.o.requires
-CMakeFiles/test1.dir/requires: CMakeFiles/test1.dir/StereoGC.cpp.o.requires
+CMakeFiles/test1.dir/requires: CMakeFiles/test1.dir/Calibration.cpp.o.requires
 
 .PHONY : CMakeFiles/test1.dir/requires
 

@@ -1,8 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/test4.dir/test4_point_cloud_transfer.cpp.o"
-  "CMakeFiles/test4.dir/Disparity.cpp.o"
+  "CMakeFiles/test4.dir/Sensor.cpp.o"
   "CMakeFiles/test4.dir/RealEquipment.cpp.o"
-  "CMakeFiles/test4.dir/SimilarityMeasure.cpp.o"
+  "CMakeFiles/test4.dir/Calibration.cpp.o"
   "CMakeFiles/test4.dir/ImageUtils.cpp.o"
   "test4.pdb"
   "test4"

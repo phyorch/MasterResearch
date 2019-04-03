@@ -1,9 +1,9 @@
 file(REMOVE_RECURSE
   "CMakeFiles/test5.dir/test5_calibration_old.cpp.o"
-  "CMakeFiles/test5.dir/Disparity.cpp.o"
+  "CMakeFiles/test5.dir/Sensor.cpp.o"
   "CMakeFiles/test5.dir/RealEquipment.cpp.o"
   "CMakeFiles/test5.dir/ImageUtils.cpp.o"
-  "CMakeFiles/test5.dir/SimilarityMeasure.cpp.o"
+  "CMakeFiles/test5.dir/Calibration.cpp.o"
   "test5.pdb"
   "test5"
 )

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-SET (SRC_LIST test1_experiment_old.cpp Disparity.cpp ImageUtils.cpp SimilarityMeasure.cpp StereoGC.cpp Disparity.h ImageUtils.h SimilarityMeasure.h StereoGC.h)
+SET (SRC_LIST test1_experiment_old.cpp Sensor.cpp ImageUtils.cpp Calibration.cpp StereoGC.cpp Sensor.h ImageUtils.h Calibration.h StereoGC.h)
 add_compile_options(-std=c++11)
 
 #add_subdirectory(../../../Install_Lib/HesaiLidarSDK/build/bin)
@@ -32,19 +32,21 @@ link_libraries(/usr/local/lib/libhesaiLidarSDK.so)
 list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
 add_definitions(${PCL_DEFINITIONS})
 
-add_executable(test0 test0.cpp Disparity.cpp RealEquipment.cpp ImageUtils.cpp SimilarityMeasure.cpp Disparity.h RealEquipment.h ImageUtils.h SimilarityMeasure.h)
+add_executable(test0 test0.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
 target_link_libraries(test0 cmaes
         ${OpenCV_LIBS}
         ${PCL_LIBRARIES}
         ${ZED_LIBRARIES}
         ${Boost_LIBRARIES})
 
-add_executable(test1 ${SRC_LIST})
-target_link_libraries(test1 ${OpenCV_LIBS}
-                            ${PCL_LIBRARIES}
-                            ${Boost_LIBRARIES})
+add_executable(test1 test1_experiment_old.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
+target_link_libraries(test1 cmaes
+        ${OpenCV_LIBS}
+        ${PCL_LIBRARIES}
+        ${ZED_LIBRARIES}
+        ${Boost_LIBRARIES})
 
-add_executable(test2 test2_data_capturing.cpp Disparity.cpp RealEquipment.cpp Disparity.h RealEquipment.h)
+add_executable(test2 test2_data_capturing.cpp Sensor.cpp RealEquipment.cpp Sensor.h RealEquipment.h)
 target_link_libraries(test2 ${ZED_LIBRARIES}
                             ${Boost_LIBRARIES}
                             ${PCL_LIBRARIES}
@@ -56,14 +58,14 @@ target_link_libraries(test3 hesaiLidarSDK
                             ${Boost_LIBRARIES}
                             ${PCL_LIBRARIES})
 
-add_executable(test4 test4_point_cloud_transfer.cpp Disparity.cpp RealEquipment.cpp SimilarityMeasure.cpp ImageUtils.cpp RealEquipment.h Disparity.h SimilarityMeasure.h ImageUtils.h)
+add_executable(test4 test4_point_cloud_transfer.cpp Sensor.cpp RealEquipment.cpp Calibration.cpp ImageUtils.cpp RealEquipment.h Sensor.h Calibration.h ImageUtils.h)
 target_link_libraries(test4 hesaiLidarSDK
                             ${ZED_LIBRARIES}
                             ${OpenCV_LIBRARIES}
                             ${Boost_LIBRARIES}
                             ${PCL_LIBRARIES})
 
-add_executable(test5 test5_calibration_old.cpp Disparity.cpp RealEquipment.cpp ImageUtils.cpp SimilarityMeasure.cpp Disparity.h RealEquipment.h ImageUtils.h SimilarityMeasure.h)
+add_executable(test5 test5_calibration_old.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
 target_link_libraries(test5 hesaiLidarSDK
                             ${OpenCV_LIBS}
                             ${PCL_LIBRARIES}
@@ -71,29 +73,50 @@ target_link_libraries(test5 hesaiLidarSDK
                             ${Boost_LIBRARIES}
                             ${PYTHON_LIBRARIES})
 
-add_executable(test6 test6_calibration.cpp Disparity.cpp RealEquipment.cpp ImageUtils.cpp SimilarityMeasure.cpp Disparity.h RealEquipment.h ImageUtils.h SimilarityMeasure.h)
+add_executable(test6 test6_calibration.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
 target_link_libraries(test6 cmaes
                             ${OpenCV_LIBS}
                             ${PCL_LIBRARIES}
                             ${ZED_LIBRARIES}
                             ${Boost_LIBRARIES})
 
-add_executable(test7 test7_pcl_transformation.cpp Disparity.cpp RealEquipment.cpp ImageUtils.cpp SimilarityMeasure.cpp Disparity.h RealEquipment.h ImageUtils.h SimilarityMeasure.h)
+add_executable(test7 test7_pcl_transformation.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
 target_link_libraries(test7 cmaes
                             ${OpenCV_LIBS}
                             ${PCL_LIBRARIES}
                             ${ZED_LIBRARIES}
                             ${Boost_LIBRARIES})
 
-add_executable(test8 test8_pcl_icp.cpp Disparity.cpp RealEquipment.cpp ImageUtils.cpp SimilarityMeasure.cpp Disparity.h RealEquipment.h ImageUtils.h SimilarityMeasure.h)
+add_executable(test8 test8_pcl_icp.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
 target_link_libraries(test8 cmaes
         ${OpenCV_LIBS}
         ${PCL_LIBRARIES}
         ${ZED_LIBRARIES}
         ${Boost_LIBRARIES})
 
-add_executable(test9 test9_edge_based_refinement.cpp Disparity.cpp RealEquipment.cpp ImageUtils.cpp SimilarityMeasure.cpp Disparity.h RealEquipment.h ImageUtils.h SimilarityMeasure.h)
+add_executable(test9 test9_edge_based_refinement.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
 target_link_libraries(test9 cmaes
+        ${OpenCV_LIBS}
+        ${PCL_LIBRARIES}
+        ${ZED_LIBRARIES}
+        ${Boost_LIBRARIES})
+
+add_executable(test10 test10_PnP.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
+target_link_libraries(test10 cmaes
+        ${OpenCV_LIBS}
+        ${PCL_LIBRARIES}
+        ${ZED_LIBRARIES}
+        ${Boost_LIBRARIES})
+
+add_executable(test11 test11_step3.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
+target_link_libraries(test11 cmaes
+        ${OpenCV_LIBS}
+        ${PCL_LIBRARIES}
+        ${ZED_LIBRARIES}
+        ${Boost_LIBRARIES})
+
+add_executable(test12 test12_error_calculation.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
+target_link_libraries(test12 cmaes
         ${OpenCV_LIBS}
         ${PCL_LIBRARIES}
         ${ZED_LIBRARIES}

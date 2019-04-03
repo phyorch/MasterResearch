@@ -81,28 +81,28 @@ CMakeFiles/test2.dir/test2_data_capturing.cpp.o.provides: CMakeFiles/test2.dir/t
 CMakeFiles/test2.dir/test2_data_capturing.cpp.o.provides.build: CMakeFiles/test2.dir/test2_data_capturing.cpp.o
 
 
-CMakeFiles/test2.dir/Disparity.cpp.o: CMakeFiles/test2.dir/flags.make
-CMakeFiles/test2.dir/Disparity.cpp.o: ../Disparity.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/test2.dir/Disparity.cpp.o"
-	/usr/bin/g++-5  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test2.dir/Disparity.cpp.o -c /home/phyorch/MasterResearch/Experiment/Disparity.cpp
+CMakeFiles/test2.dir/Sensor.cpp.o: CMakeFiles/test2.dir/flags.make
+CMakeFiles/test2.dir/Sensor.cpp.o: ../Sensor.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/phyorch/MasterResearch/Experiment/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/test2.dir/Sensor.cpp.o"
+	/usr/bin/g++-5  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/test2.dir/Sensor.cpp.o -c /home/phyorch/MasterResearch/Experiment/Sensor.cpp
 
-CMakeFiles/test2.dir/Disparity.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test2.dir/Disparity.cpp.i"
-	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/phyorch/MasterResearch/Experiment/Disparity.cpp > CMakeFiles/test2.dir/Disparity.cpp.i
+CMakeFiles/test2.dir/Sensor.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/test2.dir/Sensor.cpp.i"
+	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/phyorch/MasterResearch/Experiment/Sensor.cpp > CMakeFiles/test2.dir/Sensor.cpp.i
 
-CMakeFiles/test2.dir/Disparity.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test2.dir/Disparity.cpp.s"
-	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/phyorch/MasterResearch/Experiment/Disparity.cpp -o CMakeFiles/test2.dir/Disparity.cpp.s
+CMakeFiles/test2.dir/Sensor.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/test2.dir/Sensor.cpp.s"
+	/usr/bin/g++-5 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/phyorch/MasterResearch/Experiment/Sensor.cpp -o CMakeFiles/test2.dir/Sensor.cpp.s
 
-CMakeFiles/test2.dir/Disparity.cpp.o.requires:
+CMakeFiles/test2.dir/Sensor.cpp.o.requires:
 
-.PHONY : CMakeFiles/test2.dir/Disparity.cpp.o.requires
+.PHONY : CMakeFiles/test2.dir/Sensor.cpp.o.requires
 
-CMakeFiles/test2.dir/Disparity.cpp.o.provides: CMakeFiles/test2.dir/Disparity.cpp.o.requires
-	$(MAKE) -f CMakeFiles/test2.dir/build.make CMakeFiles/test2.dir/Disparity.cpp.o.provides.build
-.PHONY : CMakeFiles/test2.dir/Disparity.cpp.o.provides
+CMakeFiles/test2.dir/Sensor.cpp.o.provides: CMakeFiles/test2.dir/Sensor.cpp.o.requires
+	$(MAKE) -f CMakeFiles/test2.dir/build.make CMakeFiles/test2.dir/Sensor.cpp.o.provides.build
+.PHONY : CMakeFiles/test2.dir/Sensor.cpp.o.provides
 
-CMakeFiles/test2.dir/Disparity.cpp.o.provides.build: CMakeFiles/test2.dir/Disparity.cpp.o
+CMakeFiles/test2.dir/Sensor.cpp.o.provides.build: CMakeFiles/test2.dir/Sensor.cpp.o
 
 
 CMakeFiles/test2.dir/RealEquipment.cpp.o: CMakeFiles/test2.dir/flags.make
@@ -132,14 +132,14 @@ CMakeFiles/test2.dir/RealEquipment.cpp.o.provides.build: CMakeFiles/test2.dir/Re
 # Object files for target test2
 test2_OBJECTS = \
 "CMakeFiles/test2.dir/test2_data_capturing.cpp.o" \
-"CMakeFiles/test2.dir/Disparity.cpp.o" \
+"CMakeFiles/test2.dir/Sensor.cpp.o" \
 "CMakeFiles/test2.dir/RealEquipment.cpp.o"
 
 # External object files for target test2
 test2_EXTERNAL_OBJECTS =
 
 test2: CMakeFiles/test2.dir/test2_data_capturing.cpp.o
-test2: CMakeFiles/test2.dir/Disparity.cpp.o
+test2: CMakeFiles/test2.dir/Sensor.cpp.o
 test2: CMakeFiles/test2.dir/RealEquipment.cpp.o
 test2: CMakeFiles/test2.dir/build.make
 test2: /usr/local/lib/libhesaiLidarSDK.so
@@ -450,7 +450,7 @@ CMakeFiles/test2.dir/build: test2
 .PHONY : CMakeFiles/test2.dir/build
 
 CMakeFiles/test2.dir/requires: CMakeFiles/test2.dir/test2_data_capturing.cpp.o.requires
-CMakeFiles/test2.dir/requires: CMakeFiles/test2.dir/Disparity.cpp.o.requires
+CMakeFiles/test2.dir/requires: CMakeFiles/test2.dir/Sensor.cpp.o.requires
 CMakeFiles/test2.dir/requires: CMakeFiles/test2.dir/RealEquipment.cpp.o.requires
 
 .PHONY : CMakeFiles/test2.dir/requires

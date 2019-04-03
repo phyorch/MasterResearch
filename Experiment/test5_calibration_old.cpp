@@ -15,8 +15,8 @@
 
 //#include </home/phyorch/OPENCV_PROJECT/Stereo_test/src/StereoMatch.cpp>
 //#include </home/phyorch/OPENCV_PROJECT/Stereo_test/src/StereoCalib.cpp>
-#include "Disparity.h"
-#include "SimilarityMeasure.h"
+#include "Sensor.h"
+#include "Calibration.h"
 #include <iostream>
 #include <opencv2/core/types_c.h>
 #include "StereoGC.h"

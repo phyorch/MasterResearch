@@ -3,7 +3,7 @@
 //
 
 #include "RealEquipment.h"
-#include "Disparity.h"
+#include "Sensor.h"
 #include <boost/format.hpp>
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
@@ -13,8 +13,8 @@
 using namespace std;
 
 int main(){
-    string in_path = "/home/phyorch/Data/2011_09_26_drive_0005_sync/velodyne_points/data/0000000132.bin";
-    string out_path = "/home/phyorch/Data/2011_09_26_drive_0005_sync/velodyne_points/data/0000000132.pcd";
+    string in_path = "/home/phyorch/Data/2011_09_26_drive_0005_sync/velodyne_points/data/0000000152.bin";
+    string out_path = "/home/phyorch/Data/2011_09_26_drive_0005_sync/velodyne_points/data/0000000152.pcd";
 
 //    PandarLiDAR lidar = PandarLiDAR();
 //    pcl::PointCloud<pandar_pointcloud::PointXYZIT>::Ptr point_cloud (new pcl::PointCloud<pandar_pointcloud::PointXYZIT>);

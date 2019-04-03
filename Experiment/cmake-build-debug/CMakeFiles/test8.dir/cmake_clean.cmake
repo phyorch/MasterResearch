@@ -1,9 +1,9 @@
 file(REMOVE_RECURSE
   "CMakeFiles/test8.dir/test8_pcl_icp.cpp.o"
-  "CMakeFiles/test8.dir/Disparity.cpp.o"
+  "CMakeFiles/test8.dir/Sensor.cpp.o"
   "CMakeFiles/test8.dir/RealEquipment.cpp.o"
   "CMakeFiles/test8.dir/ImageUtils.cpp.o"
-  "CMakeFiles/test8.dir/SimilarityMeasure.cpp.o"
+  "CMakeFiles/test8.dir/Calibration.cpp.o"
   "test8.pdb"
   "test8"
 )

@@ -2,8 +2,8 @@
 // Created by phyorch on 27/12/18.
 //
 
-#include "Disparity.h"
-#include "SimilarityMeasure.h"
+#include "Sensor.h"
+#include "Calibration.h"
 #include "StereoGC.h"
 #include "ImageUtils.h"
 #include "RealEquipment.h"
@@ -23,9 +23,9 @@ float vox_volum = 4.0;
 //string cloud_name = "/Pandar40Data/PCDDataKIT/1520.202800.pcd";
 
 string data_name = "2011_09_26_drive_0005_sync";
-string image_name = "/image_02/data/0000000082.png";
-string cloud_name = "/velodyne_points/data/0000000082.pcd";
-string depth_name = "/depth/depth1.png";
+string image_name = "/image_02/data/0000000156.png";
+string cloud_name = "/velodyne_points/data/0000000156.pcd";
+string depth_name = "/depth/0000000156.png";
 
 string data_root = "/home/" + user_name + "/Data/";
 string left_path1 = "/home/" + user_name + "/Data/" + data_name + "/ZEDData/RGBImage/";
@@ -171,21 +171,43 @@ int main(){
             0.000000e+00, 0.000000e+00, 1.000000e+00, 0);//2.745884e-03
 
 //2011_09_26_drive_0048_sync extrinsic calibration
-    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << 7.533745e-04, -9.999714e-01, -6.166020e-04,
-            1.480249e-02, 7.280733e-04, -9.998902e-01,
-            9.998621e-01, 7.523790e-03, 1.480755e-02);
-    lid_to_cam_translation = (cv::Mat_<float>(3,1) << -4.069766e-03, -7.631618e-02, -2.717806e-01);
-//    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << 0.24283104, -0.94432038, -0.22201815,
-//    -0.40219393, 0.11026448, -0.90889043,
-//    0.88276446, 0.31000116, -0.3530243);
-//    lid_to_cam_translation = (cv::Mat_<float>(3,1) << -0.28338799, -0.82151896, 0.53261143);
-    cv::Mat cam0_to_cam2_rotation, cam0_to_cam2_translation;
-    cam0_to_cam2_rotation = (cv::Mat_<float>(3,3) << 9.999758e-01, -5.267463e-03, -4.552439e-03,
-                                                     5.251945e-03, 9.999804e-01, -3.413835e-03,
-                                                     4.570332e-03, 3.389843e-03, 9.999838e-01);
-    cam0_to_cam2_translation = (cv::Mat_<float>(3,1) << 5.956621e-02, 2.900141e-04, 2.577209e-03);
-    lid_to_cam_rotation = cam0_to_cam2_rotation * lid_to_cam_rotation;
-    lid_to_cam_translation = cam0_to_cam2_rotation * lid_to_cam_translation + cam0_to_cam2_translation;
+//    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << 7.533745e-04, -9.999714e-01, -6.166020e-04,
+//            1.480249e-02, 7.280733e-04, -9.998902e-01,
+//            9.998621e-01, 7.523790e-03, 1.480755e-02);
+//    lid_to_cam_translation = (cv::Mat_<float>(3,1) << -4.069766e-03, -7.631618e-02, -2.717806e-01);
+
+
+    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << -2.8819736611885860e-03, -9.9999436034347000e-01,
+            1.7243865780899315e-03,
+            -5.5479446042582758e-02, -1.5618471282996538e-03,
+            -9.9845860790538343e-01,
+            9.9845567017000036e-01, -2.9731994218860636e-03,
+            -5.5474631955276077e-02);
+    lid_to_cam_translation = (cv::Mat_<float>(3,1) << 1.4143607966564101e-01, -2.7098180415639239e-01, -6.2455864757931225e-02);
+
+    float degreex = 0;
+    float degreey = 0;
+    float degreez = 0;
+    cv::Mat axisx, axisy, axisz;
+    axisx = (cv::Mat_<float>(3,3) << 1, 0.0, 0.0,
+            0.0, cos(M_PI/180 * degreex), -sin(M_PI/180 * degreex),
+            0.0, sin(M_PI/180 * degreex), cos(M_PI/180 * degreex));
+
+    axisy = (cv::Mat_<float>(3,3) << cos(M_PI/180 * degreey), 0.0, sin(M_PI/180 * degreey),
+            0.0, 1, 0.0,
+            -sin(M_PI/180 * degreey), 0.0, cos(M_PI/180 * degreey));
+
+    axisz = (cv::Mat_<float>(3,3) << cos(M_PI/180 * degreez), -sin(M_PI/180 * degreez), 0.0,
+            sin(M_PI/180 * degreez), cos(M_PI/180 * degreez), 0.0,
+            0.0, 0.0, 1.0);
+    lid_to_cam_rotation = axisz * axisy * axisx * lid_to_cam_rotation;
+//    cv::Mat cam0_to_cam2_rotation, cam0_to_cam2_translation;
+//    cam0_to_cam2_rotation = (cv::Mat_<float>(3,3) << 9.999758e-01, -5.267463e-03, -4.552439e-03,
+//                                                     5.251945e-03, 9.999804e-01, -3.413835e-03,
+//                                                     4.570332e-03, 3.389843e-03, 9.999838e-01);
+//    cam0_to_cam2_translation = (cv::Mat_<float>(3,1) << 5.956621e-02, 2.900141e-04, 2.577209e-03);
+//    lid_to_cam_rotation = cam0_to_cam2_rotation * lid_to_cam_rotation;
+//    lid_to_cam_translation = cam0_to_cam2_rotation * lid_to_cam_translation + cam0_to_cam2_translation;
 
     Transfer::cv2EigenSeperate(lid_to_cam_rotation, lid_to_cam_translation, transformation);
     cout << lid_to_cam_rotation << endl << lid_to_cam_translation << endl << transformation;
@@ -203,11 +225,17 @@ int main(){
     LiDAR lidar = LiDAR(lidar_calib_para_kitti_inverse);
 //----------------------------------------------------------------------------------------------------------------------
 
+    vector<float> euler_angle;
+    float sy = sqrt(lid_to_cam_rotation.at<float>(0, 0) * lid_to_cam_rotation.at<float>(0, 0) + lid_to_cam_rotation.at<float>(1, 0) * lid_to_cam_rotation.at<float>(1, 0));
+    float e1 = atan2(lid_to_cam_rotation.at<float>(2, 1), lid_to_cam_rotation.at<float>(2, 2)) * 180 / M_PI;
+    float e2 = atan2(-lid_to_cam_rotation.at<float>(2, 0), sy) * 180 / M_PI;
+    float e3 = atan2(lid_to_cam_rotation.at<float>(1, 0), lid_to_cam_rotation.at<float>(0, 0)) * 180 / M_PI;
 
-    depth_map_camera1 = cv::imread(data_root + data_name + "/depth/depth1.png", CV_8UC1);
+
+
+
+    depth_map_camera1 = cv::imread(data_root + data_name + depth_name, CV_8UC1);
     //depth_map_camera1 = depth_map_camera1/256.0;
-    int test = int(depth_map_camera1.at<uchar>(143,185));
-    cout << test;
     lidar.projectData(data_root + data_name + cloud_name, depth_map_lidar1, point_cloud_lidar_part, XYZI, CV);
     ImageUtils::colorTransfer(depth_map_lidar1, left_image, 50);
     cv::imwrite(test1_path + "test.png", left_image);
