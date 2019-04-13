@@ -642,18 +642,96 @@ float PointCloudAlignment::chamferDistance(pcl::PointCloud<pcl::PointXYZ>::Ptr &
     return distance;
 }
 
-void HandEyeCalibration::findFeatureMatches(const cv::Mat &img_1, const cv::Mat &img_2,
-                                            vector<cv::KeyPoint> &keypoints_1,
-                                            vector<cv::KeyPoint> &keypoints_2, vector<cv::DMatch> &matches) {
+string HandEyeCalibration::zfill(int dataNum) {
+    int digit = log10(dataNum) + 1;
+    string dataName = to_string(dataNum);
+    for(int i=0; i<10 - digit; i++){
+        dataName = "0" + dataName;
+    }
+    return dataName;
+}
+
+void HandEyeCalibration::imageRead(int begin, int end, string dataType, vector<string> &dataList) {
+    if(begin<=end){
+        for(int i=0; i<=end-begin; i++){
+            string dataName = dataType + zfill(begin + i) + ".png";
+            if(i==0 || i==end-begin){
+                dataList.push_back(dataName);
+            }
+            else{
+                dataList.push_back(dataName);
+                dataList.push_back(dataName);
+            }
+        }
+    }
+    else{
+        for(int i=0; i<=begin-end; i++){
+            string dataName = dataType + zfill(begin - i) + ".png";
+            if(i==0 || i==begin-end){
+                dataList.push_back(dataName);
+            }
+            else{
+                dataList.push_back(dataName);
+                dataList.push_back(dataName);
+            }
+        }
+    }
+}
+
+void HandEyeCalibration::cloudRead(int begin, int end, string dataType, vector<string> &dataList) {
+    if(begin<=end){
+        for(int i=0; i<=end-begin; i++){
+            string dataName = dataType + zfill(begin + i) + ".pcd";
+            if(i==0 || i==end-begin){
+                dataList.push_back(dataName);
+            }
+            else{
+                dataList.push_back(dataName);
+                dataList.push_back(dataName);
+            }
+        }
+    }
+    else{
+        for(int i=0; i<=begin-end; i++){
+            string dataName = dataType + zfill(begin - i) + ".pcd";
+            if(i==0 || i==begin-end){
+                dataList.push_back(dataName);
+            }
+            else{
+                dataList.push_back(dataName);
+                dataList.push_back(dataName);
+            }
+        }
+    }
+}
+
+void HandEyeCalibration::depthRead(int begin, int end, string dataRoot, vector<string> &dataList) {
+    if(begin<=end){
+        for(int i=0; i<end-begin; i++){
+            string dataName = dataRoot + zfill(begin + i) + ".png";
+            dataList.push_back(dataName);
+        }
+    }
+    else{
+        for(int i=0; i<begin-end; i++){
+            string dataName = dataRoot + zfill(begin - i) + ".png";
+            dataList.push_back(dataName);
+        }
+    }
+}
+
+void HandEyeCalibration::findFeatureMatches(cv::Mat &image1, cv::Mat &image2,
+                                            vector<cv::KeyPoint> &keyPoints1,
+                                            vector<cv::KeyPoint> &keyPoints2, vector<cv::DMatch> &matches) {
     cv::Mat descriptors_1, descriptors_2;
     cv::Ptr<cv::FeatureDetector> detector = cv::ORB::create();
     cv::Ptr<cv::DescriptorExtractor> descriptor = cv::ORB::create();
     cv::Ptr<cv::DescriptorMatcher> matcher  = cv::DescriptorMatcher::create ( "BruteForce-Hamming" );
-    detector->detect ( img_1,keypoints_1 );
-    detector->detect ( img_2,keypoints_2 );
+    detector->detect ( image1,keyPoints1 );
+    detector->detect ( image2,keyPoints2 );
 
-    descriptor->compute ( img_1, keypoints_1, descriptors_1 );
-    descriptor->compute ( img_2, keypoints_2, descriptors_2 );
+    descriptor->compute ( image1, keyPoints1, descriptors_1 );
+    descriptor->compute ( image2, keyPoints2, descriptors_2 );
 
     vector<cv::DMatch> match;
     // BFMatcher matcher ( NORM_HAMMING );
@@ -696,6 +774,26 @@ void HandEyeCalibration::creat3D2DPoints(LiDAR &lidar, cv::Mat &depthMapCamera, 
     }
 }
 
+void HandEyeCalibration::cameraRegistration(cv::Mat &image1, cv::Mat &image2, vector<cv::KeyPoint> &keyPoints1, vector<cv::KeyPoint> &keyPoints2, vector<cv::DMatch> &matches,
+                                            cv::Mat &depthMapCamera, cv::Mat &cameraMatrix, LiDAR &liDAR, cv::Mat &transformationCamera) {
+    findFeatureMatches(image1, image2, keyPoints1, keyPoints2, matches);
+    cout<<"一共找到了"<<matches.size() <<"组匹配点"<<endl;
+    vector<cv::Point3f> pts_3d;
+    vector<cv::Point2f> pts_2d;
+
+    creat3D2DPoints(liDAR, depthMapCamera, keyPoints1, keyPoints2, matches, pts_3d, pts_2d);
+
+    cv::Mat r, t;
+    solvePnP ( pts_3d, pts_2d, cameraMatrix, cv::Mat(), r, t, false, cv::SOLVEPNP_ITERATIVE); // 调用OpenCV 的 PnP 求解，可选择EPNP，DLS等方法
+    cv::Mat R;
+    cv::Rodrigues ( r, R ); // r为旋转向量形式，用Rodrigues公式转换为矩阵
+
+    transformationCamera = cv::Mat::zeros(4, 4, CV_32FC1);
+    Transfer::matSeperate2Mat(R, t, transformationCamera);
+}
+
+
+
 void HandEyeCalibration::pointCloudRegistration(pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloud1,
                                                 pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloud2,
                                                 float voxVolum, cv::Mat &transformation) {
@@ -716,109 +814,132 @@ void HandEyeCalibration::pointCloudRegistration(pcl::PointCloud<pcl::PointXYZ>::
     pcl::PointCloud<pcl::PointXYZ> Final;
     icp.align(Final);
     std::cout << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore() << std::endl;
+    transformation = cv::Mat::zeros(4, 4, CV_32FC1);
     cv::eigen2cv(icp.getFinalTransformation(), transformation);
 }
 
-cv::Mat HandEyeCalibration::skew(cv::Mat A)
+void HandEyeCalibration::skew(cv::Mat &matOriginal, cv::Mat &matSkew)
 {
-    CV_Assert(A.cols == 1 && A.rows == 3);
-    cv::Mat B;
-    B = cv::Mat::zeros(3, 3, CV_32FC1);
+    CV_Assert(matOriginal.cols == 1 && matOriginal.rows == 3);
+    //matSkew = cv::Mat::zeros(3, 3, CV_32FC1);
 
-    B.at<double>(0, 0) = 0.0;
-    B.at<double>(0, 1) = -A.at<double>(2, 0);
-    B.at<double>(0, 2) = A.at<double>(1, 0);
+    matSkew.at<float>(0, 0) = 0.0;
+    matSkew.at<float>(0, 1) = -matOriginal.at<float>(2, 0);
+    matSkew.at<float>(0, 2) = matOriginal.at<float>(1, 0);
 
-    B.at<double>(1, 0) = A.at<double>(2, 0);
-    B.at<double>(1, 1) = 0.0;
-    B.at<double>(1, 2) = -A.at<double>(0, 0);
+    matSkew.at<float>(1, 0) = matOriginal.at<float>(2, 0);
+    matSkew.at<float>(1, 1) = 0.0;
+    matSkew.at<float>(1, 2) = -matOriginal.at<float>(0, 0);
 
-    B.at<double>(2, 0) = -A.at<double>(1, 0);
-    B.at<double>(2, 1) = A.at<double>(0, 0);
-    B.at<double>(2, 2) = 0.0;
-
-    return B;
+    matSkew.at<float>(2, 0) = -matOriginal.at<float>(1, 0);
+    matSkew.at<float>(2, 1) = matOriginal.at<float>(0, 0);
+    matSkew.at<float>(2, 2) = 0.0;
 }
 
 void HandEyeCalibration::handEyeTsai(cv::Mat &transformationCameraLiDAR, cv::Mat &transformationLiDAR,
                                      cv::Mat &transformationCamera) {
-    cv::Mat Rgij(3, 3, CV_32FC1);
-    cv::Mat Rcij(3, 3, CV_32FC1);
-
-    cv::Mat rgij(3, 1, CV_32FC1);
-    cv::Mat rcij(3, 1, CV_32FC1);
-
-    double theta_gij;
-    double theta_cij;
-
-    cv::Mat rngij(3, 1, CV_32FC1);
-    cv::Mat rncij(3, 1, CV_32FC1);
-
-    cv::Mat Pgij(3, 1, CV_32FC1);
-    cv::Mat Pcij(3, 1, CV_32FC1);
-
-    cv::Mat tempA(3, 3, CV_32FC1);
-    cv::Mat tempb(3, 1, CV_32FC1);
-
-    cv::Mat A;
-    cv::Mat b;
-    cv::Mat pinA = cv::Mat::zeros(3, 3, CV_32FC1);
-
-    cv::Mat Pcg_prime(3, 1, CV_32FC1);
-    cv::Mat Pcg(3, 1, CV_32FC1);
-    cv::Mat PcgTrs(1, 3, CV_32FC1);
-    cv::Mat sPcg(3, 3, CV_32FC1);
-
-    cv::Mat Rcg(3, 3, CV_32FC1);
-    cv::Mat eyeM = cv::Mat::eye(3, 3, CV_32FC1);
-
-    cv::Mat Tgij(3, 1, CV_32FC1);
-    cv::Mat Tcij(3, 1, CV_32FC1);
-
-    cv::Mat tempAA(3, 3, CV_32FC1);
-    cv::Mat tempbb(3, 1, CV_32FC1);
-
-    cv::Mat AA;
-    cv::Mat bb;
-    cv::Mat pinAA;
-
-    cv::Mat Tcg(3, 1, CV_32FC1);
-
-    transformationLiDAR(cv::Rect(0, 0, 3, 3)).copyTo(Rgij);
-    transformationCamera(cv::Rect(0, 0, 3, 3)).copyTo(Rcij);
-
-    cv::Rodrigues(Rgij, rgij);
-    cv::Rodrigues(Rcij, rcij);
-
-    theta_gij = norm(rgij);
-    theta_cij = norm(rcij);
-
-    rngij = rgij / theta_gij;
-    rncij = rcij / theta_cij;
-
-    Pgij = 2 * sin(theta_gij / 2)*rngij;
-    Pcij = 2 * sin(theta_cij / 2)*rncij;
-
-    tempA = skew(Pgij + Pcij);
-    tempb = Pcij - Pgij;
-
-    cv::invert(tempA, pinA, cv::DECOMP_SVD);
-    Pcg_prime = pinA * tempb;
-    Pcg = 2 * Pcg_prime / sqrt(1 + cv::norm(Pcg_prime) * cv::norm(Pcg_prime));
-    PcgTrs = Pcg.t();
-
-    sPcg = skew(Pcg);
-    Rcg = (1 - cv::norm(Pcg) * cv::norm(Pcg) / 2) * eyeM + 0.5 * (Pcg * PcgTrs + sqrt(4 - cv::norm(Pcg)*cv::norm(Pcg))* sPcg);
+    cv::Mat Rgij = cv::Mat::zeros(3, 3, CV_32FC1);
+    cv::Mat Rcij = cv::Mat::zeros(3, 3, CV_32FC1);
+    cv::Mat Tgij = cv::Mat::zeros(3, 1, CV_32FC1);
+    cv::Mat Tcij = cv::Mat::zeros(3, 1, CV_32FC1);
 
     transformationLiDAR(cv::Rect(0, 0, 3, 3)).copyTo(Rgij);
     transformationCamera(cv::Rect(0, 0, 3, 3)).copyTo(Rcij);
     transformationLiDAR(cv::Rect(3, 0, 1, 3)).copyTo(Tgij);
     transformationCamera(cv::Rect(3, 0, 1, 3)).copyTo(Tcij);
 
-    tempAA = Rgij - eyeM;
-    tempbb = Rcg * Tcij - Tgij;
+    cout << "Rgij Rcij" << "  "<< Rgij << endl << Rcij << endl;
 
-    cv::invert(tempAA, pinAA, cv::DECOMP_SVD);
+    cv::Mat rgij = cv::Mat::zeros(3, 1, CV_32FC1);
+    cv::Mat rcij = cv::Mat::zeros(3, 1, CV_32FC1);
+
+    cv::Rodrigues(Rgij, rgij);
+    cv::Rodrigues(Rcij, rcij);
+
+    float theta_gij = norm(rgij);
+    float theta_cij = norm(rcij);
+
+    cout << "rgij  rcij" << "   " << rgij << endl << rcij <<theta_gij << endl << theta_cij << endl;
+
+    cv::Mat rngij = cv::Mat::zeros(3, 1, CV_32FC1);
+    cv::Mat rncij = cv::Mat::zeros(3, 1, CV_32FC1);
+
+    rngij = rgij / theta_gij;
+    rncij = rcij / theta_cij;
+
+    cout << "rngij  rncij" << "   " << rngij << endl << rncij << endl;
+
+
+
+    cv::Mat Pgij = cv::Mat::zeros(3, 1, CV_32FC1);
+    cv::Mat Pcij = cv::Mat::zeros(3, 1, CV_32FC1);
+    cv::Mat Pgcij = cv::Mat::zeros(3, 1, CV_32FC1);
+
+    Pgij = 2 * sin(theta_gij / 2)*rngij;
+    Pcij = 2 * sin(theta_cij / 2)*rncij;
+    Pgcij = Pgij + Pcij;
+
+    cout << "Pgij Pcij Pgcij" << "  " << Pgij << endl << Pcij << endl << Pgcij << endl;
+
+    cv::Mat tempA = cv::Mat::zeros(3, 3, CV_32FC1);
+    cv::Mat tempb = cv::Mat::zeros(3, 1, CV_32FC1);
+
+    HandEyeCalibration::skew(Pgcij, tempA);
+    tempb = Pcij - Pgij;
+
+    cout << "tempA tempb" << "   " << tempA << endl << tempb << endl;
+
+    cv::Mat pinA = cv::Mat::zeros(3, 1, CV_32FC1);
+    cv::invert(tempA, pinA, cv::DECOMP_SVD);
+
+    cv::Mat Pcg_prime = cv::Mat::zeros(3, 1, CV_32FC1);
+    Pcg_prime = pinA * tempb;
+
+    cout << "Pcg_prime" << "   " << Pcg_prime << endl;
+
+    cv::Mat Pcg = cv::Mat::zeros(3, 1, CV_32FC1);
+    cv::Mat PcgTrs = cv::Mat::zeros(1, 3, CV_32FC1);
+    Pcg = 2 * Pcg_prime / sqrt(1 + cv::norm(Pcg_prime) * cv::norm(Pcg_prime));
+
+    cout << "Pcg" << "   " << Pcg << endl;
+
+    PcgTrs = Pcg.t();
+
+    cv::Mat sPcg = cv::Mat::zeros(3, 3, CV_32FC1);
+    HandEyeCalibration::skew(Pcg, sPcg);
+
+    cv::Mat Rcg = cv::Mat::zeros(3, 3, CV_32FC1);
+    cv::Mat eyeM = cv::Mat::eye(3, 3, CV_32FC1);
+    cv::Mat Rcg1 = (1 - cv::norm(Pcg) * cv::norm(Pcg) / 2) * eyeM;
+    cout << "Rcg1  " << Rcg1 << endl;
+
+    float test = cv::norm(Pcg)*cv::norm(Pcg);
+    cout << "   " <<test << endl;
+    cv::Mat Rcg2 = 0.5 * (Pcg * PcgTrs + sqrt(4 - cv::norm(Pcg)*cv::norm(Pcg))* sPcg);
+
+    Rcg = (1 - cv::norm(Pcg) * cv::norm(Pcg) / 2) * eyeM + 0.5 * (Pcg * PcgTrs + sqrt(4 - cv::norm(Pcg)*cv::norm(Pcg))* sPcg);
+
+    cout << "Rcg" << "   " << Rcg << endl;
+
+
+
+    cv::Mat tempAA = cv::Mat::zeros(3, 3, CV_32FC1);
+    cv::Mat tempbb = cv::Mat::zeros(3, 1, CV_32FC1);
+
+//    cv::Mat AA;
+//    cv::Mat bb;
+    cv::Mat pinAA = cv::Mat::zeros(3, 1, CV_32FC1);
+
+    cv::Mat Tcg = cv::Mat::zeros(3, 1, CV_32FC1);
+
+
+    tempAA = Rgij - eyeM;
+    cout << "tempAA  " << tempAA << endl;
+    tempbb = Rcg * Tcij - Tgij;
+    cout << "tempbb  " << tempbb << endl;
+
+    cv::invert(tempAA, pinAA);//, cv::DECOMP_SVD);
+    cout << "pinAA  " << pinAA << endl;
     Tcg = pinAA * tempbb;
 
     Rcg.copyTo(transformationCameraLiDAR(cv::Rect(0, 0, 3, 3)));
@@ -827,6 +948,126 @@ void HandEyeCalibration::handEyeTsai(cv::Mat &transformationCameraLiDAR, cv::Mat
     transformationCameraLiDAR.at<float>(3, 1) = 0.0;
     transformationCameraLiDAR.at<float>(3, 2) = 0.0;
     transformationCameraLiDAR.at<float>(3, 3) = 1.0;
+}
+
+void HandEyeCalibration::handEyeTsai(cv::Mat &transformationCameraLiDAR, vector<cv::Mat> transformationLiDAR,
+                                     vector<cv::Mat> transformationCamera) {
+
+    cv::Mat Rgij = cv::Mat::zeros(3, 3, CV_32FC1);
+    cv::Mat Rcij = cv::Mat::zeros(3, 3, CV_32FC1);
+    cv::Mat Tgij = cv::Mat::zeros(3, 1, CV_32FC1);
+    cv::Mat Tcij = cv::Mat::zeros(3, 1, CV_32FC1);
+
+    cv::Mat rgij = cv::Mat::zeros(3, 1, CV_32FC1);
+    cv::Mat rcij = cv::Mat::zeros(3, 1, CV_32FC1);
+
+    float theta_gij;
+    float theta_cij;
+
+    cv::Mat rngij = cv::Mat::zeros(3, 1, CV_32FC1);
+    cv::Mat rncij = cv::Mat::zeros(3, 1, CV_32FC1);
+
+    cv::Mat Pgij = cv::Mat::zeros(3, 1, CV_32FC1);
+    cv::Mat Pcij = cv::Mat::zeros(3, 1, CV_32FC1);
+    cv::Mat Pgcij = cv::Mat::zeros(3, 1, CV_32FC1);
+
+    cv::Mat tempA = cv::Mat::zeros(3, 3, CV_32FC1);
+    cv::Mat tempb = cv::Mat::zeros(3, 1, CV_32FC1);
+
+    cv::Mat A;
+    cv::Mat b;
+    cv::Mat pinA;
+
+    cv::Mat Pcg_prime = cv::Mat::zeros(3, 1, CV_32FC1);
+
+    cv::Mat Pcg = cv::Mat::zeros(3, 1, CV_32FC1);
+    cv::Mat PcgTrs = cv::Mat::zeros(1, 3, CV_32FC1);
+
+    cv::Mat Rcg = cv::Mat::zeros(3, 3, CV_32FC1);
+    cv::Mat eyeM = cv::Mat::eye(3, 3, CV_32FC1);
+
+    for(int i=0; i<transformationCamera.size(); i++){
+        transformationLiDAR[i](cv::Rect(0, 0, 3, 3)).copyTo(Rgij);
+        transformationCamera[i](cv::Rect(0, 0, 3, 3)).copyTo(Rcij);
+        transformationLiDAR[i](cv::Rect(3, 0, 1, 3)).copyTo(Tgij);
+        transformationCamera[i](cv::Rect(3, 0, 1, 3)).copyTo(Tcij);
+        cout << "Rgij Rcij" << "  "<< Rgij << endl << Rcij << endl;
+
+        cv::Rodrigues(Rgij, rgij);
+        cv::Rodrigues(Rcij, rcij);
+
+        theta_gij = norm(rgij);
+        theta_cij = norm(rcij);
+        cout << "rgij  rcij" << "   " << rgij << endl << rcij <<theta_gij << endl << theta_cij << endl;
+
+        rngij = rgij / theta_gij;
+        rncij = rcij / theta_cij;
+        cout << "rngij  rncij" << "   " << rngij << endl << rncij << endl;
+
+        Pgij = 2 * sin(theta_gij / 2)*rngij;
+        Pcij = 2 * sin(theta_cij / 2)*rncij;
+        Pgcij = Pgij + Pcij;
+        cout << "Pgij Pcij Pgcij" << "  " << Pgij << endl << Pcij << endl << Pgcij << endl;
+
+        HandEyeCalibration::skew(Pgcij, tempA);
+        tempb = Pcij - Pgij;
+        cout << "tempA tempb" << "   " << tempA << endl << tempb << endl;
+        A.push_back(tempA);
+        b.push_back(tempb);
+    }
+
+
+    cv::invert(tempA, pinA, cv::DECOMP_SVD);
+
+    Pcg_prime = pinA * tempb;
+    cout << "Pcg_prime" << "   " << Pcg_prime << endl;
+
+    Pcg = 2 * Pcg_prime / sqrt(1 + cv::norm(Pcg_prime) * cv::norm(Pcg_prime));
+    cout << "Pcg" << "   " << Pcg << endl;
+    PcgTrs = Pcg.t();
+
+    cv::Mat sPcg = cv::Mat::zeros(3, 3, CV_32FC1);
+    HandEyeCalibration::skew(Pcg, sPcg);
+
+
+//    cv::Mat Rcg1 = (1 - cv::norm(Pcg) * cv::norm(Pcg) / 2) * eyeM;
+//    cout << "Rcg1  " << Rcg1 << endl;
+//
+//    float test = cv::norm(Pcg)*cv::norm(Pcg);
+//    cout << "   " <<test << endl;
+//    cv::Mat Rcg2 = 0.5 * (Pcg * PcgTrs + sqrt(4 - cv::norm(Pcg)*cv::norm(Pcg))* sPcg);
+
+    Rcg = (1 - cv::norm(Pcg) * cv::norm(Pcg) / 2) * eyeM + 0.5 * (Pcg * PcgTrs + sqrt(4 - cv::norm(Pcg)*cv::norm(Pcg))* sPcg);
+
+    cout << "Rcg" << "   " << Rcg << endl;
+
+
+
+//    cv::Mat tempAA = cv::Mat::zeros(3, 3, CV_32FC1);
+//    cv::Mat tempbb = cv::Mat::zeros(3, 1, CV_32FC1);
+//
+////    cv::Mat AA;
+////    cv::Mat bb;
+//    cv::Mat pinAA = cv::Mat::zeros(3, 1, CV_32FC1);
+//
+//    cv::Mat Tcg = cv::Mat::zeros(3, 1, CV_32FC1);
+//
+//
+//    tempAA = Rgij - eyeM;
+//    cout << "tempAA  " << tempAA << endl;
+//    tempbb = Rcg * Tcij - Tgij;
+//    cout << "tempbb  " << tempbb << endl;
+//
+//    cv::invert(tempAA, pinAA);//, cv::DECOMP_SVD);
+//    cout << "pinAA  " << pinAA << endl;
+//    Tcg = pinAA * tempbb;
+//
+    Rcg.copyTo(transformationCameraLiDAR(cv::Rect(0, 0, 3, 3)));
+//    Tcg.copyTo(transformationCameraLiDAR(cv::Rect(3, 0, 1, 3)));
+//    transformationCameraLiDAR.at<float>(3, 0) = 0.0;
+//    transformationCameraLiDAR.at<float>(3, 1) = 0.0;
+//    transformationCameraLiDAR.at<float>(3, 2) = 0.0;
+//    transformationCameraLiDAR.at<float>(3, 3) = 1.0;
 }
 
 
@@ -1056,7 +1297,6 @@ void Refinement::errorWrite(ofstream &outFile, float time, float errorRotation, 
 
 void Refinement::distanceErrorWrite(ofstream &outFile, float time, float lastDistance, float referenceDistance, float errorRotation, float errorTranslation) {
     if(!isnan(lastDistance) && !isnan(referenceDistance) && !isnan(errorRotation) && !isnan(errorTranslation)){
-        float error = errorRotation + errorTranslation;
-        outFile << time << ";" << lastDistance << ";" << referenceDistance << ";" << error << endl;
+        outFile << time << ";" << lastDistance << ";" << referenceDistance << ";" << errorRotation << ";" << errorTranslation << endl;
     }
 }

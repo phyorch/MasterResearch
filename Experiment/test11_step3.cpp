@@ -63,16 +63,16 @@ string depth_name6 = "/depth/depth6.png";
 
 
 int step = 3;
-int cnt_data = 1;
+int cnt_data = 6;
 int out = 0;
 int error_write = 1;
 
-string image[1] = {image_name};//, image_name2};//, image_name3};//, image_name4, image_name5, image_name6};
-string cloud[1] = {cloud_name};//, cloud_name2};//, cloud_name3};//, cloud_name4, cloud_name5, cloud_name6};
-string depth[1] = {depth_name};//, depth_name2};//, depth_name3};//, depth_name4, depth_name5, depth_name6};
+string image[6] = {image_name, image_name2, image_name3, image_name4, image_name5, image_name6};
+string cloud[6] = {cloud_name, cloud_name2, cloud_name3, cloud_name4, cloud_name5, cloud_name6};
+string depth[6] = {depth_name, depth_name2, depth_name3, depth_name4, depth_name5, depth_name6};
 
-float p2p[1] = {0};//, 0};//, 0};//, 0, 0, 0};
-float edge[1] = {0};//, 0};//, 0};//, 0, 0, 0};
+float p2p[6] = {0, 0, 0, 0, 0, 0};
+float edge[6] = {0, 0, 0, 0, 0, 0};
 vector<cv::Mat> map;
 
 int time1 = int(time(0));
@@ -116,7 +116,7 @@ float point_cnt = 0;
 float point_cnt2 = 0;
 float vox_volum = 1.0;
 float original_distance, last_distance, initial_distance, reference_distance;
-int feedback = 3;
+int feedback = 8;
 float p2p_distance;
 float edge_distance;
 float p2p_distance2;
@@ -238,6 +238,7 @@ libcmaes::FitFunc KL_divergence = [](const double *x, const double N){
     cv::Point window_range(0, 40);
     cv::Point window_region(25, 50);
     last_distance = 0;
+    reference_distance = 0;
     for(int i=0; i<cnt_data; i++){
         left_image = cv::imread(data_root + data_name + image[i]);
         depth_map_camera = cv::imread(data_root + data_name + depth[i], CV_8UC1);

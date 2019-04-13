@@ -18,15 +18,38 @@
 
 using namespace std;
 string user_name = "phyorch";
-string data_name = "2011_09_26_drive_0005_sync";
-string image_name = "/image_02/data/0000000153.png";
-string image_name2 = "/image_02/data/0000000152.png";
-string cloud_name = "/velodyne_points/data/0000000153.pcd";
-string cloud_name2 = "/velodyne_points/data/0000000152.pcd";
+string image_type = "2011_09_26_drive_0005_sync/image_02/data/";
+string depth_type = "2011_09_26_drive_0005_sync/depth/";
+string cloud_type = "2011_09_26_drive_0005_sync/velodyne_points/data/";
+string image_name = "0000000082.png";
+string image_name2 = "/image_02/data/0000000083.png";
+string image_name3 = "/image_02/data/0000000081.png";
+string image_name4 = "/image_02/data/0000000080.png";
+string image_name5 = "/image_02/data/0000000080.png";
+string image_name6 = "/image_02/data/0000000079.png";
+string image_name7 = "/image_02/data/0000000079.png";
+string image_name8 = "/image_02/data/0000000078.png";
+string cloud_name = "/velodyne_points/data/0000000082.pcd";
+string cloud_name2 = "/velodyne_points/data/0000000083.pcd";
+string cloud_name3 = "/velodyne_points/data/0000000081.pcd";
+string cloud_name4 = "/velodyne_points/data/0000000080.pcd";
+string cloud_name5 = "/velodyne_points/data/0000000080.pcd";
+string cloud_name6 = "/velodyne_points/data/0000000079.pcd";
+string cloud_name7 = "/velodyne_points/data/0000000079.pcd";
+string cloud_name8 = "/velodyne_points/data/0000000078.pcd";
 
 string data_root = "/home/" + user_name + "/Data/";
-string depth_name = "/depth/0000000153.png";
+string depth_name = "/depth/0000000082.png";
+string depth_name2 = "/depth/0000000081.png";
+string depth_name3 = "/depth/0000000080.png";
+string depth_name4 = "/depth/0000000079.png";
+//string image_list[8] = {image_name, image_name2, image_name3, image_name4, image_name5, image_name6, image_name7, image_name8};
+//string cloud_list[8] = {cloud_name, cloud_name2, cloud_name3, cloud_name4, cloud_name5, cloud_name6, cloud_name7, cloud_name8};
+//string depth_list[4] = {depth_name, depth_name2, depth_name3, depth_name4};
 
+vector<cv::Mat> motion_camera;
+vector<cv::Mat> motion_lidar;
+cv::Mat transformation_camera_lidar = cv::Mat::zeros(4, 4, CV_32FC1);
 
 int feedback = 3;
 float vox_volum = 0.8;
@@ -42,26 +65,8 @@ void bundleAdjustment (
 
 int main ()
 {
-    cv::Mat img_1 = cv::imread ( data_root + data_name + image_name, CV_LOAD_IMAGE_COLOR );
-    cv::Mat img_2 = cv::imread ( data_root + data_name + image_name2, CV_LOAD_IMAGE_COLOR );
 
-    pcl::PointCloud<pcl::PointXYZI>::Ptr point_cloud_lidar(new pcl::PointCloud<pcl::PointXYZI>);
-    if (pcl::io::loadPCDFile<pcl::PointXYZI> (data_root + data_name + cloud_name, *point_cloud_lidar) == -1) //* load the file
-    {
-        PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
-        exit(EXIT_FAILURE);
-    }
-    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_lidar_xyz(new pcl::PointCloud<pcl::PointXYZ>);
-    PointCloudAlignment::getLiDARPointCloudXYZ(point_cloud_lidar, point_cloud_lidar_xyz);
 
-    pcl::PointCloud<pcl::PointXYZI>::Ptr point_cloud_lidar2(new pcl::PointCloud<pcl::PointXYZI>);
-    if (pcl::io::loadPCDFile<pcl::PointXYZI> (data_root + data_name + cloud_name2, *point_cloud_lidar2) == -1) //* load the file
-    {
-        PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
-        exit(EXIT_FAILURE);
-    }
-    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_lidar_xyz2(new pcl::PointCloud<pcl::PointXYZ>);
-    PointCloudAlignment::getLiDARPointCloudXYZ(point_cloud_lidar2, point_cloud_lidar_xyz2);
 
     R_self = (cv::Mat_<float>(4,4) << 9.998817e-01, 1.511453e-02, -2.841595e-03, 0,
             5.251945e-03, 9.999804e-01, -3.413835e-03, 0,
@@ -78,6 +83,7 @@ int main ()
 
     LiDARCalibParaKittiInverse lidar_calib_para_kitti_inverse;
 
+    cv::Mat img_1 = cv::imread ( data_root + image_type + image_name, CV_LOAD_IMAGE_COLOR );
     lidar_calib_para_kitti_inverse = {
             Rotation:lid_to_cam_rotation,
             Translation:lid_to_cam_translation,
@@ -87,48 +93,70 @@ int main ()
     };
     LiDAR lidar = LiDAR(lidar_calib_para_kitti_inverse);
 
-    vector<cv::KeyPoint> keypoints_1, keypoints_2;
-    vector<cv::DMatch> matches;
-    HandEyeCalibration::findFeatureMatches(img_1, img_2, keypoints_1, keypoints_2, matches);
-    cout<<"一共找到了"<<matches.size() <<"组匹配点"<<endl;
-
-    vector<cv::Point3f> pts_3d;
-    vector<cv::Point2f> pts_2d;
-
     cv::Mat K;
-    K = ( cv::Mat_<double> ( 3,3 ) << 7.215377e+02, 0.000000e+00, 6.095593e+02,
+    cv::Mat transformation_camera;
+    cv::Mat transformation_lidar;
+    K = ( cv::Mat_<float> ( 3,3 ) << 7.215377e+02, 0.000000e+00, 6.095593e+02,
             0.000000e+00, 7.215377e+02, 1.728540e+02,
             0.000000e+00, 0.000000e+00, 1.000000e+00);
 
-    cv::Mat depth_map_camera = cv::imread(data_root + data_name + depth_name, CV_8UC1);
-    HandEyeCalibration::creat3D2DPoints(lidar, depth_map_camera, keypoints_1, keypoints_2, matches, pts_3d, pts_2d);
-
-    cout<<"3d-2d pairs: "<<pts_3d.size() <<endl;
-
-    cv::Mat r, t;
-    solvePnP ( pts_3d, pts_2d, K, cv::Mat(), r, t, false ); // 调用OpenCV 的 PnP 求解，可选择EPNP，DLS等方法
-    cv::Mat R;
-    cv::Rodrigues ( r, R ); // r为旋转向量形式，用Rodrigues公式转换为矩阵
-
-    //cout<<"R="<<endl<<R<<endl;
-    //cout<<"t="<<endl<<t<<endl;
-
-    cv::Mat transformation_camera = cv::Mat::zeros(4, 4, CV_32FC1);
-    Transfer::matSeperate2Mat(R, t, transformation_camera);
-    cout << transformation_camera << endl;
 
     //cout<<"calling bundle adjustment"<<endl;
-
     //bundleAdjustment ( pts_3d, pts_2d, K, R, t );
 
+    vector<string> image_list;
+    vector<string> cloud_list;
+    vector<string> depth_list;
+    int begin = 82;
+    int end = 110;
 
-    cv::Mat transformation_lidar = cv::Mat::zeros(4, 4, CV_32FC1);
-    HandEyeCalibration::pointCloudRegistration(point_cloud_lidar_xyz, point_cloud_lidar_xyz2, vox_volum, transformation_lidar);
-    cout << transformation_lidar << endl;
+    HandEyeCalibration::imageRead(begin, end, image_type, image_list);
+    HandEyeCalibration::cloudRead(begin, end, cloud_type, cloud_list);
+    HandEyeCalibration::depthRead(begin, end, depth_type, depth_list);
 
-    cv::Mat transformation_camera_lidar = cv::Mat::zeros(4, 4, CV_32FC1);
-    HandEyeCalibration::handEyeTsai(transformation_camera_lidar, transformation_lidar, transformation_camera);
-    cout << transformation_camera_lidar;
+
+    for(int i=0; i<end-begin; i++){
+        cv::Mat img_1 = cv::imread ( data_root + image_list[2*i], CV_LOAD_IMAGE_COLOR );
+        cv::Mat img_2 = cv::imread ( data_root + image_list[2*i+1], CV_LOAD_IMAGE_COLOR );
+        cv::Mat depth_map_camera = cv::imread(data_root + depth_list[i], CV_8UC1);
+        vector<cv::KeyPoint> keypoints_1, keypoints_2;
+        vector<cv::DMatch> matches;
+        vector<cv::Point3f> pts_3d;
+        vector<cv::Point2f> pts_2d;
+        HandEyeCalibration::cameraRegistration(img_1, img_2, keypoints_1, keypoints_2, matches, depth_map_camera, K, lidar, transformation_camera);
+        cout << transformation_camera << endl;
+
+
+        pcl::PointCloud<pcl::PointXYZI>::Ptr point_cloud_lidar(new pcl::PointCloud<pcl::PointXYZI>);
+        if (pcl::io::loadPCDFile<pcl::PointXYZI> (data_root + cloud_list[2*i], *point_cloud_lidar) == -1) //* load the file
+        {
+            PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+            exit(EXIT_FAILURE);
+        }
+        pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_lidar_xyz(new pcl::PointCloud<pcl::PointXYZ>);
+        PointCloudAlignment::getLiDARPointCloudXYZ(point_cloud_lidar, point_cloud_lidar_xyz);
+
+        pcl::PointCloud<pcl::PointXYZI>::Ptr point_cloud_lidar2(new pcl::PointCloud<pcl::PointXYZI>);
+        if (pcl::io::loadPCDFile<pcl::PointXYZI> (data_root + cloud_list[2*i+1], *point_cloud_lidar2) == -1) //* load the file
+        {
+            PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+            exit(EXIT_FAILURE);
+        }
+        pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_lidar_xyz2(new pcl::PointCloud<pcl::PointXYZ>);
+        PointCloudAlignment::getLiDARPointCloudXYZ(point_cloud_lidar2, point_cloud_lidar_xyz2);
+        HandEyeCalibration::pointCloudRegistration(point_cloud_lidar_xyz, point_cloud_lidar_xyz2, vox_volum, transformation_lidar);
+        cout << transformation_lidar << endl;
+
+        motion_camera.push_back(transformation_camera);
+        motion_lidar.push_back(transformation_lidar);
+    }
+    HandEyeCalibration::handEyeTsai(transformation_camera_lidar, motion_camera, motion_lidar);
+    cout << transformation_camera_lidar << endl;
+
+//    cv::Mat transformation_camera_lidar = cv::Mat::zeros(4, 4, CV_32FC1);
+//    cout << transformation_lidar << endl << transformation_camera << endl;
+//    HandEyeCalibration::handEyeTsai(transformation_camera_lidar, transformation_lidar, transformation_camera);
+//    cout << transformation_camera_lidar;
 
 //    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_lidar_xyz_sampled(new pcl::PointCloud<pcl::PointXYZ>);
 //    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_lidar_xyz2_sampled(new pcl::PointCloud<pcl::PointXYZ>);

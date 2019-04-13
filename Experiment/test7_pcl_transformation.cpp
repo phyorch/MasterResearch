@@ -270,45 +270,63 @@ int main(){
     //PointCloudAlignment::pointCloudScaling(point_cloud_camera, 0.01, point_cloud_camera);
 
 
+    Eigen::Matrix4f transformation2;
+    transformation2 << 0, -1, 0, 0,
+            0, 0, -1, 0,
+            1, 0, 0, 0,
+            0, 0, 0, 1;
+
+    Eigen::Matrix4f transformation3;
+    transformation3 << 1, 0, 0, 0,
+            0, 0, 1, 0,
+            0, -1, 0, 0,
+            0, 0, 0, 1;
+
 
     //Transfer::vector2Eigen(theta, transformation);
     pcl::PointCloud<pcl::PointXYZ>::Ptr transformed_lidar_cloud (new pcl::PointCloud<pcl::PointXYZ> ());
-    pcl::transformPointCloud (*point_cloud_lidar_part, *transformed_lidar_cloud, transformation);
+    pcl::transformPointCloud (*point_cloud_lidar_part, *transformed_lidar_cloud, transformation2);
+
+    pcl::PointCloud<pcl::PointXYZ>::Ptr transformed_lidar_cloud2 (new pcl::PointCloud<pcl::PointXYZ> ());
+    pcl::transformPointCloud (*point_cloud_lidar_part, *transformed_lidar_cloud2, transformation3);
 
     //float scale = PointCloudAlignment::findScaling(point_cloud_camera, transformed_lidar_cloud);
     //PointCloudAlignment::pointCloudScaling(point_cloud_camera, scale, point_cloud_camera);
-
-    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_camera_downsample (new pcl::PointCloud<pcl::PointXYZ> ());
-    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_lidar_downsample (new pcl::PointCloud<pcl::PointXYZ> ());
-    PointCloudAlignment::pointCloudDownsample(point_cloud_camera, point_cloud_camera_downsample, vox_volum);
-    PointCloudAlignment::pointCloudDownsample(transformed_lidar_cloud, point_cloud_lidar_downsample, vox_volum);
-
-    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_camera_filtered(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_lidar_filtered(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
-    sor.setInputCloud (point_cloud_camera_downsample);
-    sor.setMeanK (20);
-    sor.setStddevMulThresh (1.0);
-    sor.filter (*point_cloud_camera_filtered);
-    sor.setInputCloud(point_cloud_lidar_downsample);
-    sor.filter(*point_cloud_lidar_filtered);
+//
+//    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_camera_downsample (new pcl::PointCloud<pcl::PointXYZ> ());
+//    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_lidar_downsample (new pcl::PointCloud<pcl::PointXYZ> ());
+//    PointCloudAlignment::pointCloudDownsample(point_cloud_camera, point_cloud_camera_downsample, vox_volum);
+//    PointCloudAlignment::pointCloudDownsample(transformed_lidar_cloud, point_cloud_lidar_downsample, vox_volum);
+//
+//    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_camera_filtered(new pcl::PointCloud<pcl::PointXYZ>);
+//    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_lidar_filtered(new pcl::PointCloud<pcl::PointXYZ>);
+//    pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
+//    sor.setInputCloud (point_cloud_camera_downsample);
+//    sor.setMeanK (20);
+//    sor.setStddevMulThresh (1.0);
+//    sor.filter (*point_cloud_camera_filtered);
+//    sor.setInputCloud(point_cloud_lidar_downsample);
+//    sor.filter(*point_cloud_lidar_filtered);
 
 
 
     pcl::visualization::PCLVisualizer viewer ("test");
-    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> source_cloud_color_handler (point_cloud_camera, 230, 20, 20);
-    viewer.addPointCloud(point_cloud_camera, source_cloud_color_handler, "transformed_cloud");
+    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> source_cloud_color_handler (point_cloud_lidar_part, 230, 20, 20);
+    viewer.addPointCloud(point_cloud_lidar_part, source_cloud_color_handler, "transformed_cloud");
 
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> transformed_cloud_color_handler (transformed_lidar_cloud, 255, 255, 255);
     viewer.addPointCloud(transformed_lidar_cloud, transformed_cloud_color_handler, "camera_cloud");
+
+    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> transformed_cloud_color_handler2 (transformed_lidar_cloud2, 120, 80, 50);
+    viewer.addPointCloud(transformed_lidar_cloud2, transformed_cloud_color_handler2, "camera_cloud2");
 
     while (!viewer.wasStopped ()) { // Display the visualiser until 'q' key is pressed
         viewer.spinOnce ();
     }
 
-    float d1 = PointCloudAlignment::chamferDistance(point_cloud_camera_filtered, point_cloud_lidar_filtered);
+    //float d1 = PointCloudAlignment::chamferDistance(point_cloud_camera_filtered, point_cloud_lidar_filtered);
     cout << "test";
-    cout << d1 << endl;
+    //cout << d1 << endl;
 
     return 0;
 }

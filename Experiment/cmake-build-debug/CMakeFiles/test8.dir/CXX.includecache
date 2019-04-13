@@ -67,6 +67,8 @@ pcl/filters/voxel_grid.h
 -
 pcl/visualization/pcl_visualizer.h
 -
+pcl/filters/statistical_outlier_removal.h
+-
 sl/Camera.hpp
 -
 

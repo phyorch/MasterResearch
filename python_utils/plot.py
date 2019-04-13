@@ -12,7 +12,7 @@ depth_xml_path = '/home/phyorch/Data/2019_01_03/2019_01_03_4/ZEDData/DepthImage/
 
 error_path = '/home/phyorch/Data/Result/FinalResult/stage3/12/error_translation.csv'
 error_base_path = '/home/phyorch/Data/Result/FinalResult/stage3/error'
-error_path2 = '/home/phyorch/Data/Result/FinalResult/plot/error23.csv'
+error_path2 = '/home/phyorch/Data/Result/FinalResult/stage3/02/error_translation.csv'
 distance_path = '/home/phyorch/Data/distance.csv'
 
 
@@ -255,5 +255,16 @@ for i in range(4):
     y = y + array_error[:, i+2]
 y = y / 5
 
+df_error2 = pd.read_csv(error_path2)
+df_error2.fillna(0)
+array_error2 = np.array(df_error2)
+y2 = array_error2[:, 1]
+for i in range(4):
+    y2 = y2 + array_error2[:, i+2]
+y2 = y2 / 5
+
+
 plt.plot(x, y)
+plt.hold('True')
+plt.plot(x, y2)
 plt.show()

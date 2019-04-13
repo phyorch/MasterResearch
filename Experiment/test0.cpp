@@ -57,188 +57,28 @@ cv::Mat depth_map_camera1, depth_map_lidar1;
 pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_part(new pcl::PointCloud<pcl::PointXYZ>);
 
 
+void skew(cv::Mat &matOriginal, cv::Mat &matSkew) {
+    CV_Assert(matOriginal.cols == 1 && matOriginal.rows == 3);
+    matSkew = cv::Mat::zeros(3, 3, CV_32FC1);
 
+    cout << "test" << endl << matOriginal << endl << matSkew << endl;
+    matSkew.at<float>(0, 0) = 0.0;
+    matSkew.at<float>(0, 1) = -matOriginal.at<float>(2, 0);
+    matSkew.at<float>(0, 2) = matOriginal.at<float>(1, 0);
+
+    matSkew.at<float>(1, 0) = matOriginal.at<float>(2, 0);
+    matSkew.at<float>(1, 1) = 0.0;
+    matSkew.at<float>(1, 2) = -matOriginal.at<float>(0, 0);
+
+    matSkew.at<float>(2, 0) = -matOriginal.at<float>(1, 0);
+    matSkew.at<float>(2, 1) = matOriginal.at<float>(0, 0);
+    matSkew.at<float>(2, 2) = 0.0;
+}
 
 int main(){
-
-
-////----------------------------------------------------------------------------------------------------------------------
-////2011_09_26_drive_0048_sync intrinsic calibration
-//    R_self = (cv::Mat_<float>(4,4) << 9.998817e-01, 1.511453e-02, -2.841595e-03, 0,
-//            5.251945e-03, 9.999804e-01, -3.413835e-03, 0,
-//            2.827154e-03, 9.766976e-04, 9.999955e-01, 0,
-//            0, 0, 0, 1);
-//
-//    P_self = (cv::Mat_<float>(3,4) << 7.215377e+02, 0.000000e+00, 6.095593e+02, 0,//4.485728e+01
-//            0.000000e+00, 7.215377e+02, 1.728540e+02, 0,//2.163791e-01
-//            0.000000e+00, 0.000000e+00, 1.000000e+00, 0);//2.745884e-03
-//
-////2011_09_26_drive_0048_sync extrinsic calibration
-////    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << 7.533745e-03, -9.999714e-01, -6.166020e-04,
-////            1.480249e-02, 7.280733e-04, -9.998902e-01,
-////            9.998621e-01, 7.523790e-03, 1.480755e-02);
-////    lid_to_cam_translation = (cv::Mat_<float>(3,1) << -4.069766e-03, -7.631618e-02, -2.717806e-01);
-////    lid_to_cam_rotation2 = (cv::Mat_<float>(3,3) << 0.0090045128, -0.99985546, 0.014423269,
-////    -0.0041264175, -0.014460885, -0.99988693,
-////    0.99995095, 0.0089439778, -0.0042560343);
-////    lid_to_cam_translation2 = (cv::Mat_<float>(3,1) << -4.069766e-03, -7.631618e-02, -2.717806e-01);
-//    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << 1, 0, 0,
-//            0, 1, 0,
-//            0, 0, 1);
-//    lid_to_cam_translation = (cv::Mat_<float>(3,1) << -4.069766e-03, -7.631618e-02, -2.717806e-01);
-//    lid_to_cam_rotation2 = (cv::Mat_<float>(3,3) << 1, 0, 0,
-//            0, 0, -1,
-//            0, 1, 0);
-//    lid_to_cam_translation2 = (cv::Mat_<float>(3,1) << -4.069766e-03, -7.631618e-02, -2.717806e-01);
-//    cv::Mat cam0_to_cam2_rotation, cam0_to_cam2_translation;
-//    cam0_to_cam2_rotation = (cv::Mat_<float>(3,3) << 9.999758e-01, -5.267463e-03, -4.552439e-03,
-//            5.251945e-03, 9.999804e-01, -3.413835e-03,
-//            4.570332e-03, 3.389843e-03, 9.999838e-01);
-//    cam0_to_cam2_translation = (cv::Mat_<float>(3,1) << 5.956621e-02, 2.900141e-04, 2.577209e-03);
-//    lid_to_cam_rotation = cam0_to_cam2_rotation * lid_to_cam_rotation;
-//    lid_to_cam_translation = cam0_to_cam2_rotation * lid_to_cam_translation + cam0_to_cam2_translation;
-//
-////----------------------------------------------------------------------------------------------------------------------
-
-
-
-    float degreex = 0;
-    float degreey = 0;
-    float degreez = 0;
-    float tx = 0;
-    float ty = 0;
-    float tz = 0;
-
-    //2019_01_15 intrinsic calibration
-    R_self = (cv::Mat_<float>(4,4) << 1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1);
-
-    P_self = (cv::Mat_<float>(3,4) << 6.7440533447265625e+02, 0., 6.7320996093750000e+02, 0,
-            0., 6.7440533447265625e+02, 3.8029739379882812e+02, 0,
-            0, 0, 1, 0);
-
-//2019_01_15 extrinsic calibration
-    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << 1, 0, 0,
-    0, 0, -1,
-    0, 1, 0);
-    lid_to_cam_translation = (cv::Mat_<float>(3,1) << 0.383, 0, 0);
-
-    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << -2.8819736611885860e-03, -9.9999436034347000e-01,
-            1.7243865780899315e-03,
-            -5.5479446042582758e-02, -1.5618471282996538e-03,
-            -9.9845860790538343e-01,
-            9.9845567017000036e-01, -2.9731994218860636e-03,
-            -5.5474631955276077e-02);
-    lid_to_cam_translation = (cv::Mat_<float>(3,1) << 1.4143607966564101e-01+tx, -2.7098180415639239e-01+ty, -6.2455864757931225e-02+tz);
-
-
-    cv::Mat axisx, axisy, axisz;
-    axisx = (cv::Mat_<float>(3,3) << 1, 0.0, 0.0,
-            0.0, cos(M_PI/180 * degreex), -sin(M_PI/180 * degreex),
-            0.0, sin(M_PI/180 * degreex), cos(M_PI/180 * degreex));
-
-    axisy = (cv::Mat_<float>(3,3) << cos(M_PI/180 * degreey), 0.0, -sin(M_PI/180 * degreey),
-            0.0, 1, 0.0,
-            sin(M_PI/180 * degreey), 0.0, cos(M_PI/180 * degreey));
-
-    axisz = (cv::Mat_<float>(3,3) << cos(M_PI/180 * degreez), -sin(M_PI/180 * degreez), 0.0,
-            sin(M_PI/180 * degreez), cos(M_PI/180 * degreez), 0.0,
-            0.0, 0.0, 1.0);
-    lid_to_cam_rotation = axisz * axisy * axisx * lid_to_cam_rotation;
-//
-    LiDARCalibParaKittiInverse lidar_calib_para_kitti_inverse = {
-            Rotation:lid_to_cam_rotation,
-            Translation:lid_to_cam_translation,
-            R:R_self,
-            P:P_self,
-            imageSize:cv::Size(left_image.cols, left_image.rows)
-    };
-
-
-
-
-//    LiDAR lidar = LiDAR(lidar_calib_para_kitti_inverse);
-//    lidar.projectData(data_root + "lidar5.pcd", depth_map_lidar1, point_cloud_part, XYZI, CV);
-//    cv::Point size(3, 3);
-//    cv::Mat test;
-//    ImageUtils::neighborDyeing(depth_map_lidar1, size, test);
-//    ImageUtils::colorTransfer(test, left_image, 70);
-    ImageUtils::creatMapRegion(left_image, left_image, 172, left_image.rows-172, 19, left_image.cols-19);
-    cv::imwrite(test1_output_path, left_image);
-//
-//    vector<double> theta1(6, 0);
-//    vector<double> theta2(6, 0);
-//    Transfer::mat2VectorSeperate(lid_to_cam_rotation, lid_to_cam_translation, theta1);
-//    Transfer::mat2VectorSeperate(lid_to_cam_rotation2, lid_to_cam_translation2, theta2);
-//    double norma = sqrt(theta1[0] * theta1[0] + theta1[1] * theta1[1] + theta1[2] * theta1[2]);
-//    double normb = sqrt(theta2[0] * theta2[0] + theta2[1] * theta2[1] + theta2[2] * theta2[2]);
-//    //double angle = acos((theta1[0] * theta2[0] + theta1[1] * theta2[1] + theta1[2] * theta2[2]) / norma * normb);
-//
-//
-//
-//
-//
-////    cv::Mat test2 = cv::imread(test2_path, CV_8UC1);
-////    cv::Mat grad_x;
-//    cv::Mat output;
-//    //cv::medianBlur(output, output, 3);
-//    //cv::GaussianBlur(left_image, left_image, cv::Size(3, 3), 0, 0, cv::BORDER_DEFAULT);
-//    //cv::cvtColor(left_image, output, cv::COLOR_BGR2GRAY);
-//    output = cv::imread(data_root + data_name + "/depth/depth4.png");
-//
-//    cv::Laplacian(output, output, CV_8U, 3, 1, 0, cv::BORDER_DEFAULT);
-//
-//    cv::imwrite(test1_output_path, output * 10);
-//
-//    cv::threshold(output, output, 80, 255, cv::THRESH_BINARY);
-//    output.convertTo(output, CV_32FC1);
-//    cv::Mat output2;
-//    cv::Mat filter = cv::getGaussianKernel(13, 2.0, CV_32F);
-//    Refinement::gaussianBlurModified(output, output2, 13);
-//    cv::imwrite(test1_output_path, output2);
-//    cv::Mat three = cv::Mat::zeros(output2.rows, output2.cols, CV_8UC3);
-//    vector<cv::Mat> channels;
-//    output2.convertTo(output2, CV_8UC1);
-//    for (int i=0;i<3;i++)
-//    {
-//        channels.push_back(output2);
-//    }
-//    cv::merge(channels,three);
-//
-//
-//    cv::Point window_size(6, 6);
-//    cv::Point window_range(0, 40);
-//    cv::Point window_region(25, 50);
-//    //Refinement::slideElimination2(depth_map_lidar1, window_size, window_range, window_region, 1.5);
-//    cout << depth_map_lidar1;
-//
-//    ImageUtils::colorTransfer(depth_map_lidar1, three, 70);
-//
-//    //cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT,cv::Size(3,3));
-//    //cv::erode(output, output, element);
-//    //cv::morphologyEx(output, output, cv::MORPH_OPEN, element);
-//    //cv::Mat label;
-//    //cv::Mat result(output.rows, output.cols, CV_32FC1);
-//    //cv::distanceTransform(output, result, label, cv::DIST_L2, 3);
-//    //cv::normalize(output, output, 0, 1, cv::NORM_MINMAX);
-//    //cout << label;
-//
-//    //Canny(left_image, output, 3, 9, 7);
-////    //cv::Sobel(test2, grad_x, CV_16S, 1, 0, 3, 1, 1, cv::BORDER_DEFAULT);
-////    //convertScaleAbs(grad_x, test2);
-//
-//    cv::imwrite(test1_output_path, three);
-//
-////    cv::Point size(2, 2);
-////    cv::Mat depth_map_lidar_dyed;
-////    ImageUtils::neighborDyeing(test, size, depth_map_lidar_dyed);
-////    cout << depth_map_lidar_dyed;
-////    cv::imwrite(test1_output_path, depth_map_lidar_dyed);
-//    //cv::imwrite(test2_output_path, test2*16);
-
-
-
+    cv::Mat test1 = cv::Mat::zeros(3, 1, CV_32FC1);
+    cv::Mat test2(3, 3, CV_32FC1);
+    HandEyeCalibration::skew(test1, test2);
+    cout << test1 << test2;
     return 0;
 }

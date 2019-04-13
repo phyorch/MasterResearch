@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 SET (SRC_LIST test1_experiment_old.cpp Sensor.cpp ImageUtils.cpp Calibration.cpp StereoGC.cpp Sensor.h ImageUtils.h Calibration.h StereoGC.h)
-add_compile_options(-std=c++11)
+add_compile_options(-std=c++11) #-fsanitize=address -fno-omit-frame-pointer -L/usr/lib/gcc/x86_64-linux-gnu/5 -lasan
 
 #add_subdirectory(../../../Install_Lib/HesaiLidarSDK/build/bin)
 
@@ -102,7 +102,7 @@ target_link_libraries(test9 cmaes
         ${Boost_LIBRARIES})
 
 add_executable(test10 test10_PnP.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
-target_link_libraries(test10 cmaes
+target_link_libraries(test10 cmaes #asan
         ${OpenCV_LIBS}
         ${PCL_LIBRARIES}
         ${ZED_LIBRARIES}

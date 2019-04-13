@@ -162,16 +162,29 @@ public:
 class HandEyeCalibration {
 public:
 
-    static void findFeatureMatches(const cv::Mat &img_1, const cv::Mat &img_2, vector<cv::KeyPoint> &keypoints_1, vector<cv::KeyPoint> &keypoints_2, vector<cv::DMatch> &matches);
+    static string zfill(int dataNum);
+
+    static void imageRead(int begin, int end, string dataRoot, vector<string> &dataList);
+
+    static void cloudRead(int begin, int end, string dataRoot, vector<string> &dataList);
+
+    static void depthRead(int begin, int end, string dataRoot, vector<string> &dataList);
+
+    static void findFeatureMatches(cv::Mat &image1, cv::Mat &image2, vector<cv::KeyPoint> &keyPoints1, vector<cv::KeyPoint> &keyPoints2, vector<cv::DMatch> &matches);
 
     static void creat3D2DPoints(LiDAR &lidar, cv::Mat &depthMapCamera, vector<cv::KeyPoint> &keyPoints1, vector<cv::KeyPoint> &keyPoints2,
                                 vector<cv::DMatch> &matches, vector<cv::Point3f> &points3d, vector<cv::Point2f> &points2d);
 
+    static void cameraRegistration(cv::Mat &image1, cv::Mat &image2, vector<cv::KeyPoint> &keyPoints1, vector<cv::KeyPoint> &keyPoints2, vector<cv::DMatch> &matches,
+                                   cv::Mat &depthMapCamera, cv::Mat &cameraMatrix, LiDAR &liDAR, cv::Mat &transformationCamera);
+
     static void pointCloudRegistration(pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloud1, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloud2, float voxVolum, cv::Mat &transformation);
 
-    static cv::Mat skew(cv::Mat A);
+    static void skew(cv::Mat &matOriginal, cv::Mat &matSkew);
 
     static void handEyeTsai(cv::Mat &transformationCameraLiDAR, cv::Mat &transformationLiDAR, cv::Mat &transformationCamera);
+
+    static void handEyeTsai(cv::Mat &transformationCameraLiDAR, vector<cv::Mat> transformationLiDAR, vector<cv::Mat> transformationCamera);
 };
 
 class Refinement{
