@@ -11,7 +11,7 @@
 #include <iostream>
 #include <opencv2/core/types_c.h>
 #include <sl/Camera.hpp>
-#include <libcmaes/cmaes.h>
+//#include <libcmaes/cmaes.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/filters/statistical_outlier_removal.h>
 
@@ -23,9 +23,9 @@ float vox_volum = 4.0;
 //string cloud_name = "/Pandar40Data/PCDDataKIT/1520.202800.pcd";
 
 string data_name = "2011_09_26_drive_0005_sync";
-string image_name = "/image_02/data/0000000156.png";
-string cloud_name = "/velodyne_points/data/0000000156.pcd";
-string depth_name = "/depth/0000000156.png";
+string image_name = "/image_02/data/0000000132.png";
+string cloud_name = "/velodyne_points/data/0000000132.pcd";
+string depth_name = "/depth/0000000132.png";
 
 string data_root = "/home/" + user_name + "/Data/";
 string left_path1 = "/home/" + user_name + "/Data/" + data_name + "/ZEDData/RGBImage/";
@@ -44,8 +44,8 @@ string depth_map_camera_boader_path = "/home/" + user_name + "/Data/camera_depth
 
 string camera_csv_path = "/home/" + user_name + "/Data/HistCamera.csv";
 string lidar_csv_path = "/home/" + user_name + "/Data/HistLiDAR.csv";
-string test1_path = "/home/" + user_name + "/Data/";
-string test2_path = "/home/" + user_name + "/Data/";
+string test1_path = "/home/" + user_name + "/Data/test.png";
+string test2_path = "/home/" + user_name + "/Data/test2.png";
 
 string zed_rgb_image_path = "/home/" + user_name + "/Data/ZEDData/RGBImage/";
 string zed_depth_image_path = "/home/" + user_name + "/Data/ZEDData/DepthImage/";
@@ -59,9 +59,13 @@ Eigen::Matrix4f transformation;
 int main(){
     cv::Mat left_image, lid_to_cam_rotation, lid_to_cam_translation, cam_to_lid_rotation, cam_to_lid_translation, R_self, P_self, depth_map_camera, depth_map_camera_boader, depth_map_lidar_boader, depth_map_lidar;
     left_image = cv::imread(data_root + data_name + image_name);
+//    ImageUtils::creatMapRegion(left_image, left_image, 171, 547, 18, 1260);
+//    cv::imwrite(data_root + data_name + image_name, left_image);
     LiDARCalibParaKittiInverse lidar_calib_para_kitti_inverse;
     CameraPara camera_para;
     pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_lidar_part(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_camera(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr transformed_lidar_cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
 
 
@@ -170,24 +174,38 @@ int main(){
             0.000000e+00, 7.215377e+02, 1.728540e+02, 0,//2.163791e-01
             0.000000e+00, 0.000000e+00, 1.000000e+00, 0);//2.745884e-03
 
+//    R_self = (cv::Mat_<float>(4,4) << 1, 0, 0, 0,
+//            0, 1, 0, 0,
+//            0, 0, 1, 0,
+//            0, 0, 0, 1);
+//
+//    P_self = (cv::Mat_<float>(3,4) << 6.7440533447265625e+02, 0., 6.7320996093750000e+02, 0,//4.485728e+01
+//            0., 6.7440533447265625e+02, 3.8029739379882812e+02, 0,//2.163791e-01
+//            0.000000e+00, 0.000000e+00, 1.000000e+00, 0);//2.745884e-03
+
 //2011_09_26_drive_0048_sync extrinsic calibration
-//    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << 7.533745e-04, -9.999714e-01, -6.166020e-04,
+//    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << 7.533745e-03, -9.999714e-01, -6.166020e-04,
 //            1.480249e-02, 7.280733e-04, -9.998902e-01,
 //            9.998621e-01, 7.523790e-03, 1.480755e-02);
 //    lid_to_cam_translation = (cv::Mat_<float>(3,1) << -4.069766e-03, -7.631618e-02, -2.717806e-01);
 
+    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << 0.0087676989, -0.99974012, -0.021042559,
+    0.0093115233, 0.02112408, -0.99973351,
+    0.99991822, 0.008569424, 0.009494313);
+    lid_to_cam_translation = (cv::Mat_<float>(3,1) << -0.022104684, -0.056908015, -0.22559986);
 
-    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << -2.8819736611885860e-03, -9.9999436034347000e-01,
-            1.7243865780899315e-03,
-            -5.5479446042582758e-02, -1.5618471282996538e-03,
-            -9.9845860790538343e-01,
-            9.9845567017000036e-01, -2.9731994218860636e-03,
-            -5.5474631955276077e-02);
-    lid_to_cam_translation = (cv::Mat_<float>(3,1) << 1.4143607966564101e-01, -2.7098180415639239e-01, -6.2455864757931225e-02);
+
+//    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << -6.8836088830724711e-01, 1.5212676276466525e-01,
+//            -4.5001694725983754e-04,
+//            1.1326651711791161e-02, 7.0638167047866629e-02,
+//            -9.9743769545627137e-01,
+//            -1.5170517929691568e-01, -9.8583350389751967e-01,
+//            -7.1539088389702687e-02);
+//    lid_to_cam_translation = (cv::Mat_<float>(3,1) << 1.5184318319534851e-01, -7.3682146064973197e-02, -1.7484112138873420e-01);
 
     float degreex = 0;
     float degreey = 0;
-    float degreez = 0;
+    float degreez = 1.5;
     cv::Mat axisx, axisy, axisz;
     axisx = (cv::Mat_<float>(3,3) << 1, 0.0, 0.0,
             0.0, cos(M_PI/180 * degreex), -sin(M_PI/180 * degreex),
@@ -236,9 +254,52 @@ int main(){
 
     depth_map_camera1 = cv::imread(data_root + data_name + depth_name, CV_8UC1);
     //depth_map_camera1 = depth_map_camera1/256.0;
-    lidar.projectData(data_root + data_name + cloud_name, depth_map_lidar1, point_cloud_lidar_part, XYZI, CV);
-    ImageUtils::colorTransfer(depth_map_lidar1, left_image, 50);
-    cv::imwrite(test1_path + "test.png", left_image);
+    lidar.projectData(data_root + data_name + cloud_name, depth_map_lidar1, point_cloud_lidar_part, XYZI, CV, 0);
+
+    cv::Mat edge_map_camera, edge_map_camera_blured, edge_map_lidar, three;
+    cv::Point window_size(6, 6);
+    cv::Point window_range(0, 40);
+    cv::Point size(3, 3);
+
+    cv::Mat edge_map_lidar_dyed;
+    Refinement::cameraEdgeGeneration(left_image, edge_map_camera, edge_map_camera_blured, 1, 7);
+    Refinement::slideElimination2(depth_map_lidar1, edge_map_lidar, window_size, window_range, 1.5, 1);
+    ImageUtils::neighborDyeing(edge_map_lidar, size, edge_map_lidar_dyed);
+    Refinement::saveMatchResult(edge_map_camera_blured, edge_map_lidar_dyed, test2_path, 0, three);
+    cv::imwrite(test2_path, edge_map_camera_blured);
+
+
+    cv::Mat depth_map_lidar_dyed;
+    ImageUtils::neighborDyeing(depth_map_lidar1, size, depth_map_lidar_dyed);
+    ImageUtils::colorTransfer(depth_map_lidar_dyed, left_image, 70);
+    cv::imwrite(test1_path, left_image);
+    PointCloudAlignment::getCameraSparsePointCloudKitti(depth_map_camera1, depth_map_lidar1, lidar, point_cloud_camera, 171);
+
+
+    int a = 1;
+
+
+//    cv::Mat depth_test = cv::Mat::zeros(depth_map_camera1.rows, depth_map_camera1.cols, CV_32FC1);
+//    for(int i=0; i<depth_test.rows; i++){
+//        for(int j=0; j<depth_test.cols; j++){
+//            if(depth_map_lidar1.at<float>(i, j) != 0){
+//                depth_test.at<float>(i, j) = float(depth_map_camera1.at<uchar>(i ,j)) - depth_map_lidar1.at<float>(i, j);
+//            }
+//        }
+//    }
+//    float test = 0;
+//    float cnt = 0;
+//    for(int i=0; i<depth_test.rows; i++){
+//        for(int j=0; j<depth_test.cols; j++){
+//            if(depth_test.at<float>(i, j) != 0){
+//                test = test + depth_test.at<float>(i, j);
+//                cnt++;
+//            }
+//            }
+//        }
+//    float testt = test / cnt;
+
+    //<< endl << test << endl << depth_test / test;
 
 
 
@@ -265,30 +326,8 @@ int main(){
 
 
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_camera(new pcl::PointCloud<pcl::PointXYZ>);
-    PointCloudAlignment::getCameraSparsePointCloudKitti(depth_map_camera1, depth_map_lidar1, lidar, point_cloud_camera);
-    //PointCloudAlignment::pointCloudScaling(point_cloud_camera, 0.01, point_cloud_camera);
 
 
-    Eigen::Matrix4f transformation2;
-    transformation2 << 0, -1, 0, 0,
-            0, 0, -1, 0,
-            1, 0, 0, 0,
-            0, 0, 0, 1;
-
-    Eigen::Matrix4f transformation3;
-    transformation3 << 1, 0, 0, 0,
-            0, 0, 1, 0,
-            0, -1, 0, 0,
-            0, 0, 0, 1;
-
-
-    //Transfer::vector2Eigen(theta, transformation);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr transformed_lidar_cloud (new pcl::PointCloud<pcl::PointXYZ> ());
-    pcl::transformPointCloud (*point_cloud_lidar_part, *transformed_lidar_cloud, transformation2);
-
-    pcl::PointCloud<pcl::PointXYZ>::Ptr transformed_lidar_cloud2 (new pcl::PointCloud<pcl::PointXYZ> ());
-    pcl::transformPointCloud (*point_cloud_lidar_part, *transformed_lidar_cloud2, transformation3);
 
     //float scale = PointCloudAlignment::findScaling(point_cloud_camera, transformed_lidar_cloud);
     //PointCloudAlignment::pointCloudScaling(point_cloud_camera, scale, point_cloud_camera);
@@ -311,15 +350,15 @@ int main(){
 
 
     pcl::visualization::PCLVisualizer viewer ("test");
-    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> source_cloud_color_handler (point_cloud_lidar_part, 230, 20, 20);
-    viewer.addPointCloud(point_cloud_lidar_part, source_cloud_color_handler, "transformed_cloud");
+    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> source_cloud_color_handler (point_cloud_camera, 230, 20, 20);
+    viewer.addPointCloud(point_cloud_camera, source_cloud_color_handler, "transformed_cloud");
 
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> transformed_cloud_color_handler (transformed_lidar_cloud, 255, 255, 255);
     viewer.addPointCloud(transformed_lidar_cloud, transformed_cloud_color_handler, "camera_cloud");
-
-    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> transformed_cloud_color_handler2 (transformed_lidar_cloud2, 120, 80, 50);
-    viewer.addPointCloud(transformed_lidar_cloud2, transformed_cloud_color_handler2, "camera_cloud2");
-
+//
+//    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> transformed_cloud_color_handler2 (transformed_lidar_cloud2, 120, 80, 50);
+//    viewer.addPointCloud(transformed_lidar_cloud2, transformed_cloud_color_handler2, "camera_cloud2");
+//
     while (!viewer.wasStopped ()) { // Display the visualiser until 'q' key is pressed
         viewer.spinOnce ();
     }

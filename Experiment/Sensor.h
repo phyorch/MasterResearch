@@ -76,51 +76,13 @@ enum LiDARPointType {XYZIT, XYZI, XYZ};
 enum ExtrinsicDirection{C2L, L2C};
 enum MatType{EIGEN, CV};
 
-
-//struct LiDARCalibPara{
-//    Eigen::Matrix4f T;
-//    Eigen::Matrix<float,3,4> K;
-//    cv::Size imageSize;
-//};
-
-
-//struct LiDARCalibParaKitti{
-//    Eigen::Matrix4f T;
-//    Eigen::Matrix4f R;
-//    Eigen::Matrix<float,3,4> P;
-//    cv::Size imageSize;
-//};
-
-//struct LiDARCalibParaKitti{
-//    Eigen::Matrix4f T;
-//    Eigen::Matrix4f R;
-//    Eigen::Matrix<float,3,4> P;
-//    cv::Size imageSize;
-//};
-//
-struct LiDARCalibParaKittiInverseEigen{
-    Eigen::Matrix3f Rotation;
-    Eigen::Vector3f Translation;
-    Eigen::Matrix4f R;
-    Eigen::Matrix<float,3,4> P;
-    cv::Size imageSize;
-};
-
 struct LiDARCalibParaKitti{
-    cv::Mat T;
-    cv::Mat R;
-    cv::Mat P;
-    cv::Size imageSize;
-};
-
-struct LiDARCalibParaKittiInverse{
     cv::Mat Rotation;
     cv::Mat Translation;
     cv::Mat R;
     cv::Mat P;
     cv::Size imageSize;
 };
-
 
 class StereoCamera
 {
@@ -168,39 +130,21 @@ public:
 
     LiDAR(LiDARCalibParaKitti lidarCalibParaKitti);
 
-    LiDAR(LiDARCalibParaKittiInverse lidarCalibParaKittiInverse);
-
-    LiDAR(LiDARCalibParaKittiInverseEigen &lidarCalibParaKittiInverseEigen);
-
     virtual ~LiDAR(void);
 
     static void convertKittiBinData(string &inFile, string &outFile); //, vector *pointCloud
-
-    void projectPointKitti(cv::Mat &depthMap, pandar_pointcloud::PointXYZIT &point);
 
     void projectPointKittiSeperate(cv::Mat &depthMapLiDAR, pcl::PointXYZ &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudPart);
 
     void projectPointKittiSeperate(cv::Mat &depthMapLiDAR, pcl::PointXYZI &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudPart);
 
-    void projectPointKittiSeperate(cv::Mat &depthMapLiDAR, pandar_pointcloud::PointXYZIT &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudPart);
-    
-    void projectPointKittiSeperate(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, pandar_pointcloud::PointXYZIT &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudPart);
+    void projectPointKittiSeperate(cv::Mat &depthMapLiDAR, pandar_pointcloud::PointXYZIT &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudPart, int colDeviation = 0);
 
-    void projectPointKittiSeperate(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, pandar_pointcloud::PointXYZIT &point, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudCamera, pcl::PointCloud<pcl::PointXYZ>::Ptr pointCloudLiDAR);
-
-    void projectPointKittiSeperateEigen(cv::Mat &depthMap, pandar_pointcloud::PointXYZIT &point);
-
-    void projectPointKittiEigen(cv::Mat &depthMap, pandar_pointcloud::PointXYZIT &point);
-
-    void projectData(string inFile, cv::Mat &depthMapLiDAR, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudPart, LiDARPointType poinyType = XYZI, MatType matType = EIGEN, float downsampleVox = 0);
-
-    void projectData(string inFile, cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudPart, LiDARDataType dataType = BIN, LiDARDataSource dataSource = KITTI, LiDARPointType poinyType = XYZI, ExtrinsicDirection liDARDirection = L2C, MatType matType = EIGEN);
-
-    void projectData(string inFile, cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudCamera, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudLiDAR, LiDARDataType dataType = BIN, LiDARDataSource dataSource = KITTI, LiDARPointType poinyType = XYZI, ExtrinsicDirection liDARDirection = L2C, MatType matType = EIGEN);
+    void projectData(string inFile, cv::Mat &depthMapLiDAR, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudPart, LiDARPointType poinyType = XYZI, float downsampleVox = 0, int colDeviation = 0);
 
     void updateParameters(cv::Mat &rotation, cv::Mat &translation);
 
-    void projectPointInverse(cv::Point2f &point, float depth, pcl::PointXYZ &point3d);
+    void projectPointInverse(cv::Point2f &point, float depth, pcl::PointXYZ &point3d, int colDeviation = 0);
 
     void projectPointInverse(cv::Point2f &point2d, float depth, cv::Point3f &point3d);
 
@@ -209,14 +153,8 @@ public:
 
 private:
     LiDARCalibParaKitti _liDARCalibParaKitti;
-    LiDARCalibParaKittiInverse _liDARCalibParaKittiInverse;
-    LiDARCalibParaKittiInverseEigen _liDARCalibParaKittiInverseEigen;
 
     void initLiDARCalibParaKitti(LiDARCalibParaKitti liDARCalibParaKitti);
-
-    void initLiDARCalibParaKittiInverse(LiDARCalibParaKittiInverse liDARCalibParaKittiInverse);
-
-    void initLiDARCalibParaKittiInverseEigen(LiDARCalibParaKittiInverseEigen &liDARCalibParaKittiInverseEigen);
 };
 
 

@@ -14,11 +14,12 @@ find_package(VTK REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system filesystem chrono thread)
 find_package(PCL REQUIRED COMPONENTS common io visualization filters)
 find_package(PythonLibs 2.7)
+find_package( Ceres REQUIRED )
 
 find_package(ZED 2 REQUIRED)
 find_package(CUDA ${ZED_CUDA_VERSION} EXACT REQUIRED)
 
-include_directories(${OpenCV_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+include_directories(${OpenCV_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${CERES_INCLUDE_DIRS})
 
 include_directories(${CUDA_INCLUDE_DIRS})
 include_directories(${ZED_INCLUDE_DIRS})
@@ -37,7 +38,8 @@ target_link_libraries(test0 cmaes
         ${OpenCV_LIBS}
         ${PCL_LIBRARIES}
         ${ZED_LIBRARIES}
-        ${Boost_LIBRARIES})
+        ${Boost_LIBRARIES}
+        ${CERES_LIBRARIES})
 
 add_executable(test1 test1_experiment_old.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
 target_link_libraries(test1 cmaes
@@ -65,7 +67,7 @@ target_link_libraries(test4 hesaiLidarSDK
                             ${Boost_LIBRARIES}
                             ${PCL_LIBRARIES})
 
-add_executable(test5 test5_calibration_old.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
+add_executable(test5 Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
 target_link_libraries(test5 hesaiLidarSDK
                             ${OpenCV_LIBS}
                             ${PCL_LIBRARIES}
@@ -73,7 +75,7 @@ target_link_libraries(test5 hesaiLidarSDK
                             ${Boost_LIBRARIES}
                             ${PYTHON_LIBRARIES})
 
-add_executable(test6 test6_calibration.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
+add_executable(test6 test6_refinement_self_data.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
 target_link_libraries(test6 cmaes
                             ${OpenCV_LIBS}
                             ${PCL_LIBRARIES}
@@ -101,19 +103,21 @@ target_link_libraries(test9 cmaes
         ${ZED_LIBRARIES}
         ${Boost_LIBRARIES})
 
-add_executable(test10 test10_PnP.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
+add_executable(test10 test10_hand-eye_calibration.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
 target_link_libraries(test10 cmaes #asan
         ${OpenCV_LIBS}
         ${PCL_LIBRARIES}
         ${ZED_LIBRARIES}
-        ${Boost_LIBRARIES})
+        ${Boost_LIBRARIES}
+        ${CERES_LIBRARIES})
 
-add_executable(test11 test11_step3.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
+add_executable(test11 test11_refinement_kitti_data.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
 target_link_libraries(test11 cmaes
         ${OpenCV_LIBS}
         ${PCL_LIBRARIES}
         ${ZED_LIBRARIES}
-        ${Boost_LIBRARIES})
+        ${Boost_LIBRARIES}
+        ${CERES_LIBRARIES})
 
 add_executable(test12 test12_error_calculation.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
 target_link_libraries(test12 cmaes

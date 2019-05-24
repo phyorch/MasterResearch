@@ -6,413 +6,28 @@
 #include "Sensor.h"
 #include "ImageUtils.h"
 
-void HistogramGeneration::pointCorrespond(cv::Mat &cameraDepthMap, cv::Mat &liDARDepthMap, cv::Mat &imageCorresponded) {
-    if (cameraDepthMap.size() != liDARDepthMap.size())
-    {
-        cerr << "Invalid input for point correspondence";
-        exit(EXIT_FAILURE);
-    }
-    imageCorresponded = cv::Mat::zeros(cameraDepthMap.rows, cameraDepthMap.cols, CV_8UC1);
-    for(int i=0; i<cameraDepthMap.rows; i++){
-        for(int j=0; j<cameraDepthMap.cols; j++){
-            if(liDARDepthMap.at<uchar>(i, j) != 0){
-                imageCorresponded.at<uchar>(i, j) = cameraDepthMap.at<uchar>(i, j);
-            }
-        }
-    }
-}
-
-vector<int> HistogramGeneration::histogramCount(cv::Mat &image, Eigen::RowVectorXi &histogram) {
-//    int minVal = ImageUtils::minMat(image);
-//    int maxVal = ImageUtils::maxMat(image);
-//    int total = 0;
-//    histogram = Eigen::RowVectorXi::Zero(maxVal - minVal +1);
-//    for(int i=0; i<image.rows; i++){
-//        for(int j=0; j<image.cols; j++){
-//            uchar val = image.at<uchar>(i,j);
-//            if (val>0){
-//                total++;
-//                histogram[val - minVal] = histogram[val - minVal] + 1;
-//            }
-//        }
-//    }
-//    //printHistogram(histogram, maxVal, minVal);
-//    vector<int> boundary;
-//    boundary.push_back(minVal);
-//    boundary.push_back(maxVal);
-//    boundary.push_back(total);
-//    return boundary;
-}
-
-void HistogramGeneration::histogramCount(cv::Mat &image, cv::Mat &imageRef, Eigen::RowVectorXi &histogram) {
-//    uchar min_val = ImageUtils::minMat(imageRef);
-//    uchar max_val = ImageUtils::maxMat(imageRef);
-//    histogram = Eigen::RowVectorXi::Zero(max_val - min_val +1);
-//    for(int i=0; i<image.rows; i++){
-//        for(int j=0; j<image.cols; j++){
-//            uchar val = image.at<uchar>(i,j);
-//            if (val>min_val && val<max_val){
-//                histogram[val - min_val] = histogram[val - min_val] + 1;
-//            }
-//        }
-//    }
-}
-
-int HistogramGeneration::histogramBoundary(vector<int> &boundaryCamera, vector<int> &boundaryLiDAR) {
-    int maxCamera = boundaryCamera[1];
-    int maxLiDAR = boundaryLiDAR[1];
-    if(maxCamera>maxLiDAR){
-        return maxCamera;
-    }
-    else{
-        return maxLiDAR;
-    }
-}
-
-void HistogramGeneration::histogramCompletion(Eigen::RowVectorXi &histCamera, Eigen::RowVectorXi &histLiDAR, vector<int> &boundaryCamera,
-                                         vector<int> &boundaryLiDAR, vector<int> &vectorCamera, vector<int> &vectorLiDAR) {
-    int minCamera = boundaryCamera[0];
-    int maxCamera = boundaryCamera[1];
-    int minLiDAR = boundaryLiDAR[0];
-    int maxLiDAR = boundaryLiDAR[1];
-    for(int i=0; i<maxCamera; i++){
-        if(i<minCamera-1){
-            vectorCamera.push_back(0);
-        }
-        else{
-            vectorCamera.push_back(histCamera[i-minCamera+1]);
-        }
-    }
-    for(int i=0; i<maxLiDAR; i++){
-        if(i<minLiDAR-1){
-            vectorLiDAR.push_back(0);
-        }
-        else{
-            vectorLiDAR.push_back(histLiDAR[i-minLiDAR+1]);
-        }
-    }
-    if(maxCamera<maxLiDAR){
-        for(int i=0; i<maxLiDAR-maxCamera; i++){
-            vectorCamera.push_back(0);
-        }
-    }
-    if(maxCamera>maxLiDAR){
-        for(int i=0; i<maxCamera-maxLiDAR; i++){
-            vectorLiDAR.push_back(0);
-        }
-    }
-}
-
-void HistogramGeneration::histogramCompletion(Eigen::RowVectorXi &histogram, vector<int> &vecTor, vector<int> &boundary, int maxBound){
-    int minVal = boundary[0];
-    int maxVal = boundary[1];
-    for(int i=0; i<maxVal; i++){
-        if(i<minVal-1){
-            vecTor.push_back(0);
-        }
-        else{
-            vecTor.push_back(histogram[i-minVal+1]);
-        }
-    }
-    for(int i=maxVal; i<maxBound; i++){
-        vecTor.push_back(0);
-    }
-}
-
-
-void HistogramGeneration::histogramCountCorrespond(cv::Mat &imageCamera, cv::Mat &imageLiDAR, Eigen::RowVectorXi &histogram) {
-//    cv::Mat imageCameraCorresponded = imageCamera;
-//    pointCorrespond(imageCamera, imageLiDAR, imageCameraCorresponded);
-//    uchar min_val = ImageUtils::minMat(imageCameraCorresponded);
-//    uchar max_val = ImageUtils::maxMat(imageCameraCorresponded);
-//    histogram = Eigen::RowVectorXi::Zero(max_val - min_val +1);
-//    for(int i=0; i<imageCameraCorresponded.rows; i++){
-//        for(int j=0; j<imageCameraCorresponded.cols; j++){
-//            uchar val = imageCameraCorresponded.at<uchar>(i,j);
-//            if (val>0){
-//                histogram[val - min_val] = histogram[val - min_val] + 1;
-//            }
-//        }
-//    }
-//    printHistogram(histogram, max_val, min_val);
-}
-
-void HistogramGeneration::printHistogram(Eigen::RowVectorXi &histogram, uchar maxVal, uchar minVal) {
-    cout << "min value:   " << int(minVal) << endl;
-    cout << "max value:   " << int(maxVal) << endl;
-    cout << "histogram:   " << histogram << endl;
-}
-
-void HistogramGeneration::printHistogram(vector<int> &histogram, vector<int> &boundary) {
-    cout << "min value:   " << int(boundary[0]) << endl;
-    cout << "max value:   " << int(boundary[1]) << endl;
-    for(int i=0; i<histogram.size(); i++){
-        cout << int(histogram[i]) << "  ";
-    }
-}
-
-double HistogramGeneration::histogramDistance(cv::Mat &imageCamera, cv::Mat &imageLiDAR) {
-    Eigen::RowVectorXi histogramCamera;
-    Eigen::RowVectorXi histogramLiDAR;
-    vector<int> vectorCamera;
-    vector<int> vectorLiDAR;
-
-    vector<int> boundaryCamera = histogramCount(imageCamera, histogramCamera);
-    vector<int> boundaryLiDAR = histogramCount(imageLiDAR, histogramLiDAR);
-    histogramCompletion(histogramCamera, histogramLiDAR, boundaryCamera, boundaryLiDAR, vectorCamera, vectorLiDAR);
-    cout << "camera:  " << endl;
-    printHistogram(vectorCamera, boundaryCamera);
-    cout << endl << "lidar:  " << endl;
-    printHistogram(vectorLiDAR, boundaryLiDAR);
-
-    //double cos = double(histogram_camera.dot(histogram_lidar)) / (histogram_camera.norm() * histogram_lidar.norm());
-    //cout << "cos distance:   " << cos << endl;
-    //return cos;
-    return 0;
-}
-
-void HistogramGeneration::histogramWrite(string csvPath, vector<int> &vectorCamera, vector<int> &vectorLiDAR) {
-    if (vectorCamera.size() != vectorLiDAR.size())
-    {
-        cerr << "Invalid input for csv output";
-        exit(EXIT_FAILURE);
-    }
-    ofstream out_file;
-    out_file.open(csvPath, ios::out);
-    out_file << "Camera" << "," << "LiDAR" << endl;
-
-    for(int i=0; i<vectorCamera.size(); i++) {
-        out_file << int(vectorCamera[i]) << "," << int(vectorLiDAR[i]) << endl;
-    }
-    out_file.close();
-}
-
-void HistogramGeneration::histogramWrite(string csvPath, Eigen::RowVectorXi &vecTor) {
-    ofstream outFile;
-    outFile.open(csvPath, ios::out);
-    outFile << "Camera" << endl;
-
-    for(int i=0; i<vecTor.size(); i++) {
-        outFile << int(vecTor[i]) << endl;
-    }
-    outFile.close();
-}
-
-void HistogramGeneration::histogramWrite(string csvPath, vector<int> &vecTor){
-    ofstream outFile;
-    outFile.open(csvPath, ios::out);
-    outFile << "Camera" << endl;
-
-    for(int i=0; i<vecTor.size(); i++) {
-        outFile << int(vecTor[i]) << endl;
-    }
-    outFile.close();
-}
-
-void HistogramGeneration::histogramWrite(string csvPath, cv::Mat &map) {
-    ofstream outFile;
-    outFile.open(csvPath, ios::out);
-    outFile << "Element" << endl;
-
-    for(int i=0; i<map.rows; i++){
-        for(int j=0; j<map.cols; j++){
-            if(map.at<float>(i, j)>0 && map.at<float>(i, j)<8){
-                outFile << map.at<float>(i, j) << endl;
-            }
-        }
-    }
-}
-
-void HistogramGeneration::histogramWrite(string csvPathCamera, string csvPathLiDAR, cv::Mat &mapCamera, cv::Mat &mapLiDAR) {
-    ofstream outFileCamera;
-    outFileCamera.open(csvPathCamera, ios::out);
-    outFileCamera << "Element" << endl;
-
-    ofstream outFileLiDAR;
-    outFileLiDAR.open(csvPathLiDAR, ios::out);
-    outFileLiDAR << "Element" << endl;
-
-    for(int i=0; i<mapCamera.rows; i++){
-        for(int j=0; j<mapCamera.cols; j++){
-            if(mapLiDAR.at<float>(i, j)>0 && mapCamera.at<float>(i, j)<8){
-                outFileCamera << mapCamera.at<float>(i, j) << endl;
-                outFileLiDAR << mapLiDAR.at<float>(i, j) << endl;
-            }
-        }
-    }
-}
-
-void HistogramGeneration::map2Histogram(cv::Mat &map, vector<float> &histogram, int truncationBegin, int truncationEnd) {
-    if (map.rows==0 || map.cols==0)
-    {
-        cerr << "Invalid input for HistogramGeneration::testMap2Histogram";
-        exit(EXIT_FAILURE);
-    }
-
-    for(int i=0; i<map.rows; i++){
-        for(int j=0; j<map.cols; j++){
-            if(map.at<float>(i, j) > 0){
-                histogram.push_back(map.at<float>(i, j));
-            }
-        }
-    }
-//    if(histogram.size()<50){
-//        cerr << "The amount of points are too small to generate histogram in HistogramGeneration::testMap2Histogram";
+//void HistogramGeneration::map2Histogram(cv::Mat &map, vector<float> &histogram, int truncationBegin, int truncationEnd) {
+//    if (map.rows==0 || map.cols==0)
+//    {
+//        cerr << "Invalid input for HistogramGeneration::testMap2Histogram";
 //        exit(EXIT_FAILURE);
 //    }
-    sort(histogram.begin(), histogram.end());
-    histogram.erase(histogram.begin(), histogram.begin()+truncationBegin*histogram.size()/100);
-    histogram.erase(histogram.end()-truncationEnd*histogram.size()/100, histogram.end());
-}
-
-void HistogramGeneration::histogramDownsampling(vector<float> &histogram, vector<float> &histogramDownsampled, int DownsamplingSize) {
-//    if(histogram.size()<50){
-//        cerr << "Histogram is too short in HistogramGeneration::testHistogramDownsampling";
-//        exit(EXIT_FAILURE);
-//    }
-    random_shuffle(histogram.begin(), histogram.end());
-    //vector<float> sample;
-    histogramDownsampled.assign(histogram.begin(), histogram.begin()+DownsamplingSize);
-    //histogramDownsampled = sample;
-}
-
-bool HistogramMeasure::detectMinusValue(vector<float> &histogram) {
-    for(int i=0; i<histogram.size(); i++){
-        if(histogram[i]<0){
-            return false;
-        }
-    }
-    return true;
-}
-
-double HistogramMeasure::mapKLDivergence(cv::Mat &mapCamera, cv::Mat &mapLiDAR, vector<cv::Mat> &diagonalPointsSet) {
-    double distance = 0;
-    for(int i=0; i<diagonalPointsSet.size(); i++){
-        cv::Mat mapCameraRegion, mapLiDARRegion;
-        ImageUtils::creatMapRegion(mapCamera, mapCameraRegion, diagonalPointsSet[i]);
-        ImageUtils::creatMapRegion(mapLiDAR, mapLiDARRegion, diagonalPointsSet[i]);
-        vector<float> cameraHist, liDARHist, cameraHistDownsampled;
-        cout << mapLiDARRegion << endl;
-        HistogramGeneration::map2Histogram(mapCameraRegion, cameraHist, 1, 2);
-        HistogramGeneration::map2Histogram(mapLiDARRegion, liDARHist, 1, 2);
-//        if(cameraHist.size()<regionSize.width*regionSize.height/3){
-//            continue;
+//
+//    for(int i=0; i<map.rows; i++){
+//        for(int j=0; j<map.cols; j++){
+//            if(map.at<float>(i, j) > 0){
+//                histogram.push_back(map.at<float>(i, j));
+//            }
 //        }
-        HistogramGeneration::histogramDownsampling(cameraHist, cameraHistDownsampled, liDARHist.size());
-        bool minusValue;
-        minusValue = detectMinusValue(liDARHist);
-        if(minusValue == false){
-            continue;
-        }
-        try{
-            distance += cv::compareHist(liDARHist, cameraHistDownsampled, cv::HISTCMP_KL_DIV) / liDARHist.size();
-        }
-        catch (cv::Exception){
-            cout << "test";
-        }
-
-    }
-    return distance;
-}
-
-float HistogramMeasure::point2PointDistance(cv::Mat &mapCamera, cv::Mat &mapLiDAR) {
-    float distance = 0;
-    int cnt = 0;
-    for(int i=0; i<mapCamera.rows; i++){
-        for(int j=0; j<mapCamera.cols; j++){
-            if(mapLiDAR.at<float>(i, j) > 0 && mapCamera.at<float>(i, j) != INFINITY){
-                cnt++;
-                distance += abs(mapCamera.at<float>(i, j) - mapLiDAR.at<float>(i, j));
-            }
-        }
-    }
-//    if(cnt<50){
-//        distance = 10000;
 //    }
-    distance /= cnt;
-//    if(isnan(distance)){
-//        distance = 10000;
-//    }
-    return distance;
-}
-
-float HistogramMeasure::point2PointDistanceKitti(cv::Mat &mapCamera, cv::Mat &mapLiDAR) {
-    float distance = 0;
-    int cnt = 0;
-    for(int i=0; i<mapCamera.rows; i++){
-        for(int j=0; j<mapCamera.cols; j++){
-            if(mapLiDAR.at<float>(i, j) > 0){
-                cnt++;
-                distance += abs(float(mapCamera.at<uchar>(i, j)) - mapLiDAR.at<float>(i, j));
-            }
-        }
-    }
-
-    if(cnt<50){
-        distance = 1000;
-    }
-    else{
-        distance /= cnt;
-    }
-//    if(isnan(distance)){
-//        distance = 10000;
-//    }
-    return distance;
-}
-
-float HistogramMeasure::point2PointDistanceTotal(cv::Mat &mapCamera, cv::Mat &mapLiDAR,
-                                                    vector<cv::Mat> &diagonalPointsSet) {
-    float p2pDistance = 0;
-    for(int i=0; i<diagonalPointsSet.size(); i++){
-        cv::Mat mapCameraRegion, mapLiDARRegion;
-        ImageUtils::creatMapRegion(mapCamera, mapCameraRegion, diagonalPointsSet[i]);
-        ImageUtils::creatMapRegion(mapLiDAR, mapLiDARRegion, diagonalPointsSet[i]);
-        p2pDistance += point2PointDistanceKitti(mapCameraRegion, mapLiDARRegion);
-    }
-}
-
-float HistogramMeasure::point2PointDistanceFrame(cv::Mat &mapCamera, cv::Mat &mapLiDAR) {
-    float distance = 0;
-    int cnt = 0;
-    for(int i=0; i<mapCamera.rows; i++){
-        for(int j=0; j<mapCamera.cols; j++){
-            if(mapLiDAR.at<float>(i, j) > 0){
-                cnt++;
-                distance += abs(float(mapCamera.at<uchar>(i, j)) - mapLiDAR.at<float>(i, j));
-            }
-        }
-    }
-
-    if(cnt<5000){
-        distance = 1000;
-    }
-    else{
-        distance /= cnt;
-    }
-    return distance;
-}
-
-float HistogramMeasure::pointCloudDistance(cv::Mat &mapCamera, cv::Mat &mapLiDAR) {
-    float pcDistance = 0;
-
-    return pcDistance;
-}
-
-void HistogramMeasure::vectorToHist(vector<int> &vectorVariable, Eigen::RowVectorXi &histogramVariable) {
-    histogramVariable = Eigen::RowVectorXi::Zero(vectorVariable.size());
-    for(int i=0; i<vectorVariable.size(); i++){
-        histogramVariable[i] = vectorVariable[i];
-    }
-}
-
-double HistogramMeasure::cosDistance(vector<int> &vectorCamera, vector<int> &vectorLiDAR) {
-    Eigen::RowVectorXi histogramCamera;
-    Eigen::RowVectorXi histogramLiDAR;
-    vectorToHist(vectorCamera, histogramCamera);
-    vectorToHist(vectorLiDAR, histogramLiDAR);
-    double cos = double(histogramCamera.dot(histogramLiDAR)) / (histogramCamera.norm() * histogramLiDAR.norm());
-    return cos;
-}
+////    if(histogram.size()<50){
+////        cerr << "The amount of points are too small to generate histogram in HistogramGeneration::testMap2Histogram";
+////        exit(EXIT_FAILURE);
+////    }
+//    sort(histogram.begin(), histogram.end());
+//    histogram.erase(histogram.begin(), histogram.begin()+truncationBegin*histogram.size()/100);
+//    histogram.erase(histogram.end()-truncationEnd*histogram.size()/100, histogram.end());
+//}
 
 void Transfer::vector2MatSeperate(vector<double> &theta, cv::Mat &rotation, cv::Mat &translation) {
     if(theta.size()!=6){
@@ -515,33 +130,45 @@ void Transfer::vector2Eigen(vector<double> &theta, Eigen::Matrix4f &transformati
     cv::cv2eigen(transformationMat, transformation);
 }
 
-void Transfer::depthAnalysis(cv::Mat &imageCamera, cv::Mat &imageLiDAR, int depth, string csvPath) {
-    cout << "Now, analysis the same LiDAR depth for camera points" << endl;
-    for(int i=0; i< imageLiDAR.rows; i++){
-        for(int j=0; j<imageLiDAR.cols; j++){
-            int val = int(imageLiDAR.at<uchar>(i, j));
-            if(val != depth){
-                imageCamera.at<uchar>(i, j) = uchar(0);
-            }
-        }
-    }
-    Eigen::RowVectorXi histogram;
-    vector<int> bound = HistogramGeneration::histogramCount(imageCamera, histogram);
-    int maxBound = bound[1];
-    vector<int> vecTor;
-    HistogramGeneration::histogramCompletion(histogram, vecTor, bound, maxBound);
-    HistogramGeneration::histogramWrite(csvPath, vecTor);
-
+Eigen::Matrix3d Transfer::axisRot2R(double rx, double ry, double rz) {
+    Eigen::Matrix4d R,rotx,roty,rotz;
+    double sinv,cosv;
+    sinv=sin(rx),cosv=cos(rx);
+    rotx<<1,0,0,0,0,cosv,-sinv,0,0,sinv,cosv,0,0,0,0,1;
+    sinv=sin(ry);cosv=cos(ry);
+    roty<<cosv,0,sinv,0,0,1,0,0,-sinv,0,cosv,0,0,0,0,1;
+    sinv=sin(rz);cosv=cos(rz);
+    rotz<<cosv,-sinv,0,0,sinv,cosv,0,0,0,0,1,0,0,0,0,1;
+    R=rotx*roty*rotz;
+    Eigen::Matrix3d retMat=R.block(0,0,3,3);
+    return retMat;
 }
 
-void Transfer::depthDistribution(cv::Mat &imageLiDAR, string csvPath) {
-    cout << "Now, analysis the LiDAR point cloud depth distribution";
-    Eigen::RowVectorXi histogram;
-    vector<int> bound = HistogramGeneration::histogramCount(imageLiDAR, histogram);
-    int maxBound = bound[1];
-    vector<int> vecTor;
-    HistogramGeneration::histogramCompletion(histogram, vecTor, bound, maxBound);
-    HistogramGeneration::histogramWrite(csvPath, vecTor);
+void Transfer::R2axisRot(Eigen::Matrix3d R, double &rx, double &ry, double &rz) {
+    ry=asin(R(0,2));
+    rx=-atan2(R(1,2),R(2,2));
+    rz=-atan2(R(0,1),R(0,0));
+}
+
+void Transfer::mat2axis_angle(Eigen::Matrix3d m, Eigen::Vector3d &retv, double &angle) {
+    double x, y, z;
+    double r = sqrt((m(2, 1) - m(1, 2))*(m(2, 1) - m(1, 2)) + (m(0, 2) - m(2, 0))*(m(0, 2) - m(2, 0)) + (m(1, 0) - m(0, 1))*(m(1, 0) - m(0, 1)));
+    x = (m(2, 1) - m(1, 2)) / r;
+    y = (m(0, 2) - m(2, 0)) / r;
+    z = (m(1, 0) - m(0, 1)) / r;
+    Eigen::Vector3d t;
+    t << x, y, z;
+    retv = t;
+    angle = acos((m(0, 0) + m(1, 1) + m(2, 2) - 1) / 2);
+}
+
+void matVec2EigenVec(vector<cv::Mat> &matVec, vector<Eigen::Matrix4d> &eigenVec) {
+    for(int i=0; i<matVec.size(); i++){
+        Eigen::Matrix4f eigenElemf;
+        cv::cv2eigen(matVec.at(i), eigenElemf);
+        Eigen::Matrix4d eigenElem = eigenElemf.cast<double>();
+        eigenVec.push_back(eigenElem);
+    }
 }
 
 void PointCloudAlignment::getCameraPointCloud(cv::Mat &depthMapCamera, LiDAR &lidar, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudCamera) {
@@ -567,14 +194,14 @@ void PointCloudAlignment::getLiDARPointCloudXYZ(pcl::PointCloud<pcl::PointXYZI>:
     }
 }
 
-void PointCloudAlignment::getCameraSparsePointCloudKitti(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, LiDAR &lidar, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudSparse) {
+void PointCloudAlignment::getCameraSparsePointCloudKitti(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, LiDAR &lidar, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudSparse, int colDeviation) {
     for(int i=0; i<depthMapCamera.rows; i++){
         for(int j=0; j<depthMapCamera.cols; j++){
             if(depthMapLiDAR.at<float>(i ,j) > 0){
                 int val = int(depthMapCamera.at<uchar>(i ,j));
                 cv::Point2f point(j, i);
                 pcl::PointXYZ point3d;
-                lidar.projectPointInverse(point, val, point3d);
+                lidar.projectPointInverse(point, val, point3d, colDeviation);
                 pointCloudSparse->push_back(point3d);
             }
         }
@@ -678,6 +305,33 @@ void HandEyeCalibration::imageRead(int begin, int end, string dataType, vector<s
     }
 }
 
+void HandEyeCalibration::dataReadRandom(int begin, int end, int dataAmount, string imageLocation, string cloudLocation, string depthLocation,
+                                        vector<string> &imageList, vector<string> &cloudList, vector<string> &depthList) {
+    vector<int> sequence;
+    for(int i=0; i<end-begin; i++){
+        int elem = begin+i;
+        sequence.push_back(elem);
+    }
+    random_shuffle(sequence.begin(), sequence.end());
+    vector<int> site(sequence.begin(), sequence.begin() + dataAmount);
+    for(int i=0; i<site.size(); i++){
+        string dataName1 = imageLocation + zfill(site[i]) + ".png";
+        string dataName2 = imageLocation + zfill(site[i]+1) + ".png";
+        imageList.push_back(dataName1);
+        imageList.push_back(dataName2);
+    }
+    for(int i=0; i<site.size(); i++){
+        string dataName1 = cloudLocation + zfill(site[i]) + ".pcd";
+        string dataName2 = cloudLocation + zfill(site[i]+1) + ".pcd";
+        cloudList.push_back(dataName1);
+        cloudList.push_back(dataName2);
+    }
+    for(int i=0; i<site.size(); i++) {
+        string dataName1 = depthLocation + zfill(site[i]) + ".png";
+        depthList.push_back(dataName1);
+    }
+}
+
 void HandEyeCalibration::cloudRead(int begin, int end, string dataType, vector<string> &dataList) {
     if(begin<=end){
         for(int i=0; i<=end-begin; i++){
@@ -777,7 +431,7 @@ void HandEyeCalibration::creat3D2DPoints(LiDAR &lidar, cv::Mat &depthMapCamera, 
 void HandEyeCalibration::cameraRegistration(cv::Mat &image1, cv::Mat &image2, vector<cv::KeyPoint> &keyPoints1, vector<cv::KeyPoint> &keyPoints2, vector<cv::DMatch> &matches,
                                             cv::Mat &depthMapCamera, cv::Mat &cameraMatrix, LiDAR &liDAR, cv::Mat &transformationCamera) {
     findFeatureMatches(image1, image2, keyPoints1, keyPoints2, matches);
-    cout<<"一共找到了"<<matches.size() <<"组匹配点"<<endl;
+    cout<<"Find "<<matches.size() <<"matched points"<<endl;
     vector<cv::Point3f> pts_3d;
     vector<cv::Point2f> pts_2d;
 
@@ -813,7 +467,7 @@ void HandEyeCalibration::pointCloudRegistration(pcl::PointCloud<pcl::PointXYZ>::
     icp.setInputTarget(pointCloud2);
     pcl::PointCloud<pcl::PointXYZ> Final;
     icp.align(Final);
-    std::cout << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore() << std::endl;
+    cout << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore() << endl;
     transformation = cv::Mat::zeros(4, 4, CV_32FC1);
     cv::eigen2cv(icp.getFinalTransformation(), transformation);
 }
@@ -1017,9 +671,9 @@ void HandEyeCalibration::handEyeTsai(cv::Mat &transformationCameraLiDAR, vector<
     }
 
 
-    cv::invert(tempA, pinA, cv::DECOMP_SVD);
+    cv::invert(A, pinA, cv::DECOMP_SVD);
 
-    Pcg_prime = pinA * tempb;
+    Pcg_prime = pinA * b;
     cout << "Pcg_prime" << "   " << Pcg_prime << endl;
 
     Pcg = 2 * Pcg_prime / sqrt(1 + cv::norm(Pcg_prime) * cv::norm(Pcg_prime));
@@ -1062,7 +716,7 @@ void HandEyeCalibration::handEyeTsai(cv::Mat &transformationCameraLiDAR, vector<
 //    cout << "pinAA  " << pinAA << endl;
 //    Tcg = pinAA * tempbb;
 //
-    Rcg.copyTo(transformationCameraLiDAR(cv::Rect(0, 0, 3, 3)));
+//    Rcg.copyTo(transformationCameraLiDAR(cv::Rect(0, 0, 3, 3)));
 //    Tcg.copyTo(transformationCameraLiDAR(cv::Rect(3, 0, 1, 3)));
 //    transformationCameraLiDAR.at<float>(3, 0) = 0.0;
 //    transformationCameraLiDAR.at<float>(3, 1) = 0.0;
@@ -1070,7 +724,173 @@ void HandEyeCalibration::handEyeTsai(cv::Mat &transformationCameraLiDAR, vector<
 //    transformationCameraLiDAR.at<float>(3, 3) = 1.0;
 }
 
+void HandEyeCalibration::handEyeOptimization(vector<Eigen::Matrix4d> pepdMat, vector<Eigen::Matrix4d> holdMat,
+                                             Eigen::Matrix3d &R) {
+    Eigen::MatrixXd KA(3, pepdMat.size()), KB(3, pepdMat.size());
+    struct axisAlignCostFunc {
+    public:
+        axisAlignCostFunc(Eigen::Vector3d& p3d_, Eigen::Vector3d& eyeDirec_)
+        {
+            p3d = p3d_;
+            eyeDirec = eyeDirec_;
+        };
+        bool operator()(const double* parameters, double* residual) const {
+            double rx = parameters[0];
+            double ry = parameters[1];
+            double rz = parameters[2];
 
+            Eigen::Matrix3d R = Transfer::axisRot2R(rx, ry, rz);
+            Eigen::Vector3d plot = (R.transpose()*p3d).normalized();
+
+            residual[0] = eyeDirec.cross(plot).norm();
+            return true;
+        }
+    private:
+        Eigen::Vector3d p3d;
+        Eigen::Vector3d eyeDirec;
+
+    };
+
+    struct rotErrCostFunc {
+    public:
+        rotErrCostFunc(Eigen::Matrix3d& RA_, Eigen::Matrix3d& RB_)
+        {
+            RA = RA_;
+            RB = RB_;
+        };
+        bool operator()(const double* parameters, double* residual) const {
+            double rx = parameters[0];
+            double ry = parameters[1];
+            double rz = parameters[2];
+
+            Eigen::Matrix3d R = Transfer::axisRot2R(rx, ry, rz);
+            Eigen::Matrix3d err = RA*R-R*RB;
+
+            residual[0] = err.norm();
+            return true;
+        }
+    private:
+        Eigen::Matrix3d RA;
+        Eigen::Matrix3d RB;
+
+    };
+    double opt[3];
+    ceres::Problem problem;
+    for (int i = 0;i<pepdMat.size();i++) {
+        double angle1,angle2;
+        cout << pepdMat.at(i) << endl;
+        cout << holdMat.at(i) << endl;
+        Eigen::Vector3d pepax;
+        Transfer::mat2axis_angle(pepdMat.at(i).block(0,0,3,3), pepax, angle1);
+        Eigen::Vector3d holax;
+        Transfer::mat2axis_angle(holdMat.at(i).block(0, 0, 3, 3), holax, angle2);
+        KA.col(i) = pepax;
+        KB.col(i) = holax;
+        Eigen::Matrix3d RA = pepdMat.at(i).block(0, 0, 3, 3);
+        Eigen::Matrix3d RB = holdMat.at(i).block(0, 0, 3, 3);
+        rotErrCostFunc* p= new rotErrCostFunc(RA, RB);
+        ceres::CostFunction* c = new ceres::NumericDiffCostFunction<rotErrCostFunc, ceres::CENTRAL, 1, 3>(
+                p);
+        problem.AddResidualBlock(c,new ceres::HuberLoss(1.0e-2), opt);
+    }
+    Eigen::MatrixXd KBKA = KB*KA.transpose();
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd(KBKA, Eigen::ComputeThinU | Eigen::ComputeThinV);
+    Eigen::Matrix3d Hm;
+    Eigen::Matrix3d uvt = svd.matrixU()*svd.matrixV().transpose();
+    Hm << 1, 0, 0,
+            0, 1, 0,
+            0, 0, uvt.determinant();
+    R = svd.matrixV()*Hm*svd.matrixU().transpose();
+    Transfer::R2axisRot(R, opt[0], opt[1], opt[2]);
+    ceres::Solver::Options options;
+    options.max_num_iterations = 1e4;
+    options.function_tolerance = 1e-6;
+    options.parameter_tolerance = 1e-6;
+    options.linear_solver_type = ceres::DENSE_QR;
+    ceres::Solver::Summary summary;
+    ceres::Solve(options, &problem, &summary);
+    R = Transfer::axisRot2R(opt[0], opt[1], opt[2]);
+}
+
+void HandEyeCalibration::handEyeOptimizationTranslation(vector<Eigen::Matrix4d> pepdMat,
+                                                        vector<Eigen::Matrix4d> holdMat, Eigen::Matrix3d &R,
+                                                        Eigen::Vector3d &t) {
+    Eigen::Vector3d translation;
+    translation << 0, 0, 0;
+    Eigen::Matrix3d identity;
+    identity = Eigen::Matrix3d::Zero();
+    for(int i=0; i<pepdMat.size(); i++){
+        Eigen::Matrix3d RA = pepdMat.at(i).block(0, 0, 3, 3);
+        Eigen::Vector3d tA = pepdMat.at(i).block(0, 3, 3, 1);
+        Eigen::Matrix3d RB = holdMat.at(i).block(0, 0, 3, 3);
+        Eigen::Vector3d tB = holdMat.at(i).block(0, 3, 3, 1);
+        translation = (RA - identity).inverse() * (R * tB - tA);
+        t = t + translation;
+    }
+    t[0] = t[0] / pepdMat.size();
+    t[1] = t[1] / pepdMat.size();
+    t[2] = t[2] / pepdMat.size();
+    double t1 = t[0];
+    double t2 = t[1];
+    double t3 = t[2];
+    int a = 1;
+}
+
+float Refinement::point2PointDistanceKitti(cv::Mat &mapCamera, cv::Mat &mapLiDAR) {
+    float distance = 0;
+    int cnt = 0;
+    for(int i=0; i<mapCamera.rows; i++){
+        for(int j=0; j<mapCamera.cols; j++){
+            if(mapLiDAR.at<float>(i, j) > 0){
+                cnt++;
+                distance += abs(float(mapCamera.at<uchar>(i, j)) - mapLiDAR.at<float>(i, j));
+            }
+        }
+    }
+
+    if(cnt<50){
+        distance = 1000;
+    }
+    else{
+        distance /= cnt;
+    }
+//    if(isnan(distance)){
+//        distance = 10000;
+//    }
+    return distance;
+}
+
+float Refinement::point2PointDistanceTotal(cv::Mat &mapCamera, cv::Mat &mapLiDAR,
+                                                 vector<cv::Mat> &diagonalPointsSet) {
+    float p2pDistance = 0;
+    for(int i=0; i<diagonalPointsSet.size(); i++){
+        cv::Mat mapCameraRegion, mapLiDARRegion;
+        ImageUtils::creatMapRegion(mapCamera, mapCameraRegion, diagonalPointsSet[i]);
+        ImageUtils::creatMapRegion(mapLiDAR, mapLiDARRegion, diagonalPointsSet[i]);
+        p2pDistance += point2PointDistanceKitti(mapCameraRegion, mapLiDARRegion);
+    }
+}
+
+float Refinement::point2PointDistanceFrame(cv::Mat &mapCamera, cv::Mat &mapLiDAR) {
+    float distance = 0;
+    int cnt = 0;
+    for(int i=0; i<mapCamera.rows; i++){
+        for(int j=0; j<mapCamera.cols; j++){
+            if(mapLiDAR.at<float>(i, j) > 0){
+                cnt++;
+                distance += abs(float(mapCamera.at<uchar>(i, j)) - mapLiDAR.at<float>(i, j));
+            }
+        }
+    }
+
+    if(cnt<5000){
+        distance = 1000;
+    }
+    else{
+        distance /= cnt;
+    }
+    return distance;
+}
 
 //For point, x : rows, y : cols
 //For region, x : height, y : length
@@ -1252,8 +1072,8 @@ float Refinement::edgeDistance(cv::Mat &edgeMapCamera, cv::Mat &edgeMapLiDAR, in
     return distance / float(cnt);
 }
 
-void Refinement::saveMatchResult(cv::Mat &edgeMapCamera, cv::Mat &edgeMapLiDAR, string savePath, int number) {
-    cv::Mat three = cv::Mat::zeros(edgeMapCamera.rows, edgeMapCamera.cols, CV_8UC3);
+void Refinement::saveMatchResult(cv::Mat &edgeMapCamera, cv::Mat &edgeMapLiDAR, string savePath, int number, cv::Mat &three) {
+    three = cv::Mat::zeros(edgeMapCamera.rows, edgeMapCamera.cols, CV_8UC3);
     vector<cv::Mat> channels;
     edgeMapCamera.convertTo(edgeMapCamera, CV_8UC1);
     for (int i=0;i<3;i++)
@@ -1262,14 +1082,12 @@ void Refinement::saveMatchResult(cv::Mat &edgeMapCamera, cv::Mat &edgeMapLiDAR, 
     }
     cv::merge(channels,three);
     ImageUtils::colorTransfer(edgeMapLiDAR, three, 70);
-    cv::imwrite(savePath + "___" + "match" + to_string(number) + ".png", three);
+    //cv::imwrite(savePath + "___" + "match" + to_string(number) + ".png", three);
 }
 
 float Refinement::errorRotation(cv::Mat &rotationResult, cv::Mat &rotationTruth) {
     cv::transpose(rotationResult, rotationResult);
     cv::Mat error = rotationResult * rotationTruth;
-
-    vector<float> euler_angle;
     float sy = sqrt(error.at<float>(0, 0) * error.at<float>(0, 0) + error.at<float>(1, 0) * error.at<float>(1, 0));
     float e1 = abs(atan2(error.at<float>(2, 1), error.at<float>(2, 2)) * 180 / M_PI);
     float e2 = abs(atan2(-error.at<float>(2, 0), sy) * 180 / M_PI);
@@ -1286,6 +1104,26 @@ float Refinement::errorTranslation(cv::Mat &translationResult, cv::Mat &translat
     return error_translation;
 }
 
+void Refinement::errorRotation(cv::Mat &rotationResult, cv::Mat &rotationTruth, cv::Point3f &errorRotation) {
+    cv::transpose(rotationResult, rotationResult);
+    cv::Mat error = rotationResult * rotationTruth;
+    vector<float> euler_angle;
+    float sy = sqrt(error.at<float>(0, 0) * error.at<float>(0, 0) + error.at<float>(1, 0) * error.at<float>(1, 0));
+    float e1 = abs(atan2(error.at<float>(2, 1), error.at<float>(2, 2)) * 180 / M_PI);
+    float e2 = abs(atan2(-error.at<float>(2, 0), sy) * 180 / M_PI);
+    float e3 = abs(atan2(error.at<float>(1, 0), error.at<float>(0, 0)) * 180 / M_PI);
+    errorRotation.x = e1;
+    errorRotation.y = e2;
+    errorRotation.z = e3;
+}
+
+void Refinement::errorTranslation(cv::Mat &translationResult, cv::Mat &translationTruth,
+                                  cv::Point3f &errorTranslation) {
+    errorTranslation.x = abs(translationResult.at<float>(0, 0) - translationTruth.at<float>(0, 0));
+    errorTranslation.y = abs(translationResult.at<float>(1, 0) - translationTruth.at<float>(1, 0));
+    errorTranslation.z = abs(translationResult.at<float>(2, 0) - translationTruth.at<float>(2, 0));
+}
+
 void Refinement::errorWrite(ofstream &outFile, float time, float errorRotation, float errorTranslation) {
 //    ofstream outFile;
 //    outFile.open(csvPath, ios::out);
@@ -1293,6 +1131,10 @@ void Refinement::errorWrite(ofstream &outFile, float time, float errorRotation, 
     if(!isnan(errorRotation) && !isnan(errorTranslation)){
         outFile << time << ";" << errorRotation << ";" << errorTranslation << endl;
     }
+}
+
+void Refinement::errorWrite(ofstream &outFile, float time, cv::Point3f &errorRotation, cv::Point3f &errorTranslation) {
+    outFile << time << ";" << errorRotation.x << ";" << errorRotation.y << ";" << errorRotation.z << ";" << errorTranslation.x << ";" << errorTranslation.y << ";" << errorTranslation.z << endl;
 }
 
 void Refinement::distanceErrorWrite(ofstream &outFile, float time, float lastDistance, float referenceDistance, float errorRotation, float errorTranslation) {

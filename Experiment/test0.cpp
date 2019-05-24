@@ -12,7 +12,7 @@
 #include "RealEquipment.h"
 //#include <matplotlib-cpp/matplotlibcpp.h>
 #include <sl/Camera.hpp>
-#include <libcmaes/cmaes.h>
+//#include <libcmaes/cmaes.h>
 
 string user_name = "phyorch";
 string data_name = "2011_09_26_drive_0005_sync";
@@ -35,7 +35,7 @@ string depth_map_camera_boader_path = "/home/" + user_name + "/Data/camera_depth
 
 string camera_csv_path = "/home/" + user_name + "/Data/HistCamera.csv";
 string lidar_csv_path = "/home/" + user_name + "/Data/HistLiDAR.csv";
-string test1_path = "/home/" + user_name + "/Data/CalibrationFile/t5/image.jpg";
+string test1_path = "/home/" + user_name + "/Data/test.png";
 string test1_lidar_path = "/home/" + user_name + "/Data/CalibrationFile/t5/lidar.pcd";
 string test2_path = "/home/" + user_name + "/Data/00.png";
 string test1_output_path = "/home/" + user_name + "/Data/test1.png";
@@ -76,9 +76,33 @@ void skew(cv::Mat &matOriginal, cv::Mat &matSkew) {
 }
 
 int main(){
-    cv::Mat test1 = cv::Mat::zeros(3, 1, CV_32FC1);
-    cv::Mat test2(3, 3, CV_32FC1);
-    HandEyeCalibration::skew(test1, test2);
-    cout << test1 << test2;
+//    cv::Mat test1 = cv::Mat::zeros(3, 1, CV_32FC1);
+//    cv::Mat test2(3, 3, CV_32FC1);
+//    HandEyeCalibration::skew(test1, test2);
+//    //cout << test1 << test2;
+//
+//    cv::Mat A;
+//    A = (cv::Mat_<float>(4, 4) << 0.99997091, 0.00053286832, 0.0076067848, -0.001009473,
+//    -0.00055423717, 0.99999589, 0.0028073485, -0.0066959574,
+//    -0.0076052579, -0.0028114829, 0.9999671, -0.62674791,
+//    0, 0, 0, 1);
+//
+//    cv::Mat B;
+//    B = (cv::Mat_<float>(4, 4) << 0.99997222, 0.0070097134, 0.002746379, -0.72380203,
+//    -0.0070077134, 0.99997509, -0.00087830739, -0.022696149,
+//    -0.0027524696, 0.00085903768, 0.99999684, -0.023886442,
+//    0, 0, 0, 1);
+//
+//    cv::Mat X;
+//    X = (cv::Mat_<float>(4, 4) << 7.533745e-03, -9.999714e-01, -6.166020e-04, -4.069766e-03,
+//            1.480249e-02, 7.280733e-04, -9.998902e-01, -7.631618e-02,
+//            9.998621e-01, 7.523790e-03, 1.480755e-02, -2.717806e-01,
+//            0, 0, 0, 1);
+
+
+    cv::Mat depth_map_camera = cv::imread(data_root + data_name + "/image_02/data/0000000082.png");
+
+    cv::imwrite(test1_path, depth_map_camera);
+
     return 0;
 }

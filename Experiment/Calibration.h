@@ -34,6 +34,7 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <sl/Camera.hpp>
+#include <ceres/ceres.h>
 
 
 using namespace std;
@@ -89,29 +90,6 @@ public:
 
 };
 
-class HistogramMeasure{
-public:
-
-    static void vectorToHist(vector<int> &vectorVariable, Eigen::RowVectorXi &histogramVariable);
-
-    static double cosDistance(vector<int> &vectorCamera, vector<int> &vectorLiDAR);
-
-    static bool detectMinusValue(vector<float> &histogram);
-
-    static double mapKLDivergence(cv::Mat &mapCamera, cv::Mat &mapLiDAR, vector<cv::Mat> &diagonalPointsSet);
-
-    static float point2PointDistance(cv::Mat &mapCamera, cv::Mat &mapLiDAR);
-
-    static float point2PointDistanceKitti(cv::Mat &mapCamera, cv::Mat &mapLiDAR);
-
-    static float point2PointDistanceTotal(cv::Mat &mapCamera, cv::Mat &mapLiDAR, vector<cv::Mat> &diagonalPointsSet);
-
-    static float point2PointDistanceFrame(cv::Mat &mapCamera, cv::Mat &mapLiDAR);
-
-    static float pointCloudDistance(cv::Mat &mapCamera, cv::Mat &mapLiDAR);
-
-};
-
 class Transfer{
 public:
 
@@ -135,6 +113,14 @@ public:
 
     static void depthDistribution(cv::Mat &imageLiDAR, string csvPath);
 
+    static Eigen::Matrix3d axisRot2R(double rx, double ry, double rz);
+
+    static void R2axisRot(Eigen::Matrix3d R,double& rx, double& ry, double& rz);
+
+    static void mat2axis_angle(Eigen::Matrix3d m,  Eigen::Vector3d& retv, double& angle);
+
+    static void matVec2EigenVec(vector<cv::Mat> &matVec, vector<Eigen::Matrix4d> &eigenVec);
+
 };
 
 class PointCloudAlignment{
@@ -144,7 +130,7 @@ public:
     
     static void getLiDARPointCloudXYZ(pcl::PointCloud<pcl::PointXYZI>::Ptr &pointCloudXYZI, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudXYZ);
 
-    static void getCameraSparsePointCloudKitti(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, LiDAR &lidar, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudSparse);
+    static void getCameraSparsePointCloudKitti(cv::Mat &depthMapCamera, cv::Mat &depthMapLiDAR, LiDAR &lidar, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudSparse, int colDeviation = 0);
 
     static void pointCloudDownsample(pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloud, pcl::PointCloud<pcl::PointXYZ>::Ptr &pointCloudDownsampled, float gridSize);
 
@@ -163,6 +149,8 @@ class HandEyeCalibration {
 public:
 
     static string zfill(int dataNum);
+
+    static void dataReadRandom(int begin, int end, int dataAmount, string imageLocation, string cloudLocation, string depthLocation, vector<string> &imageList, vector<string> &cloudList, vector<string> &depthList);
 
     static void imageRead(int begin, int end, string dataRoot, vector<string> &dataList);
 
@@ -185,10 +173,20 @@ public:
     static void handEyeTsai(cv::Mat &transformationCameraLiDAR, cv::Mat &transformationLiDAR, cv::Mat &transformationCamera);
 
     static void handEyeTsai(cv::Mat &transformationCameraLiDAR, vector<cv::Mat> transformationLiDAR, vector<cv::Mat> transformationCamera);
+
+    static void handEyeOptimization(vector<Eigen::Matrix4d> pepdMat, vector<Eigen::Matrix4d> holdMat, Eigen::Matrix3d& R);
+
+    static void handEyeOptimizationTranslation(vector<Eigen::Matrix4d> pepdMat, vector<Eigen::Matrix4d> holdMat, Eigen::Matrix3d& R, Eigen::Vector3d& t);
 };
 
 class Refinement{
 public:
+
+    static float point2PointDistanceKitti(cv::Mat &mapCamera, cv::Mat &mapLiDAR);
+
+    static float point2PointDistanceTotal(cv::Mat &mapCamera, cv::Mat &mapLiDAR, vector<cv::Mat> &diagonalPointsSet);
+
+    static float point2PointDistanceFrame(cv::Mat &mapCamera, cv::Mat &mapLiDAR);
 
     static bool validRegion(cv::Mat &depthMapLiDAR, cv::Point &point, cv::Point &region, int threshold);
 
@@ -204,13 +202,19 @@ public:
 
     static float edgeDistance(cv::Mat &edgeMapCamera, cv::Mat &edgeMapLiDAR, int cnt);
 
-    static void saveMatchResult(cv::Mat &edgeMapCamera, cv::Mat &edgeMapLiDAR, string savePath, int number);
+    static void saveMatchResult(cv::Mat &edgeMapCamera, cv::Mat &edgeMapLiDAR, string savePath, int number, cv::Mat &three);
 
     static float errorRotation(cv::Mat &rotationResult, cv::Mat &rotationTruth);
 
     static float errorTranslation(cv::Mat &translationResult, cv::Mat &translationTruth);
 
+    static void errorRotation(cv::Mat &rotationResult, cv::Mat &rotationTruth, cv::Point3f &errorRotation);
+
+    static void errorTranslation(cv::Mat &translationResult, cv::Mat &translationTruth, cv::Point3f &errorTranslation);
+
     static void errorWrite(ofstream &outFile, float time, float errorRotation, float errorTranslation);
+
+    static void errorWrite(ofstream &outFile, float time, cv::Point3f &errorRotation, cv::Point3f &errorTranslation);
 
     static void distanceWrite(ofstream &outFile, float time, float lastDistance, float referenceDistance);
 
