@@ -11,7 +11,6 @@
 #include <iostream>
 #include <opencv2/core/types_c.h>
 #include <sl/Camera.hpp>
-#include <libcmaes/cmaes.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/filters/statistical_outlier_removal.h>
 
@@ -59,7 +58,7 @@ Eigen::Matrix4f transformation;
 int main(){
     cv::Mat left_image, lid_to_cam_rotation, lid_to_cam_translation, cam_to_lid_rotation, cam_to_lid_translation, R_self, P_self, depth_map_camera, depth_map_camera_boader, depth_map_lidar_boader, depth_map_lidar;
     left_image = cv::imread(data_root + data_name + image_name);
-    LiDARCalibParaKittiInverse lidar_calib_para_kitti_inverse;
+    LiDARCalibParaKitti lidar_calib_para_kitti;
     CameraPara camera_para;
     pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_lidar_part(new pcl::PointCloud<pcl::PointXYZ>);
 
@@ -176,12 +175,10 @@ int main(){
 //            9.998621e-01, 7.523790e-03, 1.480755e-02);
 //    lid_to_cam_translation = (cv::Mat_<float>(3,1) << -4.069766e-03, -7.631618e-02, -2.717806e-01);
 
-    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << -0.0023648574, -0.99912226, -0.041822515,
-    0.031060416, 0.041729067, -0.99864608,
-    0.9995147, -0.0036606803, 0.03093447);
-    lid_to_cam_translation = (cv::Mat_<float>(3,1) << 0.22447777,
-    -0.089455239,
-    -0.12897673);
+    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << 0.024568876, -0.99922067, 0.03089357,
+    -0.040565841, -0.031873927, -0.99866837,
+    0.99887478, 0.023282936, -0.041317333);
+    lid_to_cam_translation = (cv::Mat_<float>(3,1) << 0.01868224, 0.0903562, 0.4178428);
 
 //    lid_to_cam_rotation = (cv::Mat_<float>(3,3) << 1, 0, 0, 0, 1, 0, 0, 0, 1);
 //    lid_to_cam_translation = (cv::Mat_<float>(3,1) << -0.28338799, -0.82151896, 0.53261143);
@@ -216,14 +213,14 @@ int main(){
 
 //----------------------------------------------------------------------------------------------------------------------
 //lidar class initialization
-    lidar_calib_para_kitti_inverse = {
+    lidar_calib_para_kitti = {
             Rotation:lid_to_cam_rotation,
             Translation:lid_to_cam_translation,
             R:R_self,
             P:P_self,
             imageSize:cv::Size(left_image.cols, left_image.rows)
     };
-    LiDAR lidar = LiDAR(lidar_calib_para_kitti_inverse);
+    LiDAR lidar = LiDAR(lidar_calib_para_kitti);
 //----------------------------------------------------------------------------------------------------------------------
 
 
@@ -253,11 +250,11 @@ int main(){
     float e3 = atan2(error.at<float>(1, 0), error.at<float>(0, 0)) * 180 / M_PI;
 
     float error_rotation = abs(e1) + abs(e2) + abs(e3);
-    float error_translation = abs(lid_to_cam_translation.at<float>(0, 0) - lid_to_cam_translation_truth.at<float>(0, 0)) +
-            abs(lid_to_cam_translation.at<float>(1, 0) - lid_to_cam_translation_truth.at<float>(1, 0)) +
-            abs(lid_to_cam_translation.at<float>(2, 0) - lid_to_cam_translation_truth.at<float>(2, 0));
+    float e4 = abs(lid_to_cam_translation.at<float>(0, 0) - lid_to_cam_translation_truth.at<float>(0, 0));
+    float e5 = abs(lid_to_cam_translation.at<float>(1, 0) - lid_to_cam_translation_truth.at<float>(1, 0));
+    float e6 = abs(lid_to_cam_translation.at<float>(2, 0) - lid_to_cam_translation_truth.at<float>(2, 0));
 
-    cout << endl << "rotation error:   " << error_rotation << endl << "translation error:   " << error_translation;
+    cout << endl << "rotation error:   " << e1 << "  " << e2 << "  " << e3 << "  " << e4 << "  " << e5 << "  " << e6;
 
 
 //    float sy2 = sqrt(lid_to_cam_rotation.at<float>(0, 0) * lid_to_cam_rotation.at<float>(0, 0) + lid_to_cam_rotation.at<float>(1, 0) * lid_to_cam_rotation.at<float>(1, 0));

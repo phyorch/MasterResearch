@@ -305,7 +305,7 @@ void HandEyeCalibration::imageRead(int begin, int end, string dataType, vector<s
     }
 }
 
-void HandEyeCalibration::dataReadRandom(int begin, int end, int dataAmount, string imageLocation, string cloudLocation, string depthLocation,
+void HandEyeCalibration::dataReadRandom(int begin, int end, int dataAmount, int dataInterval, string imageLocation, string cloudLocation, string depthLocation,
                                         vector<string> &imageList, vector<string> &cloudList, vector<string> &depthList) {
     vector<int> sequence;
     for(int i=0; i<end-begin; i++){
@@ -316,13 +316,13 @@ void HandEyeCalibration::dataReadRandom(int begin, int end, int dataAmount, stri
     vector<int> site(sequence.begin(), sequence.begin() + dataAmount);
     for(int i=0; i<site.size(); i++){
         string dataName1 = imageLocation + zfill(site[i]) + ".png";
-        string dataName2 = imageLocation + zfill(site[i]+1) + ".png";
+        string dataName2 = imageLocation + zfill(site[i]+dataInterval) + ".png";
         imageList.push_back(dataName1);
         imageList.push_back(dataName2);
     }
     for(int i=0; i<site.size(); i++){
         string dataName1 = cloudLocation + zfill(site[i]) + ".pcd";
-        string dataName2 = cloudLocation + zfill(site[i]+1) + ".pcd";
+        string dataName2 = cloudLocation + zfill(site[i]+dataInterval) + ".pcd";
         cloudList.push_back(dataName1);
         cloudList.push_back(dataName2);
     }
@@ -724,9 +724,8 @@ void HandEyeCalibration::handEyeTsai(cv::Mat &transformationCameraLiDAR, vector<
 //    transformationCameraLiDAR.at<float>(3, 3) = 1.0;
 }
 
-void HandEyeCalibration::handEyeOptimization(vector<Eigen::Matrix4d> pepdMat, vector<Eigen::Matrix4d> holdMat,
-                                             Eigen::Matrix3d &R) {
-    Eigen::MatrixXd KA(3, pepdMat.size()), KB(3, pepdMat.size());
+void HandEyeCalibration::handEyeOptimization(vector<Eigen::Matrix4d> cameraMotion, vector<Eigen::Matrix4d> lidarMotion, Eigen::Matrix3d& rotation) {
+    Eigen::MatrixXd KA(3, cameraMotion.size()), KB(3, cameraMotion.size());
     struct axisAlignCostFunc {
     public:
         axisAlignCostFunc(Eigen::Vector3d& p3d_, Eigen::Vector3d& eyeDirec_)
@@ -776,21 +775,20 @@ void HandEyeCalibration::handEyeOptimization(vector<Eigen::Matrix4d> pepdMat, ve
     };
     double opt[3];
     ceres::Problem problem;
-    for (int i = 0;i<pepdMat.size();i++) {
+    for (int i = 0;i<cameraMotion.size();i++) {
         double angle1,angle2;
-        cout << pepdMat.at(i) << endl;
-        cout << holdMat.at(i) << endl;
-        Eigen::Vector3d pepax;
-        Transfer::mat2axis_angle(pepdMat.at(i).block(0,0,3,3), pepax, angle1);
-        Eigen::Vector3d holax;
-        Transfer::mat2axis_angle(holdMat.at(i).block(0, 0, 3, 3), holax, angle2);
-        KA.col(i) = pepax;
-        KB.col(i) = holax;
-        Eigen::Matrix3d RA = pepdMat.at(i).block(0, 0, 3, 3);
-        Eigen::Matrix3d RB = holdMat.at(i).block(0, 0, 3, 3);
+        cout << cameraMotion.at(i) << endl;
+        cout << cameraMotion.at(i) << endl;
+        Eigen::Vector3d cameraAX;
+        Transfer::mat2axis_angle(cameraMotion.at(i).block(0,0,3,3), cameraAX, angle1);
+        Eigen::Vector3d lidarAX;
+        Transfer::mat2axis_angle(lidarMotion.at(i).block(0, 0, 3, 3), lidarAX, angle2);
+        KA.col(i) = cameraAX;
+        KB.col(i) = lidarAX;
+        Eigen::Matrix3d RA = cameraMotion.at(i).block(0, 0, 3, 3);
+        Eigen::Matrix3d RB = lidarMotion.at(i).block(0, 0, 3, 3);
         rotErrCostFunc* p= new rotErrCostFunc(RA, RB);
-        ceres::CostFunction* c = new ceres::NumericDiffCostFunction<rotErrCostFunc, ceres::CENTRAL, 1, 3>(
-                p);
+        ceres::CostFunction* c = new ceres::NumericDiffCostFunction<rotErrCostFunc, ceres::CENTRAL, 1, 3>(p);
         problem.AddResidualBlock(c,new ceres::HuberLoss(1.0e-2), opt);
     }
     Eigen::MatrixXd KBKA = KB*KA.transpose();
@@ -800,8 +798,8 @@ void HandEyeCalibration::handEyeOptimization(vector<Eigen::Matrix4d> pepdMat, ve
     Hm << 1, 0, 0,
             0, 1, 0,
             0, 0, uvt.determinant();
-    R = svd.matrixV()*Hm*svd.matrixU().transpose();
-    Transfer::R2axisRot(R, opt[0], opt[1], opt[2]);
+    rotation = svd.matrixV()*Hm*svd.matrixU().transpose();
+    Transfer::R2axisRot(rotation, opt[0], opt[1], opt[2]);
     ceres::Solver::Options options;
     options.max_num_iterations = 1e4;
     options.function_tolerance = 1e-6;
@@ -809,31 +807,25 @@ void HandEyeCalibration::handEyeOptimization(vector<Eigen::Matrix4d> pepdMat, ve
     options.linear_solver_type = ceres::DENSE_QR;
     ceres::Solver::Summary summary;
     ceres::Solve(options, &problem, &summary);
-    R = Transfer::axisRot2R(opt[0], opt[1], opt[2]);
+    rotation = Transfer::axisRot2R(opt[0], opt[1], opt[2]);
 }
 
-void HandEyeCalibration::handEyeOptimizationTranslation(vector<Eigen::Matrix4d> pepdMat,
-                                                        vector<Eigen::Matrix4d> holdMat, Eigen::Matrix3d &R,
-                                                        Eigen::Vector3d &t) {
-    Eigen::Vector3d translation;
+void HandEyeCalibration::handEyeOptimizationTranslation(vector<Eigen::Matrix4d> cameraMotion, vector<Eigen::Matrix4d> lidarMotion, Eigen::Matrix3d &rotation, Eigen::Vector3d &translation) {
+    Eigen::Vector3d translationTemp;
     translation << 0, 0, 0;
     Eigen::Matrix3d identity;
     identity = Eigen::Matrix3d::Zero();
-    for(int i=0; i<pepdMat.size(); i++){
-        Eigen::Matrix3d RA = pepdMat.at(i).block(0, 0, 3, 3);
-        Eigen::Vector3d tA = pepdMat.at(i).block(0, 3, 3, 1);
-        Eigen::Matrix3d RB = holdMat.at(i).block(0, 0, 3, 3);
-        Eigen::Vector3d tB = holdMat.at(i).block(0, 3, 3, 1);
-        translation = (RA - identity).inverse() * (R * tB - tA);
-        t = t + translation;
+    for(int i=0; i<cameraMotion.size(); i++){
+        Eigen::Matrix3d RA = cameraMotion.at(i).block(0, 0, 3, 3);
+        Eigen::Vector3d tA = cameraMotion.at(i).block(0, 3, 3, 1);
+        Eigen::Matrix3d RB = lidarMotion.at(i).block(0, 0, 3, 3);
+        Eigen::Vector3d tB = lidarMotion.at(i).block(0, 3, 3, 1);
+        translationTemp = (RA - identity).inverse() * (rotation * tB - tA);
+        translation = translation + translationTemp;
     }
-    t[0] = t[0] / pepdMat.size();
-    t[1] = t[1] / pepdMat.size();
-    t[2] = t[2] / pepdMat.size();
-    double t1 = t[0];
-    double t2 = t[1];
-    double t3 = t[2];
-    int a = 1;
+    translation[0] = translation[0] / cameraMotion.size();
+    translation[1] = translation[1] / cameraMotion.size();
+    translation[2] = translation[2] / cameraMotion.size();
 }
 
 float Refinement::point2PointDistanceKitti(cv::Mat &mapCamera, cv::Mat &mapLiDAR) {
@@ -1082,7 +1074,7 @@ void Refinement::saveMatchResult(cv::Mat &edgeMapCamera, cv::Mat &edgeMapLiDAR, 
     }
     cv::merge(channels,three);
     ImageUtils::colorTransfer(edgeMapLiDAR, three, 70);
-    //cv::imwrite(savePath + "___" + "match" + to_string(number) + ".png", three);
+    cv::imwrite(savePath + "___" + "match" + to_string(number) + ".png", three);
 }
 
 float Refinement::errorRotation(cv::Mat &rotationResult, cv::Mat &rotationTruth) {

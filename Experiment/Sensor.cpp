@@ -223,9 +223,9 @@ void LiDAR::projectPointKittiSeperate(cv::Mat &depthMapLiDAR, pandar_pointcloud:
     cv::Mat p_projected = _liDARCalibParaKitti.P * _liDARCalibParaKitti.R * p__;
     int u = int(p_projected.at<float>(0,0) / p_projected.at<float>(2,0));
     int v = int(p_projected.at<float>(1,0) / p_projected.at<float>(2,0));
-    if(0<=u && colDeviation<=v && u<depthMapLiDAR.cols && v<depthMapLiDAR.rows+colDeviation && point.y<-2 && point.y>-70){  // && point.x>2 to delete the point too close to the car, 50<=u to delete the points in region that has no disparity
+    if(19<=u && colDeviation<=v && u<depthMapLiDAR.cols+19 && v<depthMapLiDAR.rows+colDeviation && point.y<-2 && point.y>-70){  // && point.x>2 to delete the point too close to the car, 50<=u to delete the points in region that has no disparity
         //cout << "Poin5t " << test << "is a valid point." << v << " " << u << endl;
-        depthMapLiDAR.at<float>(v-colDeviation,u) = -point.y;    //sqrt(point.x*point.x + point.y*point.y);  //sqrt(point.x*point.x + point.y*point.y)
+        depthMapLiDAR.at<float>(v-colDeviation,u-19) = -point.y;    //sqrt(point.x*point.x + point.y*point.y);  //sqrt(point.x*point.x + point.y*point.y)
 //        pcl::PointXYZ pointxyz;
 //        pointxyz.x = point.x;
 //        pointxyz.y = point.y;

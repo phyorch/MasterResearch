@@ -100,9 +100,7 @@ int main(){
 //            0, 0, 0, 1);
 
 
-    cv::Mat depth_map_camera = cv::imread(data_root + data_name + "/image_02/data/0000000082.png");
 
-    cv::imwrite(test1_path, depth_map_camera);
 
     return 0;
 }

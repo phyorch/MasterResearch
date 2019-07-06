@@ -115,9 +115,9 @@ public:
 
     static Eigen::Matrix3d axisRot2R(double rx, double ry, double rz);
 
-    static void R2axisRot(Eigen::Matrix3d R,double& rx, double& ry, double& rz);
+    static void R2axisRot(Eigen::Matrix3d rotation, double &rx, double &ry, double &rz);
 
-    static void mat2axis_angle(Eigen::Matrix3d m,  Eigen::Vector3d& retv, double& angle);
+    static void mat2axis_angle(Eigen::Matrix3d matrix,  Eigen::Vector3d &rotationVec, double &angle);
 
     static void matVec2EigenVec(vector<cv::Mat> &matVec, vector<Eigen::Matrix4d> &eigenVec);
 
@@ -150,7 +150,7 @@ public:
 
     static string zfill(int dataNum);
 
-    static void dataReadRandom(int begin, int end, int dataAmount, string imageLocation, string cloudLocation, string depthLocation, vector<string> &imageList, vector<string> &cloudList, vector<string> &depthList);
+    static void dataReadRandom(int begin, int end, int dataAmount, int dataInterval, string imageLocation, string cloudLocation, string depthLocation, vector<string> &imageList, vector<string> &cloudList, vector<string> &depthList);
 
     static void imageRead(int begin, int end, string dataRoot, vector<string> &dataList);
 
@@ -174,9 +174,9 @@ public:
 
     static void handEyeTsai(cv::Mat &transformationCameraLiDAR, vector<cv::Mat> transformationLiDAR, vector<cv::Mat> transformationCamera);
 
-    static void handEyeOptimization(vector<Eigen::Matrix4d> pepdMat, vector<Eigen::Matrix4d> holdMat, Eigen::Matrix3d& R);
+    static void handEyeOptimization(vector<Eigen::Matrix4d> cameraMotion, vector<Eigen::Matrix4d> lidarMotion, Eigen::Matrix3d& rotation);
 
-    static void handEyeOptimizationTranslation(vector<Eigen::Matrix4d> pepdMat, vector<Eigen::Matrix4d> holdMat, Eigen::Matrix3d& R, Eigen::Vector3d& t);
+    static void handEyeOptimizationTranslation(vector<Eigen::Matrix4d> cameraMotion, vector<Eigen::Matrix4d> lidarMotion, Eigen::Matrix3d &rotation, Eigen::Vector3d &translation);
 };
 
 class Refinement{

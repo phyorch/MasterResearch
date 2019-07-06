@@ -22,23 +22,11 @@ string user_name = "phyorch";
 string image_location = "2011_09_26_drive_0005_sync/image_02/data/";
 string depth_location = "2011_09_26_drive_0005_sync/depth/";
 string cloud_location = "2011_09_26_drive_0005_sync/velodyne_points/data/";
-ofstream out_file_translation;
+ofstream out_file_candidates;
 string image_name = "0000000082.png";
-
 
 string data_root = "/home/" + user_name + "/Data/";
 string depth_name = "/depth/0000000082.png";
-string depth_name2 = "/depth/0000000081.png";
-string depth_name3 = "/depth/0000000080.png";
-string depth_name4 = "/depth/0000000079.png";
-//string image_list[8] = {image_name, image_name2, image_name3, image_name4, image_name5, image_name6, image_name7, image_name8};
-//string cloud_list[8] = {cloud_name, cloud_name2, cloud_name3, cloud_name4, cloud_name5, cloud_name6, cloud_name7, cloud_name8};
-//string depth_list[4] = {depth_name, depth_name2, depth_name3, depth_name4};
-
-//vector<cv::Mat> motion_camera;
-//vector<cv::Mat> motion_lidar;
-//cv::Mat transformation_camera_lidar = cv::Mat::zeros(4, 4, CV_32FC1);
-
 
 Eigen::Matrix3d Rotation;
 Eigen::Vector3d translation;
@@ -73,17 +61,17 @@ int main ()
             0.99842489, 0.0558572, -0.005264699);
     lid_to_cam_translation = (cv::Mat_<float>(3,1) << -0.44149587, 0.47857293, -0.39773074);
 
-    LiDARCalibParaKittiInverse lidar_calib_para_kitti_inverse;
+    LiDARCalibParaKitti lidar_calib_para_kitti;
 
     cv::Mat img_1 = cv::imread ( data_root + image_location + image_name, CV_LOAD_IMAGE_COLOR );
-    lidar_calib_para_kitti_inverse = {
+    lidar_calib_para_kitti = {
             Rotation:lid_to_cam_rotation,
             Translation:lid_to_cam_translation,
             R:R_self,
             P:P_self,
             imageSize:cv::Size(img_1.cols, img_1.rows)
     };
-    LiDAR lidar = LiDAR(lidar_calib_para_kitti_inverse);
+    LiDAR lidar = LiDAR(lidar_calib_para_kitti);
 
     cv::Mat K;
     cv::Mat transformation_camera;
@@ -96,23 +84,24 @@ int main ()
     //cout<<"calling bundle adjustment"<<endl;
     //bundleAdjustment ( pts_3d, pts_2d, K, R, t );
 
-    int begin = 1;
-    int end = 152;
-    int data_amount = 10;
-    int result_amount = 20;
+    int begin = 82;//1
+    int end = 83;//152
+    int data_amount = 1;//10
+    int data_interval = 1;
+    int result_amount = 20;//20
     vector<Eigen::Vector3d> translations;
     srand((unsigned)time(NULL));
-    out_file_translation.open(data_root + "translations.csv", ios::out);
-    out_file_translation << "tx" << ";" << "ty" << ";" << "tz" << endl;
+    out_file_candidates.open(data_root + "candidates.csv", ios::out);
+    out_file_candidates << "r1" << ";" << "r2" << ";" << "r3" << ";" << "tx" << ";" << "ty" << ";" << "tz" << endl;
     for(int i=0; i<result_amount; i++){
         cout << "The " << i << "th result" << endl;
         vector<Eigen::Matrix4d> motion_camera;
         vector<Eigen::Matrix4d> motion_lidar;
+
         vector<string> image_list;
         vector<string> cloud_list;
         vector<string> depth_list;
-
-        HandEyeCalibration::dataReadRandom(begin, end, data_amount, image_location, cloud_location, depth_location, image_list, cloud_list, depth_list);
+        HandEyeCalibration::dataReadRandom(begin, end, data_amount, data_interval, image_location, cloud_location, depth_location, image_list, cloud_list, depth_list);
 
         for(int i=0; i<data_amount; i++){
             cout << "data " << i << endl;
@@ -124,6 +113,13 @@ int main ()
             vector<cv::Point3f> pts_3d;
             vector<cv::Point2f> pts_2d;
             HandEyeCalibration::cameraRegistration(img_1, img_2, keypoints_1, keypoints_2, matches, depth_map_camera, K, lidar, transformation_camera);
+//            if(matches.size()<230){
+//                continue;
+//            }
+            cv::Mat img_out;
+            cv::drawKeypoints(img_1, keypoints_1, img_out, cv::Scalar(255, 0, 0), cv::DrawMatchesFlags::DEFAULT);
+            //cv::drawMatches(img_1, keypoints_1, img_2, keypoints_2, matches, img_out, cv::Scalar(255, 0, 0), cv::Scalar(0, 0, 255));
+            cv::imwrite(data_root + "test.png", img_out);
             cout << transformation_camera << endl;
 
 
@@ -157,8 +153,15 @@ int main ()
         HandEyeCalibration::handEyeOptimization(motion_camera, motion_lidar, Rotation);
         cout << "rotation" << endl << Rotation;
         HandEyeCalibration::handEyeOptimizationTranslation(motion_camera, motion_lidar, Rotation, translation);
+        Eigen::Matrix3f rotationfloat = Rotation.cast<float>();
+        cv::Mat rotation_mat = cv::Mat::zeros(3, 1, CV_32FC1);
+        cv::eigen2cv(rotationfloat, rotation_mat);
+        cout << rotation_mat << endl;
+        cv::Mat rotationVector = cv::Mat::zeros(3, 1, CV_32FC1);
+        cv::Rodrigues(rotation_mat, rotationVector);
+        cout << rotationVector << endl;
         translations.push_back(translation);
-        out_file_translation << translation[0] << ";" << translation[1] << ";" << translation[2] << endl;
+        out_file_candidates << rotationVector.at<float>(0, 0) << ";" << rotationVector.at<float>(1, 0) << ";" << rotationVector.at<float>(2, 0) << ";" << translation[0] << ";" << translation[1] << ";" << translation[2] << endl;
     }
     return 0;
 }

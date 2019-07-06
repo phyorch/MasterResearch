@@ -80,7 +80,8 @@ target_link_libraries(test6 cmaes
                             ${OpenCV_LIBS}
                             ${PCL_LIBRARIES}
                             ${ZED_LIBRARIES}
-                            ${Boost_LIBRARIES})
+                            ${Boost_LIBRARIES}
+                            ${CERES_LIBRARIES})
 
 add_executable(test7 test7_pcl_transformation.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
 target_link_libraries(test7 cmaes
@@ -94,7 +95,8 @@ target_link_libraries(test8 cmaes
         ${OpenCV_LIBS}
         ${PCL_LIBRARIES}
         ${ZED_LIBRARIES}
-        ${Boost_LIBRARIES})
+        ${Boost_LIBRARIES}
+        ${CERES_LIBRARIES})
 
 add_executable(test9 test9_edge_based_refinement.cpp Sensor.cpp RealEquipment.cpp ImageUtils.cpp Calibration.cpp Sensor.h RealEquipment.h ImageUtils.h Calibration.h)
 target_link_libraries(test9 cmaes
@@ -124,4 +126,5 @@ target_link_libraries(test12 cmaes
         ${OpenCV_LIBS}
         ${PCL_LIBRARIES}
         ${ZED_LIBRARIES}
-        ${Boost_LIBRARIES})
+        ${Boost_LIBRARIES}
+        ${CERES_LIBRARIES})

@@ -2,6 +2,8 @@
 // Created by phyorch on 18/01/19.
 //
 
+#define HAVE_GLOG
+
 #include <iostream>
 #include <chrono>
 
@@ -20,8 +22,8 @@ using namespace std;
 string user_name = "phyorch";
 string data_name = "2011_09_26_drive_0005_sync";
 string image_name = "/image_02/data/0000000082.png";
-string cloud_name = "/velodyne_points/data/0000000152.pcd";
-string cloud_name2 = "/velodyne_points/data/0000000153.pcd";
+string cloud_name = "/velodyne_points/data/0000000082.pcd";
+string cloud_name2 = "/velodyne_points/data/0000000083.pcd";
 string depth_name = "/depth/depth1.png";
 int feedback = 3;
 float vox_volum = 0.8;
@@ -90,11 +92,11 @@ Eigen::Matrix4f transformation;
 //            imageSize:cv::Size(left_image.cols, left_image.rows)
 //    };
 
-LiDARCalibParaKittiInverse lidar_calib_para_kitti_inverse;
+LiDARCalibParaKitti lidar_calib_para_kitti;
 
 CameraPara camera_para;
 
-LiDAR lidar = LiDAR(lidar_calib_para_kitti_inverse);
+LiDAR lidar = LiDAR(lidar_calib_para_kitti);
 
 vector<vector<int>> region_point_set1, region_point_set2;
 
@@ -173,7 +175,7 @@ int main(){
     Transfer::cv2EigenSeperate(lid_to_cam_rotation, lid_to_cam_translation, transformation);
 //----------------------------------------------------------------------------------------------------------------------
 
-    lidar_calib_para_kitti_inverse = {
+    lidar_calib_para_kitti = {
             Rotation:lid_to_cam_rotation,
             Translation:lid_to_cam_translation,
             R:R_self,
@@ -181,7 +183,7 @@ int main(){
             imageSize:cv::Size(left_image.cols, left_image.rows)
     };
 
-    LiDAR lidar = LiDAR(lidar_calib_para_kitti_inverse);
+    LiDAR lidar = LiDAR(lidar_calib_para_kitti);
 
 
     left_image = cv::imread(data_root + data_name + image_name);
